@@ -18,8 +18,7 @@ export default function NavLinks() {
     <nav
       id="primary-navigation"
       aria-label="Navigasi utama"
-      hidden={!mobileNavOpen}
-      className="md:block"
+      className={mobileNavOpen ? "block md:block" : "hidden md:block"}
     >
       <ul className="flex gap-1 overflow-x-auto md:flex-col">
         {NAV_ITEMS.map((item) => {

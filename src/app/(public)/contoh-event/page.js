@@ -36,7 +36,7 @@ export default function PublicEventCatalogPage() {
     <main className="min-h-screen bg-zinc-50 px-4 py-12 text-zinc-900">
       <div className="mx-auto max-w-5xl">
         <header className="flex flex-wrap items-center justify-between gap-4">
-          <Link href="/" className="font-semibold">
+          <Link href="/contoh-event" className="font-semibold">
             Mini Event Management
           </Link>
           <Link
