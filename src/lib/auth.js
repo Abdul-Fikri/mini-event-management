@@ -12,7 +12,7 @@ export const getOwnerGroup = cache(async () => {
   const owner = await getCurrentOwner();
   if (!owner) return null;
   const supabase = await createClient();
-  const { data, error } = await supabase.from("groups").select("id,name,description,category,created_at").eq("owner_id", owner.id).maybeSingle();
+  const { data, error } = await supabase.from("groups").select("id,name,description,category,created_at,logo_url").eq("owner_id", owner.id).maybeSingle();
   if (error) throw new Error(`Gagal memuat grup: ${error.message}`);
   return data;
 });
