@@ -9,7 +9,7 @@ export default function AppShell({ group, owner, children }) {
       <header className="border-b border-zinc-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
           <div className="min-w-0">
-            <p className="text-xs text-zinc-500">Mini Event Management</p>
+            <p className="text-xs text-zinc-500">Mini Event Management(BETA)(Bismillah jadi)</p>
             <p className="truncate font-semibold">{group.name}</p>
           </div>
           <div className="flex shrink-0 items-center gap-3">

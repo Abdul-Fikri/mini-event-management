@@ -39,12 +39,18 @@ export async function register(prevState, formData) {
     password: parsed.data.password,
   });
 
-  if (error) {
-    return failure(
-      SIGN_UP_ERRORS[error.code] ?? "Pendaftaran gagal. Silakan coba lagi.",
-      values
-    );
-  }
+if (error) {
+  console.error("SUPABASE SIGNUP ERROR:", {
+    message: error.message,
+    code: error.code,
+    status: error.status,
+  });
+
+  return failure(
+    SIGN_UP_ERRORS[error.code] ?? error.message,
+    values
+  );
+}
 
   // Konfirmasi email nonaktif: sesi langsung aktif.
   if (data.session) {
