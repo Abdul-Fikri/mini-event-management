@@ -38,7 +38,13 @@ export async function login(prevState, formData) {
     if (error.code === "email_not_confirmed") return failure("Email belum dikonfirmasi. Buka email Anda dan klik tautan konfirmasi.", values);
     return failure("Email atau password salah.", values);
   }
-  redirect(safeNext(raw.next) ?? "/dashboard");
+  if (safeNext(raw.next)) redirect(safeNext(raw.next));
+  const { data: userData } = await supabase.auth.getUser();
+  if (userData?.user?.id) {
+    const { data: panitia } = await supabase.from("members").select("id").eq("auth_user_id", userData.user.id).maybeSingle();
+    if (panitia) redirect("/panitia");
+  }
+  redirect("/dashboard");
 }
 export async function logout() {
   const supabase = await createClient();
