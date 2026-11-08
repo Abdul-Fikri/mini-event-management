@@ -10,6 +10,7 @@ import ScheduleSection from "@/components/events/ScheduleSection";
 import TaskSection from "@/components/events/TaskSection";
 import ProcurementSection from "@/components/events/ProcurementSection";
 import FinanceSection from "@/components/events/FinanceSection";
+import EventExportSection from "@/components/events/EventExportSection";
 
 export const metadata = { title: "Detail Event" };
 const labels = { draft:"Draf", planned:"Direncanakan", ongoing:"Berlangsung", completed:"Selesai", cancelled:"Dibatalkan" };
@@ -47,6 +48,7 @@ export default async function EventDetailPage({ params, searchParams }) {
     <TaskSection eventId={id} tasks={tasks ?? []} members={members ?? []}/>
     <ProcurementSection eventId={id} items={procurementItems ?? []} members={members ?? []}/>
     <FinanceSection eventId={id} targetBudget={event.target_budget} categories={budgetCategories ?? []} transactions={transactions ?? []} members={members ?? []} financeError={query?.finance_error ?? ""}/>
+    <EventExportSection eventId={id}/>
     <form action={deleteEvent}><input type="hidden" name="id" value={id}/><ConfirmDeleteButton message="Hapus event ini? Rundown, tugas, transaksi, dan susunan panitia terkait dapat ikut terhapus.">Hapus event</ConfirmDeleteButton></form>
   </div>;
 }
