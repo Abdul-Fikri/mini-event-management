@@ -24,17 +24,19 @@ export async function requireOwner() {
 export async function requireGroup() {
   const owner = await requireOwner();
   const group = await getOwnerGroup();
-  if (!group) redirect("/onboarding");
+  if (!group) {
+    const panitia = await getCurrentPanitia();
+    if (panitia) redirect("/panitia");
+    redirect("/onboarding");
+  }
   return { owner, group };
 }
-// Panitia harus terhubung melalui undangan yang sudah diklaim.
 export const getCurrentPanitia = cache(async () => {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
   if (!userId) return null;
-  const { data: member, error } = await supabase.from("members")
-    .select("id,group_id,full_name,contact").eq("auth_user_id", userId).maybeSingle();
+  const { data: member, error } = await supabase.from("members").select("id,group_id,full_name,contact").eq("auth_user_id", userId).maybeSingle();
   if (error) throw new Error("Gagal memeriksa akses Panitia.");
   return member;
 });
