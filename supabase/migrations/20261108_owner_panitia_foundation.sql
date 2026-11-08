@@ -11,18 +11,18 @@ comment on column public.members.auth_user_id is
 create or replace function public.is_group_member(p_group_id uuid)
 returns boolean language sql stable security definer
 set search_path = pg_catalog, public
-as $
+as $$
   select exists (select 1 from public.members m
     where m.group_id = p_group_id and m.auth_user_id = (select auth.uid()));
-$;
+$$;
 create or replace function public.is_event_member(p_event_id uuid)
 returns boolean language sql stable security definer
 set search_path = pg_catalog, public
-as $
+as $$
   select exists (select 1 from public.event_members em
     join public.members m on m.id = em.member_id and m.group_id = em.group_id
     where em.event_id = p_event_id and m.auth_user_id = (select auth.uid()));
-$;
+$$;
 revoke all on function public.is_group_member(uuid) from public, anon;
 revoke all on function public.is_event_member(uuid) from public, anon;
 grant execute on function public.is_group_member(uuid) to authenticated;
