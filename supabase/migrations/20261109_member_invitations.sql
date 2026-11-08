@@ -16,6 +16,8 @@ create table if not exists public.member_invitations (
 create index if not exists member_invitations_member_idx
   on public.member_invitations(member_id, created_at desc);
 alter table public.member_invitations enable row level security;
+revoke all on public.member_invitations from anon, authenticated;
+grant insert on public.member_invitations to authenticated;
 
 drop policy if exists member_invitations_owner_manage on public.member_invitations;
 create policy member_invitations_owner_manage
