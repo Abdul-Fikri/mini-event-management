@@ -18,7 +18,7 @@ create policy group_logos_owner_insert
     and exists (
       select 1
       from public.groups g
-      where g.id = ((storage.foldername(name))[1])::uuid
+      where lower(g.id::text) = lower((storage.foldername(name))[1])
         and g.owner_id = (select auth.uid())
     )
   );
@@ -34,7 +34,7 @@ create policy group_logos_owner_update
     and exists (
       select 1
       from public.groups g
-      where g.id = ((storage.foldername(name))[1])::uuid
+      where lower(g.id::text) = lower((storage.foldername(name))[1])
         and g.owner_id = (select auth.uid())
     )
   )
@@ -44,7 +44,7 @@ create policy group_logos_owner_update
     and exists (
       select 1
       from public.groups g
-      where g.id = ((storage.foldername(name))[1])::uuid
+      where lower(g.id::text) = lower((storage.foldername(name))[1])
         and g.owner_id = (select auth.uid())
     )
   );
@@ -60,7 +60,7 @@ create policy group_logos_owner_delete
     and exists (
       select 1
       from public.groups g
-      where g.id = ((storage.foldername(name))[1])::uuid
+      where lower(g.id::text) = lower((storage.foldername(name))[1])
         and g.owner_id = (select auth.uid())
     )
   );
