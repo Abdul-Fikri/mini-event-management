@@ -8,6 +8,11 @@ const initialState = { ok: false, message: "" };
 export default function GroupLogoForm({ logoUrl, groupName }) {
   const [state, formAction, pending] = useActionState(saveGroupLogo, initialState);
 
+  function removeLogoAction(formData) {
+    formData.set("remove", "true");
+    formAction(formData);
+  }
+
   return (
     <section className="rounded-lg border border-zinc-200 bg-white p-5">
       <h2 className="font-semibold">Logo grup</h2>
@@ -27,7 +32,7 @@ export default function GroupLogoForm({ logoUrl, groupName }) {
             <button type="submit" disabled={pending} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60">
               {pending ? "Menyimpan..." : "Upload logo"}
             </button>
-            {logoUrl ? <button type="submit" name="remove" value="true" formAction={formAction} disabled={pending} className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60">Hapus logo</button> : null}
+            {logoUrl ? <button type="submit" formAction={removeLogoAction} disabled={pending} className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60">Hapus logo</button> : null}
           </div>
         </form>
       </div>
