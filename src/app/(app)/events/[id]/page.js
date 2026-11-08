@@ -7,6 +7,7 @@ import { deleteEventMember } from "@/actions/event-members";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import EventMemberForm from "@/components/events/EventMemberForm";
 import ScheduleSection from "@/components/events/ScheduleSection";
+import TaskSection from "@/components/events/TaskSection";
 
 export const metadata = { title: "Detail Event" };
 const labels = { draft:"Draf", planned:"Direncanakan", ongoing:"Berlangsung", completed:"Selesai", cancelled:"Dibatalkan" };
@@ -15,11 +16,12 @@ export default async function EventDetailPage({ params }) {
   const { id } = await params;
   const { group } = await requireGroup();
   const supabase = await createClient();
-  const [{ data: event }, { data: assignments }, { data: members }, { data: schedule }] = await Promise.all([
+  const [{ data: event }, { data: assignments }, { data: members }, { data: schedule }, { data: tasks }] = await Promise.all([
     supabase.from("events").select("*, coordinator:members(full_name)").eq("id",id).eq("group_id",group.id).maybeSingle(),
     supabase.from("event_members").select("id,member_id,division,position_title,responsibility").eq("event_id",id).eq("group_id",group.id).order("created_at"),
     supabase.from("members").select("id,full_name,contact").eq("group_id",group.id).order("full_name"),
     supabase.from("schedule_items").select("*").eq("event_id",id).eq("group_id",group.id).order("item_date").order("start_time").order("sort_order"),
+    supabase.from("tasks").select("*").eq("event_id",id).eq("group_id",group.id).order("due_date").order("created_at"),
   ]);
   if (!event) notFound();
   const memberById = new Map((members ?? []).map(m => [m.id,m]));
@@ -36,6 +38,7 @@ export default async function EventDetailPage({ params }) {
       {selectableMembers.some(m=>!m.assigned) ? <div className="border-t border-zinc-100 pt-4"><h3 className="mb-3 font-medium">Tambah anggota</h3><EventMemberForm eventId={id} members={selectableMembers}/></div> : (members ?? []).length === 0 ? <p className="text-sm text-zinc-600">Tambahkan data anggota grup terlebih dahulu melalui menu Anggota Panitia.</p> : <p className="text-sm text-zinc-500">Semua anggota grup sudah masuk dalam susunan panitia event ini.</p>}
     </section>
     <ScheduleSection eventId={id} eventStartDate={event.start_date} schedule={schedule ?? []} members={members ?? []}/>
+    <TaskSection eventId={id} tasks={tasks ?? []} members={members ?? []}/>
     <form action={deleteEvent}><input type="hidden" name="id" value={id}/><ConfirmDeleteButton message="Hapus event ini? Rundown, tugas, transaksi, dan susunan panitia terkait dapat ikut terhapus.">Hapus event</ConfirmDeleteButton></form>
   </div>;
 }
