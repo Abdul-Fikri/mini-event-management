@@ -32,7 +32,7 @@ create policy groups_panitia_read on public.groups for select to authenticated
 using (public.is_group_member(id));
 drop policy if exists members_panitia_read on public.members;
 create policy members_panitia_read on public.members for select to authenticated
-using (public.is_group_member(group_id));
+using (auth_user_id = (select auth.uid()));
 drop policy if exists events_panitia_read on public.events;
 create policy events_panitia_read on public.events for select to authenticated
 using (public.is_event_member(id));
@@ -40,18 +40,23 @@ drop policy if exists event_members_panitia_read on public.event_members;
 create policy event_members_panitia_read on public.event_members for select to authenticated
 using (public.is_event_member(event_id));
 drop policy if exists schedule_items_panitia_manage on public.schedule_items;
-create policy schedule_items_panitia_manage on public.schedule_items for all to authenticated
-using (public.is_event_member(event_id)) with check (public.is_event_member(event_id));
+drop policy if exists schedule_items_panitia_read on public.schedule_items;
+create policy schedule_items_panitia_read on public.schedule_items for select to authenticated
+using (public.is_event_member(event_id));
 drop policy if exists tasks_panitia_manage on public.tasks;
-create policy tasks_panitia_manage on public.tasks for all to authenticated
-using (public.is_event_member(event_id)) with check (public.is_event_member(event_id));
+drop policy if exists tasks_panitia_read on public.tasks;
+create policy tasks_panitia_read on public.tasks for select to authenticated
+using (public.is_event_member(event_id));
 drop policy if exists procurement_items_panitia_manage on public.procurement_items;
-create policy procurement_items_panitia_manage on public.procurement_items for all to authenticated
-using (public.is_event_member(event_id)) with check (public.is_event_member(event_id));
+drop policy if exists procurement_items_panitia_read on public.procurement_items;
+create policy procurement_items_panitia_read on public.procurement_items for select to authenticated
+using (public.is_event_member(event_id));
 drop policy if exists budget_categories_panitia_manage on public.budget_categories;
-create policy budget_categories_panitia_manage on public.budget_categories for all to authenticated
-using (public.is_event_member(event_id)) with check (public.is_event_member(event_id));
+drop policy if exists budget_categories_panitia_read on public.budget_categories;
+create policy budget_categories_panitia_read on public.budget_categories for select to authenticated
+using (public.is_event_member(event_id));
 drop policy if exists transactions_panitia_manage on public.transactions;
-create policy transactions_panitia_manage on public.transactions for all to authenticated
-using (public.is_event_member(event_id)) with check (public.is_event_member(event_id));
+drop policy if exists transactions_panitia_read on public.transactions;
+create policy transactions_panitia_read on public.transactions for select to authenticated
+using (public.is_event_member(event_id));
 commit;
