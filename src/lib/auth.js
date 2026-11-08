@@ -1,10 +1,6 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-
-// Pemilik (Owner) yang sedang login, atau null.
-// Memakai getClaims() (validasi token), bukan getSession().
-// cache() menghindari pemeriksaan ganda dalam satu request.
 export const getCurrentOwner = cache(async () => {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
@@ -12,38 +8,38 @@ export const getCurrentOwner = cache(async () => {
   if (!claims) return null;
   return { id: claims.sub, email: claims.email ?? "" };
 });
-
-// Grup milik Owner (maksimal satu), atau null jika belum onboarding.
-// RLS memastikan hanya baris milik Owner yang bisa terbaca.
 export const getOwnerGroup = cache(async () => {
   const owner = await getCurrentOwner();
   if (!owner) return null;
-
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("groups")
-    .select("id, name, description, category, created_at")
-    .eq("owner_id", owner.id)
-    .maybeSingle();
-
-  if (error) {
-    throw new Error(`Gagal memuat grup: ${error.message}`);
-  }
+  const { data, error } = await supabase.from("groups").select("id,name,description,category,created_at").eq("owner_id", owner.id).maybeSingle();
+  if (error) throw new Error(`Gagal memuat grup: ${error.message}`);
   return data;
 });
-
-// Gunakan di halaman/aksi yang butuh login.
 export async function requireOwner() {
   const owner = await getCurrentOwner();
   if (!owner) redirect("/login");
   return owner;
 }
-
-// Gunakan di halaman aplikasi: butuh login DAN sudah punya grup.
-// Setiap halaman memanggil ini sendiri (jangan mengandalkan layout saja).
 export async function requireGroup() {
   const owner = await requireOwner();
   const group = await getOwnerGroup();
   if (!group) redirect("/onboarding");
   return { owner, group };
+}
+// Panitia harus terhubung melalui undangan yang sudah diklaim.
+export const getCurrentPanitia = cache(async () => {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  const userId = data?.claims?.sub;
+  if (!userId) return null;
+  const { data: member, error } = await supabase.from("members")
+    .select("id,group_id,full_name,contact").eq("auth_user_id", userId).maybeSingle();
+  if (error) throw new Error("Gagal memeriksa akses Panitia.");
+  return member;
+});
+export async function requirePanitia() {
+  const member = await getCurrentPanitia();
+  if (!member) redirect("/login");
+  return { member, supabase: await createClient() };
 }
