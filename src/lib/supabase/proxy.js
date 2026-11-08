@@ -2,8 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 
-// Halaman yang boleh dibuka tanpa login.
-const PUBLIC_PATHS = ["/login", "/register"];
+// Halaman publik yang boleh dibuka tanpa login.
+const PUBLIC_PATHS = ["/login", "/register", "/contoh-event"];
 
 function isPublicPath(pathname) {
   return PUBLIC_PATHS.some(
@@ -11,8 +11,6 @@ function isPublicPath(pathname) {
   );
 }
 
-// Membuat redirect sambil membawa cookie sesi (dan header cache) yang
-// sudah disegarkan Supabase, supaya sesi tidak hilang saat berpindah halaman.
 function redirectTo(request, supabaseResponse, pathname) {
   const url = request.nextUrl.clone();
   url.pathname = pathname;
@@ -55,8 +53,7 @@ export async function updateSession(request) {
     },
   });
 
-  // JANGAN menaruh kode lain di antara createServerClient dan getClaims().
-  // getClaims() memvalidasi token (bukan sekadar membaca cookie seperti getSession()).
+  // Jangan menaruh kode lain di antara createServerClient dan getClaims().
   const { data } = await supabase.auth.getClaims();
   const isLoggedIn = Boolean(data?.claims);
   const { pathname } = request.nextUrl;
