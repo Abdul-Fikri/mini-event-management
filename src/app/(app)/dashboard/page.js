@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGroup } from "@/lib/auth";
 
-export const metadata = { title: "Dashboard" };
+// Dashboard privat: selalu dirender dinamis agar data Supabase per pengguna tidak di-cache lintas sesi.\nexport const dynamic = "force-dynamic";\nexport const metadata = { title: "Dashboard" };
 
 const dateFormatter = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" });
 const currency = value => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value ?? 0);
