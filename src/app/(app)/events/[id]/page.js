@@ -9,21 +9,25 @@ import EventMemberForm from "@/components/events/EventMemberForm";
 import ScheduleSection from "@/components/events/ScheduleSection";
 import TaskSection from "@/components/events/TaskSection";
 import ProcurementSection from "@/components/events/ProcurementSection";
+import FinanceSection from "@/components/events/FinanceSection";
 
 export const metadata = { title: "Detail Event" };
 const labels = { draft:"Draf", planned:"Direncanakan", ongoing:"Berlangsung", completed:"Selesai", cancelled:"Dibatalkan" };
 const dateFmt = new Intl.DateTimeFormat("id-ID", { dateStyle:"long", timeZone:"Asia/Jakarta" });
-export default async function EventDetailPage({ params }) {
+export default async function EventDetailPage({ params, searchParams }) {
   const { id } = await params;
+  const query = await searchParams;
   const { group } = await requireGroup();
   const supabase = await createClient();
-  const [{ data: event }, { data: assignments }, { data: members }, { data: schedule }, { data: tasks }, { data: procurementItems }] = await Promise.all([
+  const [{ data: event }, { data: assignments }, { data: members }, { data: schedule }, { data: tasks }, { data: procurementItems }, { data: budgetCategories }, { data: transactions }] = await Promise.all([
     supabase.from("events").select("*, coordinator:members(full_name)").eq("id",id).eq("group_id",group.id).maybeSingle(),
     supabase.from("event_members").select("id,member_id,division,position_title,responsibility").eq("event_id",id).eq("group_id",group.id).order("created_at"),
     supabase.from("members").select("id,full_name,contact").eq("group_id",group.id).order("full_name"),
     supabase.from("schedule_items").select("*").eq("event_id",id).eq("group_id",group.id).order("item_date").order("start_time").order("sort_order"),
     supabase.from("tasks").select("*").eq("event_id",id).eq("group_id",group.id).order("due_date").order("created_at"),
     supabase.from("procurement_items").select("*").eq("event_id",id).eq("group_id",group.id).order("created_at"),
+    supabase.from("budget_categories").select("*").eq("event_id",id).eq("group_id",group.id).order("name"),
+    supabase.from("transactions").select("*").eq("event_id",id).eq("group_id",group.id).order("trx_date",{ascending:false}).order("created_at",{ascending:false}),
   ]);
   if (!event) notFound();
   const memberById = new Map((members ?? []).map(m => [m.id,m]));
@@ -42,6 +46,7 @@ export default async function EventDetailPage({ params }) {
     <ScheduleSection eventId={id} eventStartDate={event.start_date} schedule={schedule ?? []} members={members ?? []}/>
     <TaskSection eventId={id} tasks={tasks ?? []} members={members ?? []}/>
     <ProcurementSection eventId={id} items={procurementItems ?? []} members={members ?? []}/>
+    <FinanceSection eventId={id} targetBudget={event.target_budget} categories={budgetCategories ?? []} transactions={transactions ?? []} members={members ?? []} financeError={query?.finance_error ?? ""}/>
     <form action={deleteEvent}><input type="hidden" name="id" value={id}/><ConfirmDeleteButton message="Hapus event ini? Rundown, tugas, transaksi, dan susunan panitia terkait dapat ikut terhapus.">Hapus event</ConfirmDeleteButton></form>
   </div>;
 }
