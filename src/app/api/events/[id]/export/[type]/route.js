@@ -43,12 +43,12 @@ const exports = {
 
 function csvCell(value) {
   let text = value == null ? "" : String(value);
-  if (/^[\\s]*[=+@]/.test(text) || /^[\\s]*-/.test(text)) text = "'" + text;
+  if (/^[\s]*[=+@]/.test(text) || /^[\s]*-/.test(text)) text = "'" + text;
   return '"' + text.replace(/"/g, '""') + '"';
 }
 
 function safeFilename(value) {
-  return String(value || "event").normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "").replace(/[^a-zA-Z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "event";
+  return String(value || "event").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "event";
 }
 
 export async function GET(_request, { params }) {
@@ -68,7 +68,7 @@ export async function GET(_request, { params }) {
   }
 
   const rows = [config.headers, ...(data ?? []).map(config.map)];
-  const csv = "\\uFEFF" + rows.map(row => row.map(csvCell).join(",")).join("\\r\\n");
+  const csv = "\uFEFF" + rows.map(row => row.map(csvCell).join(",")).join("\r\n");
   const filename = safeFilename(event.name) + "-" + config.filename + ".csv";
   return new Response(csv, {
     headers: {
