@@ -8,24 +8,31 @@ create unique index if not exists members_auth_user_id_uidx
   on public.members (auth_user_id) where auth_user_id is not null;
 comment on column public.members.auth_user_id is
   'Optional Supabase Auth account linked to this Panitia member. NULL keeps legacy/non-login members unchanged.';
+create or replace function public.is_group_member(p_group_id uuid)
+returns boolean language sql stable security definer
+set search_path = pg_catalog, public
+as $
+  select exists (select 1 from public.members m
+    where m.group_id = p_group_id and m.auth_user_id = (select auth.uid()));
+$;
 create or replace function public.is_event_member(p_event_id uuid)
 returns boolean language sql stable security definer
 set search_path = pg_catalog, public
-as $$
+as $
   select exists (select 1 from public.event_members em
     join public.members m on m.id = em.member_id and m.group_id = em.group_id
     where em.event_id = p_event_id and m.auth_user_id = (select auth.uid()));
-$$;
+$;
+revoke all on function public.is_group_member(uuid) from public, anon;
 revoke all on function public.is_event_member(uuid) from public, anon;
+grant execute on function public.is_group_member(uuid) to authenticated;
 grant execute on function public.is_event_member(uuid) to authenticated;
 drop policy if exists groups_panitia_read on public.groups;
 create policy groups_panitia_read on public.groups for select to authenticated
-using (exists (select 1 from public.members m
-  where m.group_id = groups.id and m.auth_user_id = (select auth.uid())));
+using (public.is_group_member(id));
 drop policy if exists members_panitia_read on public.members;
 create policy members_panitia_read on public.members for select to authenticated
-using (exists (select 1 from public.members self
-  where self.group_id = members.group_id and self.auth_user_id = (select auth.uid())));
+using (public.is_group_member(group_id));
 drop policy if exists events_panitia_read on public.events;
 create policy events_panitia_read on public.events for select to authenticated
 using (public.is_event_member(id));
