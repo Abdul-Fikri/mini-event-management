@@ -33,6 +33,8 @@ Tanggal hari ini untuk aturan event menggunakan zona waktu **Asia/Jakarta (WIB)*
 
 Batasan tanggal pada event diterapkan melalui atribut `min` pada form sebagai bantuan pengguna dan validasi Zod di Server Action sebagai aturan otoritatif. Data lama tidak perlu diubah dan tidak memerlukan migration database.
 
+## 2. Tech stack aktual
+
 | Area | Teknologi |
 |---|---|
 | Web framework | Next.js 16.4.5, App Router |
