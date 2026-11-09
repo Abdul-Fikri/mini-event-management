@@ -11,7 +11,7 @@ const currency = value => new Intl.NumberFormat("id-ID", { style: "currency", cu
 const statusLabel = { draft: "Draf", planned: "Direncanakan", ongoing: "Berlangsung", completed: "Selesai", cancelled: "Dibatalkan" };
 
 function StatCard({ label, value, detail, href, tone = "default" }) {
-  return <Link href={href} className="rounded-lg border border-zinc-200 bg-white p-4 transition hover:border-indigo-300 hover:shadow-sm">
+  return <Link prefetch={false} href={href} className="rounded-lg border border-zinc-200 bg-white p-4 transition hover:border-indigo-300 hover:shadow-sm">
     <p className="text-sm text-zinc-600">{label}</p>
     <p className={"mt-2 text-2xl font-semibold tabular-nums " + (tone === "warning" ? "text-amber-700" : tone === "success" ? "text-emerald-700" : "")}>{value}</p>
     <p className="mt-1 text-xs text-zinc-500">{detail}</p>
@@ -19,7 +19,7 @@ function StatCard({ label, value, detail, href, tone = "default" }) {
 }
 
 function SectionHeading({ title, href, linkLabel }) {
-  return <div className="flex items-center justify-between gap-3"><h2 className="font-semibold">{title}</h2><Link href={href} className="text-sm font-medium text-indigo-700 hover:text-indigo-900">{linkLabel} →</Link></div>;
+  return <div className="flex items-center justify-between gap-3"><h2 className="font-semibold">{title}</h2><Link prefetch={false} href={href} className="text-sm font-medium text-indigo-700 hover:text-indigo-900">{linkLabel} →</Link></div>;
 }
 
 export default async function DashboardPage() {
@@ -68,7 +68,7 @@ export default async function DashboardPage() {
   return <div className="space-y-6">
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div><p className="text-sm text-zinc-500">Ringkasan aktivitas grup</p><h1 className="text-2xl font-semibold">Dashboard</h1><p className="mt-1 text-sm text-zinc-600">Halo, Owner. Berikut gambaran kondisi event dan pekerjaan grup saat ini.</p></div>
-      <Link href="/events/new" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">+ Buat event</Link>
+      <Link prefetch={false} href="/events/new" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">+ Buat event</Link>
     </div>
 
     <section aria-labelledby="group-heading" className="rounded-lg border border-zinc-200 bg-white p-5">
@@ -95,14 +95,14 @@ export default async function DashboardPage() {
 
     <section className="rounded-lg border border-zinc-200 bg-white p-5">
       <SectionHeading title="Event mendatang" href="/events" linkLabel="Semua event"/>
-      {upcoming.length ? <div className="mt-3 divide-y divide-zinc-100">{upcoming.map(event => <Link key={event.id} href={"/events/" + event.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-1 last:pb-1 hover:text-indigo-800"><div className="min-w-0"><p className="font-medium">{event.name}</p><p className="mt-1 text-xs text-zinc-500">{event.location || "Lokasi belum ditentukan"} · {statusLabel[event.status]}</p></div><div className="shrink-0 text-right"><p className="text-sm font-medium">{dateFormatter.format(new Date(event.start_date + "T00:00:00"))}</p>{event.end_date && event.end_date !== event.start_date ? <p className="text-xs text-zinc-500">s.d. {dateFormatter.format(new Date(event.end_date + "T00:00:00"))}</p> : null}</div></Link>)}</div> : <div className="mt-3 rounded-md border border-dashed border-zinc-300 p-5 text-center"><p className="text-sm text-zinc-600">{eventCount ? "Tidak ada event mendatang yang aktif." : "Belum ada event di grup ini."}</p><Link href="/events/new" className="mt-2 inline-block text-sm font-medium text-indigo-700">Buat event →</Link></div>}
+      {upcoming.length ? <div className="mt-3 divide-y divide-zinc-100">{upcoming.map(event => <Link prefetch={false} key={event.id} href={"/events/" + event.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-1 last:pb-1 hover:text-indigo-800"><div className="min-w-0"><p className="font-medium">{event.name}</p><p className="mt-1 text-xs text-zinc-500">{event.location || "Lokasi belum ditentukan"} · {statusLabel[event.status]}</p></div><div className="shrink-0 text-right"><p className="text-sm font-medium">{dateFormatter.format(new Date(event.start_date + "T00:00:00"))}</p>{event.end_date && event.end_date !== event.start_date ? <p className="text-xs text-zinc-500">s.d. {dateFormatter.format(new Date(event.end_date + "T00:00:00"))}</p> : null}</div></Link>)}</div> : <div className="mt-3 rounded-md border border-dashed border-zinc-300 p-5 text-center"><p className="text-sm text-zinc-600">{eventCount ? "Tidak ada event mendatang yang aktif." : "Belum ada event di grup ini."}</p><Link prefetch={false} href="/events/new" className="mt-2 inline-block text-sm font-medium text-indigo-700">Buat event →</Link></div>}
     </section>
 
     <section className="grid gap-4 lg:grid-cols-2">
       <div className="rounded-lg border border-zinc-200 bg-white p-5">
         <SectionHeading title="Pantauan tugas" href="/events" linkLabel="Kelola tugas"/>
         <div className="mt-4 grid grid-cols-2 gap-3"><div className="rounded-md bg-zinc-50 p-3"><p className="text-xs text-zinc-500">Belum selesai</p><p className="mt-1 text-2xl font-semibold">{openTasks.length}</p></div><div className="rounded-md bg-amber-50 p-3"><p className="text-xs text-amber-800">Terlambat</p><p className="mt-1 text-2xl font-semibold text-amber-800">{overdueTasks.length}</p></div></div>
-        {overdueTasks.length ? <div className="mt-3 space-y-2">{overdueTasks.slice(0, 3).map(task => { const event = eventRows.find(item => item.id === task.event_id); return <Link key={task.id} href={"/events/" + task.event_id} className="block rounded-md border border-amber-100 p-3 hover:bg-amber-50"><p className="text-sm font-medium">{task.title}</p><p className="mt-1 text-xs text-zinc-500">{event?.name ?? "Event"} · Deadline {dateFormatter.format(new Date(task.due_date + "T00:00:00"))}</p></Link>; })}</div> : <p className="mt-3 text-sm text-zinc-500">Tidak ada tugas yang melewati deadline. Mantap!</p>}
+        {overdueTasks.length ? <div className="mt-3 space-y-2">{overdueTasks.slice(0, 3).map(task => { const event = eventRows.find(item => item.id === task.event_id); return <Link prefetch={false} key={task.id} href={"/events/" + task.event_id} className="block rounded-md border border-amber-100 p-3 hover:bg-amber-50"><p className="text-sm font-medium">{task.title}</p><p className="mt-1 text-xs text-zinc-500">{event?.name ?? "Event"} · Deadline {dateFormatter.format(new Date(task.due_date + "T00:00:00"))}</p></Link>; })}</div> : <p className="mt-3 text-sm text-zinc-500">Tidak ada tugas yang melewati deadline. Mantap!</p>}
       </div>
       <div className="rounded-lg border border-zinc-200 bg-white p-5">
         <SectionHeading title="Status event" href="/events" linkLabel="Lihat daftar"/>
