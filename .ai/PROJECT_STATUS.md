@@ -29,7 +29,7 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 - When editing an existing event, stored past dates may remain unchanged. Any changed start/end date must be today or later; the Server Action loads the stored dates before validating.
 - Rundown dates remain inside the event range and may be historical. Task deadlines and finance transaction dates may also be historical.
 - No database migration or historical data rewrite is included.
-- Vercel status check was pending at the last review. The assistant did not run `npm run lint`, `npm run build`, or browser E2E tests.
+- The Vercel status check succeeded for the latest PR head. This is a PR deployment check, not confirmation that production was deployed. The assistant did not run `npm run lint`, `npm run build`, or browser E2E tests.
 
 ## Group logo upload
 
