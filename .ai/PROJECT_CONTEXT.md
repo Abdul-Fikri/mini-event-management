@@ -1,0 +1,65 @@
+# Project Context — Mini Event Management System
+
+Last reviewed: 9 November 2026
+
+Repository: https://github.com/Abdul-Fikri/mini-event-management
+Production URL reported by owner: https://mini-event-management-gules.vercel.app
+
+## Product
+A web application for small organizations and event committees to manage members, events, committee assignments, rundown, tasks, procurement, finances, invitations, and exports.
+
+## Stack
+- Next.js 16.4.5 App Router, React 19.3.0, JavaScript.
+- Tailwind CSS 4.
+- Supabase Auth, PostgreSQL, and Storage.
+- Supabase JS Client and `@supabase/ssr`; no Prisma/Drizzle ORM was found.
+- Zod 4 and lucide-react.
+- Vercel for hosting; deployment is managed by the owner.
+
+## Repository structure
+- Application root: repository root.
+- Source: `src/`.
+- Routes/layouts: `src/app/`.
+- Server Actions: `src/actions/`.
+- UI: `src/components/`.
+- Auth, Supabase clients, validation, helpers: `src/lib/`.
+- Next.js 16 Proxy convention: `src/proxy.js`.
+- Initial schema: `supabase/schema.sql`.
+- Incremental SQL: `supabase/migrations/`.
+- Public product/engineering documentation: `docs/`.
+- Shared AI context: `.ai/` and root `AGENTS.md`.
+
+Do not recreate the deleted nested legacy `event-management/` directory.
+
+## Domain model
+- `groups`: Owner organization/group.
+- `members`: group-wide member directory.
+- `events`: events belonging to a group.
+- `event_members`: members assigned to one specific event.
+
+Being in `members` does not automatically make someone a committee member for every event. Rundown PIC, task assignee, and procurement PIC must be restricted to the current event's `event_members`, in both UI and server-side validation.
+
+## Roles and known behavior
+- Owner authenticates with Supabase Auth and manages the group, members, events, committee, rundown, tasks, procurement, finance, exports, and settings.
+- Panitia accounts are linked through `members.auth_user_id` and should only access assigned events.
+- The reviewed Panitia workspace is read-only. Do not claim Panitia can edit tasks or update task status unless that behavior is implemented and verified.
+
+## Rendering and architecture evidence
+- Public `/contoh-event`: `src/app/(public)/contoh-event/page.js` uses `dynamic = "force-static"`.
+- Private `/dashboard`: `src/app/(app)/dashboard/page.js` uses `dynamic = "force-dynamic"` because data is user/session-specific.
+- Event details use dynamic `[id]` routes under `src/app/(app)/events/[id]/`.
+- Context API provider: `src/components/layout/AppUIContext.js`.
+- Root layout uses `next/font` (Geist and Geist Mono); `next/image` is used for app imagery including group logos.
+- Next.js 16 uses `src/proxy.js` as the Proxy convention; do not blindly add legacy `middleware.js`.
+
+## Features found in source
+Authentication/onboarding, dashboard, group member CRUD, event CRUD, committee assignments, rundown CRUD, task CRUD, procurement CRUD, finance categories and transactions, CSV exports, invitation token flow, Panitia read-only workspace, group logo upload/removal, and public example-event catalog.
+
+## Known caveats
+- CSV `members` export is group-wide, not limited to event-assigned members; confirm product intent before changing.
+- Removing a committee member who already owns work items requires a product/data-integrity decision.
+- Invitation claiming depends on the relevant migration/RPC existing in the target database.
+- SQL files in Git do not prove production migrations have been applied.
+- The current UI and code observations are not a substitute for end-to-end testing.
+
+Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEMENTATION_STATUS.md`, and `docs/IMPLEMENTASI-RUBRIK-UAS.md` for the public project documentation.
