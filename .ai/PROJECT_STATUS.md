@@ -19,6 +19,7 @@ Last updated: 9 November 2026 — reviewed after PR #16
 - PR #16 (Owner-authorized server-side group-logo upload/removal): merged on 9 November 2026.
 - GitHub PR listing showed PRs #1–#16 closed/merged at review time; recheck live state before relying on this note.
 - The PR #16 merge is confirmed. Vercel deployment of that merge was not independently inspected.
+- PR #17 (documentation and AI-context refresh after PR #16): open, docs-only, targeting `main`; mergeability is clean and the Vercel check reports success. Do not assume it is merged.
 
 ## Group logo upload
 
