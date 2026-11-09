@@ -1,0 +1,21 @@
+# Database and Supabase Rules
+
+- Database: Supabase PostgreSQL.
+- Authentication: Supabase Auth.
+- Storage: Supabase Storage.
+- Data access: Supabase JS Client and `@supabase/ssr`; no ORM is currently used.
+- `supabase/schema.sql` is for initial setup on an empty database. Never rerun it against an existing project database.
+- Incremental changes belong in `supabase/migrations/`.
+- Migration files identified during the latest review:
+  - `20261108_owner_panitia_foundation.sql`
+  - `20261109_member_invitations.sql`
+  - `20261110_group_logos.sql`
+- Verify actual remote migration history and schema before assuming a migration was applied.
+- Owner prefers reviewing and manually applying SQL in Supabase SQL Editor unless another workflow is agreed.
+- Never connect to or mutate production, run production migrations, or change production data without explicit approval.
+- Do not disable RLS or relax policies as a debugging shortcut.
+- `SUPABASE_SERVICE_ROLE_KEY` and `sb_secret_...` keys must remain server-only. Never add `NEXT_PUBLIC_` to secrets.
+- `NEXT_PUBLIC_SUPABASE_URL` and the publishable key are client configuration, but do not copy actual environment values into docs, commits, screenshots, or chat.
+- Never log raw invitation tokens, cookies, or credentials.
+- A migration file existing in Git is not evidence it has been applied to the production database.
+- After a migration, record the environment, migration name, and verification result without recording secrets.
