@@ -16,7 +16,7 @@ Record significant project changes, decisions, pull requests, and verification. 
 - PR #12–#15: iterative group-logo bucket/session/RLS troubleshooting — merged.
 - PR #16: final group-logo Storage upload/removal moved to Owner-authorized server actions with a server-only Supabase admin client — merged to `main` at `a45c594346dcedc4c993a5f0bea17543994aa6da`.
 - Owner confirmed group-logo upload now succeeds after PR #16. Post-fix removal/cleanup still needs a separate UAT confirmation.
-- Documentation follow-up: refresh README, Project Handbook, Database & Migrations, Implementation Status, and this shared AI context to match the merged source.
+- PR #17: refresh README, Project Handbook, Database & Migrations, Implementation Status, and shared AI context after PR #16 — open, docs-only, mergeability clean; Vercel check success.
 
 ## Maintenance
 Update this file after substantial work. Keep public product/engineering documentation in `docs/` and AI-specific working context in `.ai/`. Record verification accurately and distinguish owner-reported results from independently run checks.
