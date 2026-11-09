@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 9 November 2026 — reviewed after PR #16
+Last updated: 9 November 2026 — PR #18 date validation in review
 
 ## Owner-reported verification
 - App is deployed on Vercel: https://mini-event-management-gules.vercel.app
@@ -11,7 +11,7 @@ Last updated: 9 November 2026 — reviewed after PR #16
 - Earlier observations: Dashboard Performance 96; Event/Panitia route Performance 91. Do not compare scores without matching route and test conditions.
 
 ## GitHub state at this review
-- Current `main` head: `a45c594346dcedc4c993a5f0bea17543994aa6da` — merge commit for PR #16.
+- Current `main` head: `a95187e7fea0e3f6cba6808e0783d3295e666254` — merge commit for PR #17.
 - PR #8 (Lottie route-level loading animation): merged.
 - PR #9 (global loading feedback): merged.
 - PR #10 (public project documentation and UAS rubric mapping): merged.
@@ -19,7 +19,17 @@ Last updated: 9 November 2026 — reviewed after PR #16
 - PR #16 (Owner-authorized server-side group-logo upload/removal): merged on 9 November 2026.
 - GitHub PR listing showed PRs #1–#16 closed/merged at review time; recheck live state before relying on this note.
 - The PR #16 merge is confirmed. Vercel deployment of that merge was not independently inspected.
-- PR #17 (documentation and AI-context refresh after PR #16): open, docs-only, targeting `main`; mergeability is clean and the Vercel check reports success. Do not assume it is merged.
+- PR #17 (documentation and AI-context refresh after PR #16): merged to `main` on 9 November 2026.
+
+## Event date validation — PR #18
+
+- PR #18 is open: https://github.com/Abdul-Fikri/mini-event-management/pull/18
+- Working branch: `fix/event-date-validation`, based on the latest `main` head above.
+- New events require a start date on or after today in Asia/Jakarta; an optional end date must also be today or later and cannot precede the start date.
+- When editing an existing event, stored past dates may remain unchanged. Any changed start/end date must be today or later; the Server Action loads the stored dates before validating.
+- Rundown dates remain inside the event range and may be historical. Task deadlines and finance transaction dates may also be historical.
+- No database migration or historical data rewrite is included.
+- Vercel status check was pending at the last review. The assistant did not run `npm run lint`, `npm run build`, or browser E2E tests.
 
 ## Group logo upload
 
