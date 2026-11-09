@@ -17,7 +17,7 @@ Source branch reviewed: main at merge commit a95187e7fea0e3f6cba6808e0783d3295e6
 | Events | Create/read/update/delete events | Dynamic route `/events/[id]`; new or changed dates must be today or later (Asia/Jakarta), while unchanged historical dates remain editable |
 | Event committee | Add/remove member assignment; division, position, responsibility | Uses \`event_members\` |
 | Rundown | Create/update/delete schedule items | PIC restricted to current event roster |
-| Tasks | Create/update/delete tasks | Assignee restricted to current event roster; past deadlines remain allowed for overdue tracking |
+| Tasks | Create/update/delete tasks | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
 | Procurement | Create/update/delete procurement items | PIC restricted to current event roster |
 | Finance | Budget categories and income/expense transactions | Owner workflow; historical transaction dates remain allowed |
 | CSV export | Committee, schedule, tasks, procurement, finance, members | \`members\` export is group-wide |
