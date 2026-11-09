@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import {
   createContext,
   useCallback,
@@ -9,7 +10,23 @@ import {
   useState,
 } from "react";
 import { usePathname } from "next/navigation";
-import LottieLoader from "@/components/ui/LottieLoader";
+
+const LottieLoader = dynamic(
+  () => import("@/components/ui/LottieLoader"),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        role="status"
+        aria-live="polite"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-sm"
+      >
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-zinc-200 border-t-indigo-600" />
+        <span className="sr-only">Sedang memuat...</span>
+      </div>
+    ),
+  },
+);
 
 const AppLoadingContext = createContext({
   setFormPending: () => {},
