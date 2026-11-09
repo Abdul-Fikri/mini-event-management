@@ -96,7 +96,7 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
 ## 7. Validation status
 
-The baseline `main` source and documentation were reviewed through GitHub at merge commit `a95187e7fea0e3f6cba6808e0783d3295e666254` (PR #17). The `fix/event-date-validation` branch adds the date rules described above. This change has not yet been independently run through the owner's local environment, browser E2E, `npm run lint`, or `npm run build`; do not treat source review as proof of runtime correctness.
+The baseline `main` source and documentation were reviewed through GitHub at merge commit `a95187e7fea0e3f6cba6808e0783d3295e666254` (PR #17). PR #18 on branch `fix/event-date-validation` adds the date rules described above and is open for review. Its Vercel check was pending at the last status check. The assistant has not run the owner's local environment, browser E2E, `npm run lint`, or `npm run build`; do not treat source review as proof of runtime correctness.
 
 Use this checklist for future UAT:
 
