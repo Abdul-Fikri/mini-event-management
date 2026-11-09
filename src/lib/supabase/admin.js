@@ -1,3 +1,4 @@
+import "server-only";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 // Hanya untuk kode server. Jangan import file ini dari Client Component.
