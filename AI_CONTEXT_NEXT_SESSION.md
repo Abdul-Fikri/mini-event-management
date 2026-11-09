@@ -56,3 +56,10 @@ Commit `d79f368a34c67c4d875a50c69c1c85fd5dce9d17` updates `src/components/settin
 - Initial production Lighthouse screenshot showed Performance 82, Accessibility 100, Best Practices 100, SEO 100. The detailed metric values were not visible, so do not state a confirmed root cause or claim a score improvement.
 - Branch `perf/dashboard-data-queries` reduces Dashboard Supabase payload: removes unused event/task columns, fetches only unfinished tasks and pending procurement rows, and restores active `force-dynamic` and Dashboard metadata exports that were accidentally escaped into a comment.
 - Changes are recorded in `docs/IMPLEMENTATION_STATUS_2026-11-08.md`. Lint, production build, and post-deploy Lighthouse have not yet been verified.
+
+
+## Lighthouse follow-up (9 Nov 2026)
+- After PR #3, the user reported Lighthouse: Performance 84, FCP 0.6 s, LCP 0.6 s, TBT 270 ms, CLS 0, Speed Index 2.3 s. Diagnostics: unused JS estimated 501 KiB, minify JS 13 KiB, legacy JS 14 KiB, 5 long tasks; render-blocking requests and LCP breakdown also flagged. bfcache restoration failed for 2 reasons.
+- Branch `perf/dashboard-route-prefetch` disables automatic Next Link prefetch on all 6 Dashboard links and the 1 primary navigation link to test whether preloading unused destination routes contributes to unused JS.
+- This is a measured hypothesis, not a confirmed cause. Ask to expand the "Reduce unused JavaScript" Lighthouse insight or inspect Network to identify actual scripts if the savings remain.
+- Do not weaken private dashboard cache/auth headers to force bfcache. Inspect the exact two failure reasons first.

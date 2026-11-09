@@ -158,3 +158,24 @@ Status verifikasi:
 - Belum menjalankan `npm run lint`, `npm run build`, atau Lighthouse ulang.
 - Belum mengukur dampak numerik perubahan pada Performance score.
 - PR perlu di-merge dan production deployment selesai sebelum pengukuran ulang di domain production.
+
+
+## 9. Optimasi prefetch navigasi Dashboard (9 November 2026)
+
+Hasil Lighthouse terbaru setelah PR #3:
+- Performance 84
+- FCP 0,6 detik; LCP 0,6 detik
+- Total Blocking Time 270 ms
+- CLS 0; Speed Index 2,3 detik
+- Diagnostics menampilkan estimasi pengurangan 501 KiB untuk unused JavaScript, 13 KiB untuk minifikasi JavaScript, 14 KiB untuk legacy JavaScript, dan 5 long tasks.
+
+Perubahan eksperimental pada branch `perf/dashboard-route-prefetch`:
+- Menambahkan `prefetch={false}` ke seluruh Link di Dashboard (6 link) dan navigasi utama Owner (1 link).
+- Tujuan: mencegah route yang belum dikunjungi diprefetch otomatis saat Dashboard dibuka, sehingga mengurangi JavaScript/RSC route lain yang diunduh sebelum pengguna membutuhkannya.
+- Trade-off: navigasi pertama ke halaman tersebut baru mulai memuat saat link diklik, bukan dipercepat oleh prefetch.
+
+Catatan: ini hipotesis optimasi yang perlu diuji dengan Lighthouse dan Network panel setelah deploy. Estimasi 501 KiB belum dibuktikan berasal dari route prefetch; perlu membuka detail insight "Reduce unused JavaScript" untuk melihat URL/script penyumbang terbesar. Jangan mengklaim penghematan tertentu sebelum pengukuran ulang.
+
+Temuan bfcache:
+- Lighthouse melaporkan halaman tidak dapat dipulihkan dari back/forward cache dengan 2 alasan.
+- Dashboard adalah halaman privat yang memakai sesi/auth dan data pengguna; jangan mengubah cache-control menjadi publik atau mengorbankan isolasi data hanya demi bfcache. Periksa alasan spesifik pada panel Lighthouse sebelum mempertimbangkan perubahan.
