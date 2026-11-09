@@ -2,7 +2,9 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGroup } from "@/lib/auth";
 
-// Dashboard privat: selalu dirender dinamis agar data Supabase per pengguna tidak di-cache lintas sesi.\nexport const dynamic = "force-dynamic";\nexport const metadata = { title: "Dashboard" };
+// Dashboard privat: selalu dirender dinamis agar data Supabase per pengguna tidak di-cache lintas sesi.
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Dashboard" };
 
 const dateFormatter = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" });
 const currency = value => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value ?? 0);
@@ -33,12 +35,12 @@ export default async function DashboardPage() {
     { data: categories, error: categoriesError },
     { data: procurement, error: procurementError },
   ] = await Promise.all([
-    supabase.from("events").select("id,name,start_date,end_date,status,location,target_budget").eq("group_id", group.id).order("start_date", { ascending: true }),
+    supabase.from("events").select("id,name,start_date,end_date,status,location").eq("group_id", group.id).order("start_date", { ascending: true }),
     supabase.from("members").select("id", { count: "exact", head: true }).eq("group_id", group.id),
-    supabase.from("tasks").select("id,event_id,title,due_date,status,priority").eq("group_id", group.id),
+    supabase.from("tasks").select("id,event_id,title,due_date,status").eq("group_id", group.id).neq("status", "done"),
     supabase.from("transactions").select("type,amount").eq("group_id", group.id),
     supabase.from("budget_categories").select("planned_amount").eq("group_id", group.id),
-    supabase.from("procurement_items").select("id,status").eq("group_id", group.id),
+    supabase.from("procurement_items").select("id,status").eq("group_id", group.id).in("status", ["not_started", "requested"]),
   ]);
 
   const errors = [eventsError, membersError, tasksError, transactionsError, categoriesError, procurementError].filter(Boolean);
