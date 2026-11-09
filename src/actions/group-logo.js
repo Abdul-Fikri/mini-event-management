@@ -61,8 +61,33 @@ export async function saveGroupLogo(_previousState, formData) {
     upsert: false,
   });
   if (uploadError) {
+    const detail = uploadError.message?.toLowerCase() ?? "";
     console.error("[saveGroupLogo] upload failed:", uploadError.message);
-    return { ok: false, message: "Upload logo gagal. Pastikan bucket dan policy Storage sudah aktif." };
+
+    if (detail.includes("bucket") && detail.includes("not found")) {
+      return {
+        ok: false,
+        message: "Bucket group-logos belum tersedia. Migration Storage perlu diterapkan.",
+      };
+    }
+
+    if (
+      detail.includes("row-level security") ||
+      detail.includes("violates") ||
+      detail.includes("unauthorized") ||
+      detail.includes("permission denied") ||
+      detail.includes("forbidden")
+    ) {
+      return {
+        ok: false,
+        message: "Upload ditolak oleh policy Storage. Periksa izin Owner pada bucket group-logos.",
+      };
+    }
+
+    return {
+      ok: false,
+      message: "Upload logo gagal karena konfigurasi Storage. Periksa log server untuk detail.",
+    };
   }
 
   const { data: publicData } = supabase.storage.from(BUCKET).getPublicUrl(path);
