@@ -51,8 +51,6 @@ Buka http://localhost:3000.
 3. [Database & Migrations](docs/DATABASE_AND_MIGRATIONS.md) — schema dan prosedur Supabase.
 4. [Implementation Status](docs/IMPLEMENTATION_STATUS.md) — status implementasi, batasan, dan checklist.
 5. [Resources](docs/RESOURCES.md) — link project dan referensi resmi.
-6. [AI Context](AI_CONTEXT_NEXT_SESSION.md) — ringkasan sesi berikutnya.
-7. [Agent instructions](AGENTS.md) — aturan yang harus dibaca coding agent.
 
 ## Repository structure
 
