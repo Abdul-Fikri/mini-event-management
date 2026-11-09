@@ -7,7 +7,6 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 const BUCKET = "group-logos";
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
-const UUID_PATTERN = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 const TYPES = {
   "image/jpeg": {
     ext: "jpg",
@@ -82,7 +81,7 @@ export async function uploadGroupLogo(formData) {
     return { ok: false, message: "Isi file tidak sesuai dengan format gambar." };
   }
 
-  const { client: admin, error: adminError } = getAdminClient();
+  const { client: admin } = getAdminClient();
   if (!admin) {
     return {
       ok: false,
