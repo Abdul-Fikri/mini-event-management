@@ -44,7 +44,7 @@ Source branch reviewed: main at merge commit a95187e7fea0e3f6cba6808e0783d3295e6
 - New events require a start date on or after today in Asia/Jakarta. An optional end date must also be on or after today and cannot precede the start date.
 - When editing an existing event, a past start/end date may remain unchanged. Any changed date must be today or later. The Server Action loads the stored values before applying this comparison.
 - Rundown dates remain constrained to the event's inclusive start/end range. Past dates within an existing event are allowed for historical rundown records.
-- Task deadlines may be in the past so overdue work can be represented.
+- Task deadlines are optional and fully flexible: create/update accepts past, current, or future dates; no minimum/maximum date rule is applied.
 - Finance transaction dates may be in the past for historical bookkeeping.
 - Procurement currently has no user-entered date field affected by this rule.
 - The event form's HTML `min` attributes improve the input experience; Zod validation in the Server Action remains authoritative. No database migration or historical data rewrite is required.
