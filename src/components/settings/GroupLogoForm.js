@@ -3,47 +3,15 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  prepareGroupLogoUpload,
-  saveGroupLogoPath,
+  uploadGroupLogo,
   removeGroupLogo,
 } from "@/actions/group-logo";
 import { Button } from "@/components/ui/Button";
-import { createClient } from "@/lib/supabase/client";
 
-const BUCKET = "group-logos";
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
-const TYPES = {
-  "image/jpeg": {
-    ext: "jpg",
-    signature: (bytes) =>
-      bytes.length >= 3 &&
-      bytes[0] === 0xff &&
-      bytes[1] === 0xd8 &&
-      bytes[2] === 0xff,
-  },
-  "image/png": {
-    ext: "png",
-    signature: (bytes) =>
-      bytes.length >= 8 &&
-      bytes[0] === 0x89 &&
-      bytes[1] === 0x50 &&
-      bytes[2] === 0x4e &&
-      bytes[3] === 0x47 &&
-      bytes[4] === 0x0d &&
-      bytes[5] === 0x0a &&
-      bytes[6] === 0x1a &&
-      bytes[7] === 0x0a,
-  },
-  "image/webp": {
-    ext: "webp",
-    signature: (bytes) =>
-      bytes.length >= 12 &&
-      String.fromCharCode(...bytes.slice(0, 4)) === "RIFF" &&
-      String.fromCharCode(...bytes.slice(8, 12)) === "WEBP",
-  },
-};
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
-export default function GroupLogoForm({ logoUrl, groupName, groupId }) {
+export default function GroupLogoForm({ logoUrl, groupName }) {
   const router = useRouter();
   const inputRef = useRef(null);
   const [pending, setPending] = useState(false);
@@ -58,14 +26,11 @@ export default function GroupLogoForm({ logoUrl, groupName, groupId }) {
       setMessage("Pilih file gambar terlebih dahulu.");
       return;
     }
-
     if (file.size > MAX_FILE_SIZE) {
       setMessage("Ukuran logo maksimal 2 MB.");
       return;
     }
-
-    const type = TYPES[file.type];
-    if (!type) {
+    if (!ALLOWED_TYPES.includes(file.type)) {
       setMessage("Format logo harus JPG, PNG, atau WebP.");
       return;
     }
@@ -73,94 +38,19 @@ export default function GroupLogoForm({ logoUrl, groupName, groupId }) {
     setPending(true);
     setMessage("");
 
-    let uploadedPath = null;
-    let supabase;
-
     try {
-      const bytes = new Uint8Array(await file.arrayBuffer());
-      if (!type.signature(bytes)) {
-        setMessage("Isi file tidak sesuai dengan format gambar.");
-        return;
+      const formData = new FormData();
+      formData.set("logo", file);
+
+      const result = await uploadGroupLogo(formData);
+      setMessage(result?.message || "Gagal mengunggah logo grup.");
+
+      if (result?.ok) {
+        inputRef.current.value = "";
+        router.refresh();
       }
-
-      const validationForm = new FormData();
-      validationForm.set("logo", file);
-      const prepared = await prepareGroupLogoUpload(validationForm);
-      if (!prepared?.ok) {
-        setMessage(prepared?.message || "File logo tidak lolos validasi.");
-        return;
-      }
-
-      // Buat client setelah Server Action selesai agar pembacaan cookie
-      // menggunakan session terbaru yang mungkin baru saja di-refresh.
-      supabase = createClient();
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      if (userError || !userData?.user) {
-        setMessage("Sesi Supabase di browser tidak terbaca. Muat ulang halaman lalu login kembali.");
-        return;
-      }
-      if (userData.user.id !== prepared.ownerId) {
-        setMessage("Sesi Supabase browser tidak cocok dengan akun Owner grup. Keluar lalu login kembali.");
-        return;
-      }
-
-      uploadedPath = prepared.path;
-
-      // Upload dilakukan di browser agar Supabase Storage memakai session
-      // pengguna yang sudah diverifikasi di atas.
-      const { error: uploadError } = await supabase.storage
-        .from(BUCKET)
-        .upload(uploadedPath, file, {
-          contentType: file.type,
-          cacheControl: "3600",
-          upsert: false,
-        });
-
-      if (uploadError) {
-        console.error("[GroupLogoForm] browser upload failed:", {
-          message: uploadError.message,
-          statusCode: uploadError.statusCode ?? null,
-        });
-        setMessage(`Upload Storage gagal: ${uploadError.message}`);
-        return;
-      }
-
-      const result = await saveGroupLogoPath(uploadedPath);
-      if (!result?.ok) {
-        const { error: cleanupError } = await supabase.storage
-          .from(BUCKET)
-          .remove([uploadedPath]);
-        if (cleanupError) {
-          console.error("[GroupLogoForm] orphan upload cleanup failed:", cleanupError.message);
-        }
-        setMessage(result?.message || "Gagal menyimpan logo grup.");
-        return;
-      }
-
-      let successMessage = result.message;
-      if (result.oldPath) {
-        const { error: cleanupError } = await supabase.storage
-          .from(BUCKET)
-          .remove([result.oldPath]);
-        if (cleanupError) {
-          console.error("[GroupLogoForm] old logo cleanup failed:", cleanupError.message);
-          successMessage += " Logo baru tersimpan, tetapi file logo lama belum berhasil dibersihkan.";
-        }
-      }
-
-      setMessage(successMessage);
-      inputRef.current.value = "";
-      router.refresh();
     } catch (error) {
-      console.error("[GroupLogoForm] upload flow failed:", error);
-      if (uploadedPath && supabase) {
-        const { error: cleanupError } = await supabase.storage
-          .from(BUCKET)
-          .remove([uploadedPath]);
-        if (cleanupError) {
-          console.error("[GroupLogoForm] failed upload cleanup failed:", cleanupError.message);
-        }
-      }
+      console.error("[GroupLogoForm] upload failed:", error);
       setMessage("Terjadi kesalahan saat mengunggah logo. Coba lagi.");
     } finally {
       setPending(false);
@@ -175,25 +65,11 @@ export default function GroupLogoForm({ logoUrl, groupName, groupId }) {
 
     try {
       const result = await removeGroupLogo();
-      if (!result?.ok) {
-        setMessage(result?.message || "Logo grup gagal dihapus.");
-        return;
-      }
+      setMessage(result?.message || "Logo grup gagal dihapus.");
 
-      let successMessage = result.message;
-      if (result.oldPath) {
-        const supabase = createClient();
-        const { error } = await supabase.storage.from(BUCKET).remove([result.oldPath]);
-        if (error) {
-          console.error("[GroupLogoForm] logo object cleanup failed:", error.message);
-          successMessage += " File lama belum berhasil dibersihkan dari Storage.";
-        }
-      }
-
-      setMessage(successMessage);
-      router.refresh();
+      if (result?.ok) router.refresh();
     } catch (error) {
-      console.error("[GroupLogoForm] remove flow failed:", error);
+      console.error("[GroupLogoForm] remove failed:", error);
       setMessage("Terjadi kesalahan saat menghapus logo. Coba lagi.");
     } finally {
       setPending(false);

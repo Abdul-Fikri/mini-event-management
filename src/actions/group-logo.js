@@ -3,10 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { requireGroup } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const BUCKET = "group-logos";
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
-const UUID_PATTERN = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 const TYPES = {
   "image/jpeg": {
     ext: "jpg",
@@ -41,21 +41,16 @@ function getOwnedObjectPath(url, groupId, supabaseUrl) {
   }
 }
 
-function isValidOwnedUploadPath(path, groupId) {
-  if (typeof path !== "string") return false;
-
-  const match = path.match(
-    new RegExp(`^(${UUID_PATTERN})/(${UUID_PATTERN})\\.(jpg|png|webp)$`, "i")
-  );
-
-  return Boolean(match && match[1].toLowerCase() === groupId.toLowerCase());
+function getAdminClient() {
+  try {
+    return { client: createAdminClient(), error: null };
+  } catch (error) {
+    console.error("[group-logo] admin storage client unavailable:", error.message);
+    return { client: null, error };
+  }
 }
 
-// Validasi file dan buat object path di server sebelum browser mengunggahnya.
-export async function prepareGroupLogoUpload(formData) {
-  const { owner, group } = await requireGroup();
-  const file = formData.get("logo");
-
+function validateLogoFile(file) {
   if (!(file instanceof File) || file.size === 0) {
     return { ok: false, message: "Pilih file gambar terlebih dahulu." };
   }
@@ -68,36 +63,54 @@ export async function prepareGroupLogoUpload(formData) {
     return { ok: false, message: "Format logo harus JPG, PNG, atau WebP." };
   }
 
+  return { ok: true, type };
+}
+
+// Upload dilakukan di server setelah requireGroup memastikan pengguna adalah Owner.
+// Service key hanya melewati RLS pada operasi Storage ini; akses grup tetap diverifikasi
+// menggunakan session pengguna dan metadata groups tetap ditulis dengan client terautentikasi.
+export async function uploadGroupLogo(formData) {
+  const { owner, group } = await requireGroup();
+  const file = formData.get("logo");
+  const validation = validateLogoFile(file);
+
+  if (!validation.ok) return validation;
+
   const bytes = new Uint8Array(await file.arrayBuffer());
-  if (!type.signature(bytes)) {
+  if (!validation.type.signature(bytes)) {
     return { ok: false, message: "Isi file tidak sesuai dengan format gambar." };
   }
 
-  return {
-    ok: true,
-    path: `${group.id}/${crypto.randomUUID()}.${type.ext}`,
-    ownerId: owner.id,
-  };
-}
+  const { client: admin } = getAdminClient();
+  if (!admin) {
+    return {
+      ok: false,
+      message: "Upload logo belum dikonfigurasi di server. Admin perlu menambahkan SUPABASE_SECRET_KEY atau SUPABASE_SERVICE_ROLE_KEY di environment Vercel.",
+    };
+  }
 
-// Dipanggil setelah upload dari browser berhasil. RLS Storage tetap memvalidasi
-// INSERT, sedangkan Server Action ini hanya menyimpan URL milik grup aktif.
-export async function saveGroupLogoPath(path) {
-  const { owner, group } = await requireGroup();
+  const type = validation.type;
+  const path = `${group.id}/${crypto.randomUUID()}.${type.ext}`;
+  const { error: uploadError } = await admin.storage.from(BUCKET).upload(path, file, {
+    contentType: file.type,
+    cacheControl: "3600",
+    upsert: false,
+  });
 
-  if (!isValidOwnedUploadPath(path, group.id)) {
-    return { ok: false, message: "Path logo tidak valid untuk grup ini." };
+  if (uploadError) {
+    console.error("[uploadGroupLogo] storage upload failed:", uploadError.message);
+    return { ok: false, message: `Upload Storage gagal: ${uploadError.message}` };
   }
 
   const supabase = await createClient();
+  const { data: publicData } = admin.storage.from(BUCKET).getPublicUrl(path);
   const oldPath = getOwnedObjectPath(
     group.logo_url,
     group.id,
     process.env.NEXT_PUBLIC_SUPABASE_URL
   );
-  const { data: publicData } = supabase.storage.from(BUCKET).getPublicUrl(path);
 
-  const { data: updatedGroup, error } = await supabase
+  const { data: updatedGroup, error: updateError } = await supabase
     .from("groups")
     .update({ logo_url: publicData.publicUrl })
     .eq("id", group.id)
@@ -105,33 +118,52 @@ export async function saveGroupLogoPath(path) {
     .select("id")
     .maybeSingle();
 
-  if (error || !updatedGroup) {
-    console.error("[saveGroupLogoPath] database update failed:", error?.message ?? "group not updated");
+  if (updateError || !updatedGroup) {
+    const { error: cleanupError } = await admin.storage.from(BUCKET).remove([path]);
+    if (cleanupError) {
+      console.error("[uploadGroupLogo] failed to clean up rejected upload:", cleanupError.message);
+    }
+    console.error("[uploadGroupLogo] group update failed:", updateError?.message ?? "group not updated");
     return {
       ok: false,
-      message: "Logo berhasil diunggah, tetapi gagal menyimpan pengaturan grup.",
+      message: "File terunggah, tetapi pengaturan grup gagal disimpan. Silakan coba lagi.",
     };
   }
 
+  let message = "Logo grup berhasil diperbarui.";
+  if (oldPath && oldPath !== path) {
+    const { error: cleanupError } = await admin.storage.from(BUCKET).remove([oldPath]);
+    if (cleanupError) {
+      console.error("[uploadGroupLogo] old logo cleanup failed:", cleanupError.message);
+      message += " File logo lama belum berhasil dibersihkan.";
+    }
+  }
+
   revalidatePath("/", "layout");
-  return {
-    ok: true,
-    message: "Logo grup berhasil diperbarui.",
-    oldPath: oldPath && oldPath !== path ? oldPath : null,
-  };
+  return { ok: true, message };
 }
 
-// Metadata dilepas lebih dahulu. Penghapusan object dilakukan dari browser
-// menggunakan session pengguna yang sama dengan upload Storage.
 export async function removeGroupLogo() {
   const { owner, group } = await requireGroup();
-  const supabase = await createClient();
   const oldPath = getOwnedObjectPath(
     group.logo_url,
     group.id,
     process.env.NEXT_PUBLIC_SUPABASE_URL
   );
 
+  let admin = null;
+  if (oldPath) {
+    const result = getAdminClient();
+    if (!result.client) {
+      return {
+        ok: false,
+        message: "Penghapusan logo belum dikonfigurasi di server. Admin perlu menambahkan SUPABASE_SECRET_KEY atau SUPABASE_SERVICE_ROLE_KEY di environment Vercel.",
+      };
+    }
+    admin = result.client;
+  }
+
+  const supabase = await createClient();
   const { data: updatedGroup, error } = await supabase
     .from("groups")
     .update({ logo_url: null })
@@ -145,10 +177,15 @@ export async function removeGroupLogo() {
     return { ok: false, message: "Logo grup gagal dihapus. Coba lagi." };
   }
 
+  let message = "Logo grup berhasil dihapus.";
+  if (oldPath && admin) {
+    const { error: cleanupError } = await admin.storage.from(BUCKET).remove([oldPath]);
+    if (cleanupError) {
+      console.error("[removeGroupLogo] storage cleanup failed:", cleanupError.message);
+      message += " File lama belum berhasil dibersihkan dari Storage.";
+    }
+  }
+
   revalidatePath("/", "layout");
-  return {
-    ok: true,
-    message: "Logo grup berhasil dilepas.",
-    oldPath,
-  };
+  return { ok: true, message };
 }
