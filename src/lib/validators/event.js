@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const date = z.string().regex(/^\d{4}-\\d{2}-\\d{2}$/, "Tanggal tidak valid.");
+const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal tidak valid.");
 const optionalText = (max, label) =>
   z.string().trim().max(max, `${label} maksimal ${max} karakter.`).transform((v) => v || null);
 
