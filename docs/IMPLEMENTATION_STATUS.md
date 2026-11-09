@@ -109,7 +109,8 @@ Use this checklist for future UAT:
 - [ ] Editing a legacy event while keeping its existing past dates unchanged is allowed.
 - [ ] Changing a legacy event's start/end date to another past date is rejected; changing it to today/future is allowed when the date range remains valid.
 - [ ] Rundown dates inside the event range are accepted even when historical; dates outside the event range are rejected.
-- [ ] Past task deadlines and past finance transaction dates remain accepted.
+- [ ] Task deadline is optional and accepts past/current/future dates on both create and update.
+- [ ] Past finance transaction dates remain accepted.
 - [ ] Add/remove event committee assignment.
 - [ ] Confirm non-assigned group member is absent from Rundown PIC dropdown.
 - [ ] Add member to event and confirm they appear in Rundown PIC dropdown.
