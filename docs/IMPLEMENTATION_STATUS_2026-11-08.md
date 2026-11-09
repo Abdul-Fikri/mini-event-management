@@ -133,3 +133,28 @@ Implementasi:
 - `src/app/(app)/events/[id]/layout.js` — menggunakan komponen `EventSubnav`.
 
 Perubahan sudah masuk ke source branch dan PR yang terbuka. Belum diklaim lolos build atau verifikasi browser; tetap uji setelah branch dideploy.
+
+
+## 8. Audit dan optimasi performa dashboard (9 November 2026)
+
+Pengamatan awal dari screenshot Lighthouse production:
+- Performance: 82
+- Accessibility: 100
+- Best Practices: 100
+- SEO: 100
+
+Skor 82 berada pada rentang "perlu peningkatan", bukan kategori buruk. Screenshot tidak memperlihatkan nilai detail FCP, LCP, Speed Index, Total Blocking Time, dan CLS; karena itu akar penyebab skor belum dapat dipastikan hanya dari screenshot.
+
+Perubahan source pada branch `perf/dashboard-data-queries`:
+- Memperbaiki deklarasi `dynamic = "force-dynamic"` dan metadata Dashboard yang sebelumnya tertulis sebagai teks `\\n` di dalam komentar sehingga deklarasi tersebut tidak aktif.
+- Menghapus kolom `target_budget` dari query event dan `priority` dari query tugas karena tidak digunakan oleh tampilan Dashboard.
+- Membatasi query tugas ke status yang belum selesai (`status != done`).
+- Membatasi query pengadaan ke status tertunda (`not_started` dan `requested`).
+
+Perubahan tersebut mengurangi kolom dan baris yang dikirim dari Supabase tanpa mengubah agregat yang ditampilkan, dengan asumsi kolom status mengikuti nilai/status yang dipakai aplikasi.
+
+Status verifikasi:
+- Source telah diperbarui dan ditinjau ulang melalui GitHub.
+- Belum menjalankan `npm run lint`, `npm run build`, atau Lighthouse ulang.
+- Belum mengukur dampak numerik perubahan pada Performance score.
+- PR perlu di-merge dan production deployment selesai sebelum pengukuran ulang di domain production.
