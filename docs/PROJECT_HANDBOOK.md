@@ -132,7 +132,9 @@ Proxy bukan satu-satunya lapisan keamanan. Server Component, Server Actions, Rou
 - \`src/lib/supabase/client.js\`: browser client, hanya publishable key.
 - \`src/lib/supabase/server.js\`: server client untuk Server Components, Server Actions, dan Route Handlers.
 - \`src/lib/supabase/proxy.js\`: refresh sesi dan redirect.
+- \`src/lib/supabase/admin.js\`: privileged Supabase client dengan guard \`server-only\`; hanya untuk operasi server yang memang membutuhkan bypass RLS.
 - \`src/lib/auth.js\`: helper autentikasi/otorisasi Owner dan Panitia.
+- \`src/actions/group-logo.js\`: Server Actions upload dan penghapusan logo grup.
 - \`src/lib/validators/\`: schema Zod.
 - \`src/actions/\`: Server Actions untuk mutasi data.
 
@@ -142,8 +144,20 @@ Environment variable yang digunakan:
 
 - \`NEXT_PUBLIC_SUPABASE_URL\`
 - \`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY\`
+- \`SUPABASE_SECRET_KEY\` **atau** \`SUPABASE_SERVICE_ROLE_KEY\` (server-only; dibutuhkan untuk upload/hapus logo grup)
 
-Jangan menuliskan nilainya ke dokumentasi, source, issue, screenshot, atau chat. Jangan pernah mengekspos service-role key ke browser.
+Jangan menuliskan nilainya ke dokumentasi, source, issue, screenshot, atau chat. Jangan pernah mengekspos secret/service-role key ke browser atau memberi prefix \`NEXT_PUBLIC_\` pada key privileged.
+
+### Alur logo grup
+
+- Form \`GroupLogoForm\` memanggil \`uploadGroupLogo()\` dan \`removeGroupLogo()\`; browser tidak mengunggah langsung ke Storage.
+- Server Action memanggil \`requireGroup()\` lebih dahulu untuk memastikan sesi Owner dan grup aktif.
+- File dibatasi maksimal 2 MB, MIME JPG/PNG/WebP, dan signature isi file diverifikasi di server.
+- \`src/lib/supabase/admin.js\` membuat client privileged yang diberi guard \`server-only\`. Key hanya digunakan di server untuk operasi Storage pada bucket \`group-logos\`.
+- Setelah upload, URL disimpan ke \`groups.logo_url\` memakai Supabase server client berbasis sesi Owner, dengan filter \`group.id\` dan \`owner.id\`.
+- Bucket public hanya membuat URL gambar dapat dibaca publik; upload/penghapusan tetap melalui Server Action yang memverifikasi Owner.
+- Karena privileged key melewati RLS Storage, pemeriksaan Owner di Server Action adalah batas keamanan wajib. Jangan memindahkan admin client ke Client Component atau memakai key tersebut untuk operasi tanpa otorisasi.
+- Perubahan final ini masuk melalui PR #16 (merge commit \`a45c594346dcedc4c993a5f0bea17543994aa6da\`). Pemilik kemudian mengonfirmasi upload logo berhasil; pengujian penghapusan setelah perubahan final tetap dicatat terpisah dalam UAT.
 
 ## 7. Keamanan dan otorisasi
 
