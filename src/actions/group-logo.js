@@ -53,7 +53,7 @@ function isValidOwnedUploadPath(path, groupId) {
 
 // Validasi file dan buat object path di server sebelum browser mengunggahnya.
 export async function prepareGroupLogoUpload(formData) {
-  const { group } = await requireGroup();
+  const { owner, group } = await requireGroup();
   const file = formData.get("logo");
 
   if (!(file instanceof File) || file.size === 0) {
