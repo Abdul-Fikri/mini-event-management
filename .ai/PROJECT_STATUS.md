@@ -1,19 +1,35 @@
 # Project Status
 
-Last updated: 9 November 2026
+Last updated: 9 November 2026 — reviewed after PR #16
 
 ## Owner-reported verification
 - App is deployed on Vercel: https://mini-event-management-gules.vercel.app
 - Owner reported the latest local `npm run build` completed successfully.
-- Owner reported testing global loading feedback for navigation, form submission, delete, and group-logo upload/removal.
+- Owner reported testing global loading feedback for navigation, form submission, and delete.
+- Owner confirmed in the latest project conversation that group-logo upload now succeeds after PR #16. The final removal/old-object cleanup path should still be checked separately.
 - Recent Lighthouse Performance on Vercel was reported as 82; exact route and test conditions were not recorded.
 - Earlier observations: Dashboard Performance 96; Event/Panitia route Performance 91. Do not compare scores without matching route and test conditions.
 
-## GitHub state at last review
-- PR #8 (Lottie route-level loading animation): merged to `main`.
-- PR #9 (global loading feedback): merged to `main` on 9 November 2026.
-- PR #10 (public project documentation and UAS rubric mapping): open, targeting `main`; recheck its current status before relying on this note.
-- This context update is being proposed separately; recheck GitHub for its PR number/state after creation.
+## GitHub state at this review
+- Current `main` head: `a45c594346dcedc4c993a5f0bea17543994aa6da` — merge commit for PR #16.
+- PR #8 (Lottie route-level loading animation): merged.
+- PR #9 (global loading feedback): merged.
+- PR #10 (public project documentation and UAS rubric mapping): merged.
+- PR #11 (shared AI project context and agent instructions): merged.
+- PR #16 (Owner-authorized server-side group-logo upload/removal): merged on 9 November 2026.
+- GitHub PR listing showed PRs #1–#16 closed/merged at review time; recheck live state before relying on this note.
+- The PR #16 merge is confirmed. Vercel deployment of that merge was not independently inspected.
+
+## Group logo upload
+
+- Final implementation is in PR #16, merged to `main`.
+- `src/actions/group-logo.js` calls `requireGroup()` before using the privileged Storage client.
+- `src/lib/supabase/admin.js` is guarded by `server-only` and reads `SUPABASE_SECRET_KEY` or legacy `SUPABASE_SERVICE_ROLE_KEY`.
+- Storage upload/removal uses the privileged client; `groups.logo_url` is updated with the authenticated Owner session client and Owner/group filters.
+- The bucket is public for image delivery; it is not configured for anonymous writes. Existing Storage RLS policies were not removed by PR #16.
+- Upload validation: maximum 2 MB, JPG/PNG/WebP MIME and file signature.
+- Owner confirms upload works after PR #16. Confirm removal and old-object cleanup separately.
+- Do not expose the privileged key through `NEXT_PUBLIC_` or import the admin client into client code.
 
 ## Loading behavior
 - Root `src/app/loading.js` provides a route-level Lottie fallback.
@@ -28,3 +44,12 @@ Last updated: 9 November 2026
 4. Performance/SEO/deployment: `next/image`, `next/font`, Metadata, owner-reported successful build, and owner-reported Vercel deployment. Latest Lighthouse report was 82; no minimum score is stated in the rubric.
 
 See `docs/IMPLEMENTASI-RUBRIK-UAS.md` for the public evidence mapping. Treat implementation notes as source observations, not as proof of end-to-end behavior.
+
+
+## Next recommended work
+
+1. Run focused manual UAT with one Owner and one Panitia account.
+2. Test invitation happy path plus wrong-email, expired, reused, and already-claimed cases.
+3. Test event membership boundaries, direct URL access to an unassigned event, and cross-group ID tampering.
+4. Confirm logo removal/replacement cleanup after PR #16.
+5. Record actual lint/build and Vercel production verification after the next code change.
