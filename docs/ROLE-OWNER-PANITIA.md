@@ -1,39 +1,75 @@
-# Fondasi Role Owner dan Panitia
+# Role Owner dan Panitia
 
-Dokumen ini menjelaskan tahap fondasi role. Implementasi login/invitation dan UI berbasis role merupakan tahap berikutnya; jangan menganggap role Panitia sudah aktif hanya karena migration tersedia.
+Dokumen ini menggambarkan implementasi role yang ditemukan pada source saat ini. Status database production tetap perlu diverifikasi secara terpisah.
 
-## Model akun
-- **Owner** tetap memakai `auth.users` dan relasi `groups.owner_id` yang sudah ada.
-- **Panitia** tetap direpresentasikan oleh baris `members`, lalu dapat dihubungkan ke akun Supabase Auth melalui kolom nullable `members.auth_user_id`.
-- Kolom nullable dan foreign key `ON DELETE SET NULL` menjaga seluruh data anggota lama tetap valid. Akun Auth yang dihapus tidak menghapus data anggota.
-- Unique partial index mencegah satu akun Auth ditautkan ke lebih dari satu baris anggota.
+## 1. Model akun
 
-## Batas akses yang disiapkan
+- **Owner** menggunakan Supabase Auth (\`auth.users\`) dan memiliki grup melalui \`groups.owner_id\`.
+- **Panitia** adalah baris pada \`members\`; akun Auth dapat dihubungkan melalui \`members.auth_user_id\`.
+- Hubungan anggota dengan event disimpan pada \`event_members\`.
+- Satu akun Panitia dapat melihat event yang memiliki assignment untuk anggota tersebut.
+
+## 2. Hak dan ruang kerja
 
 | Area | Owner | Panitia yang ditugaskan |
 |---|---|---|
-| Grup dan direktori anggota | Kelola | Baca |
-| Event | Kelola | Baca event yang ditugaskan |
+| Grup dan direktori anggota | Kelola | Akses terbatas sesuai RLS |
+| Event | CRUD | Baca event yang ditugaskan |
 | Susunan panitia event | Kelola | Baca |
-| Rundown, tugas, pengadaan | Kelola | Kelola dalam event yang ditugaskan |
-| Kategori anggaran dan transaksi | Kelola | Kelola dalam event yang ditugaskan |
+| Rundown | CRUD | Baca |
+| Tugas | CRUD | Baca |
+| Pengadaan | CRUD | Baca |
+| Keuangan | CRUD | Tidak ditampilkan pada workspace Panitia saat ini |
+| Undangan anggota | Buat/kelola | Klaim undangan sendiri |
 
-Panitia tidak diberi izin untuk membuat/menghapus event, mengubah anggota grup, atau mengelola susunan panitia. Izin keuangan pada migration ini masih CRUD untuk event yang ditugaskan; jika perlu pembatasan tambahan, kebijakannya harus ditentukan sebelum akun Panitia digunakan.
+Catatan: tabel akses menggambarkan alur aplikasi/UI yang ditemukan. Policy database dan kemampuan query harus selalu diperiksa pada migration serta Supabase project yang aktual.
 
-## Migration
-File: `supabase/migrations/20261108_owner_panitia_foundation.sql`
+## 3. Alur Owner
 
-Migration bersifat aditif: tidak menghapus data, mempertahankan policy Owner, menambahkan relasi akun Panitia, dan memberi akses berdasarkan assignment pada `event_members`. Fungsi pemeriksaan akses memakai `SECURITY DEFINER`, fixed `search_path`, dan hak execute terbatas.
+1. Owner register/login.
+2. Owner membuat atau melengkapi grup.
+3. Owner mengelola direktori anggota pada menu Anggota Panitia.
+4. Owner membuat event.
+5. Owner membuka tab Panitia pada event dan menambahkan anggota grup ke susunan event.
+6. Owner mengisi rundown, tugas, pengadaan, dan keuangan.
+7. Untuk memberikan akses workspace, Owner membuat undangan untuk data anggota dan email yang sesuai.
 
-**Belum dijalankan ke database.** Review lalu jalankan secara manual melalui Supabase SQL Editor. Jangan jalankan ulang initial `supabase/schema.sql`.
+## 4. Alur Panitia
 
-## Status implementasi
-1. [x] Audit skema Owner-only dan RLS awal.
-2. [x] Siapkan migration fondasi relasi akun Panitia dan RLS event-scoped.
-3. [ ] Jalankan migration setelah review dan persetujuan pemilik database.
-4. [ ] Tambahkan alur undangan/tautan akun Panitia ke baris `members`.
-5. [ ] Tambahkan helper otorisasi server untuk Owner vs Panitia.
-6. [ ] Tambahkan dashboard dan navigasi sesuai role.
-7. [ ] Uji akses lintas grup/event, termasuk akses URL langsung dan Server Actions.
+1. Owner membuat invitation untuk anggota dan email.
+2. Server membuat token acak; database menyimpan hash SHA-256 token, bukan token mentah.
+3. Calon Panitia membuka tautan, login/register dengan email yang sama, lalu mengklaim undangan.
+4. RPC \`claim_member_invitation\` memvalidasi token, email, expiry, dan status penggunaan.
+5. Akun terhubung ke \`members.auth_user_id\`.
+6. Panitia melihat daftar event yang memiliki relasi \`event_members\` untuk anggota tersebut.
 
-Migration tidak membuat akun Auth otomatis. Pembuatan akun dan penautan `auth_user_id` dilakukan melalui alur undangan yang diverifikasi pada tahap berikutnya.
+Workspace Panitia saat ini read-only: menampilkan detail event, rundown, tugas, dan pengadaan. Belum ada fitur untuk Panitia mengubah status tugas atau mengedit data operasional pada UI yang diperiksa.
+
+## 5. Aturan keanggotaan event
+
+Keanggotaan grup dan keanggotaan event adalah dua hal berbeda.
+
+- Anggota yang ada pada tabel \`members\` belum otomatis menjadi panitia suatu event.
+- Owner harus menambahkan anggota melalui tab Panitia event.
+- Dropdown PIC rundown, assignee tugas, dan PIC pengadaan hanya menampilkan anggota yang sudah terdaftar di \`event_members\` untuk event itu.
+- Server Actions juga memvalidasi assignment tersebut, jadi filter dropdown bukan satu-satunya pengaman.
+- Jika anggota dikeluarkan dari susunan panitia, evaluasi assignment PIC/tugas/pengadaan yang sudah ada sebelum melakukan perubahan data terkait.
+
+## 6. Implementasi terkait
+
+- Auth helpers: \`src/lib/auth.js\`.
+- Proxy/session: \`src/proxy.js\`, \`src/lib/supabase/proxy.js\`.
+- Event assignment: \`src/actions/event-members.js\`.
+- Invitation: \`src/actions/invitations.js\`.
+- Panitia home: \`src/app/(panitia)/panitia/page.js\`.
+- Panitia event detail: \`src/app/(panitia)/panitia/events/[id]/page.js\`.
+- RLS foundation: \`supabase/migrations/20261108_owner_panitia_foundation.sql\`.
+- Invitation RPC: \`supabase/migrations/20261109_member_invitations.sql\`.
+
+## 7. Catatan keamanan
+
+- Jangan mengandalkan menu/navigasi untuk membatasi akses.
+- Validasi role, group, dan event pada server.
+- Pertahankan RLS sebagai lapisan database.
+- Jangan menambahkan kemampuan edit untuk Panitia sebelum aturan produk, UI, Server Actions, dan RLS disepakati bersama.
+- Jangan menyimpulkan migration sudah diterapkan hanya karena file migration tersedia di repository.
