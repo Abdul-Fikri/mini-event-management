@@ -63,3 +63,11 @@ Commit `d79f368a34c67c4d875a50c69c1c85fd5dce9d17` updates `src/components/settin
 - Branch `perf/dashboard-route-prefetch` disables automatic Next Link prefetch on all 6 Dashboard links and the 1 primary navigation link to test whether preloading unused destination routes contributes to unused JS.
 - This is a measured hypothesis, not a confirmed cause. Ask to expand the "Reduce unused JavaScript" Lighthouse insight or inspect Network to identify actual scripts if the savings remain.
 - Do not weaken private dashboard cache/auth headers to force bfcache. Inspect the exact two failure reasons first.
+
+
+## Event PIC membership guard (9 Nov 2026)
+- Bug: rundown/task/procurement forms previously listed every group member, even if the member had not been added to the current event's `event_members` roster. This caused assigned work to be absent from the Panitia workspace.
+- Branch `fix/event-assignee-membership` filters PIC/assignee dropdowns to the current event's `event_members` assignments.
+- Server actions `saveScheduleItem`, `saveTask`, and `saveProcurementItem` also verify the selected member has an `event_members` row for the same event and group; this prevents bypassing the UI with a forged form request.
+- Add a member via the event's Panitia tab first; only then will they appear as a PIC/assignee for rundown, tasks, and procurement.
+- No database migration/schema change. Lint/build and browser E2E remain unverified.

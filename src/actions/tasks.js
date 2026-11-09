@@ -15,8 +15,8 @@ export async function saveTask(eventId,taskId,_prev,formData){
  const {data:event}=await supabase.from("events").select("id").eq("id",eventId).eq("group_id",group.id).maybeSingle();
  if(!event)return {...empty,message:"Event tidak ditemukan.",values};
  if(parsed.data.assigned_to){
-  const {data:member}=await supabase.from("members").select("id").eq("id",parsed.data.assigned_to).eq("group_id",group.id).maybeSingle();
-  if(!member)return {...empty,message:"PIC tidak ditemukan pada grup ini.",values};
+  const {data:assignment}=await supabase.from("event_members").select("member_id").eq("event_id",eventId).eq("group_id",group.id).eq("member_id",parsed.data.assigned_to).maybeSingle();
+  if(!assignment)return {...empty,message:"Penanggung jawab harus terdaftar sebagai panitia event ini terlebih dahulu.",values};
  }
  const payload={...parsed.data,group_id:group.id,event_id:eventId};
  const query=taskId
