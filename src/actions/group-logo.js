@@ -76,6 +76,7 @@ export async function prepareGroupLogoUpload(formData) {
   return {
     ok: true,
     path: `${group.id}/${crypto.randomUUID()}.${type.ext}`,
+    ownerId: owner.id,
   };
 }
 
