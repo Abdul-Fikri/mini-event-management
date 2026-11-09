@@ -15,7 +15,11 @@ export default async function SettingsPage() {
         <h2 className="font-semibold">{group.name}</h2>
         <p className="mt-1 text-sm text-zinc-600">{group.description || "Belum ada deskripsi grup."}</p>
       </section>
-      <GroupLogoForm logoUrl={group.logo_url} groupName={group.name} />
+      <GroupLogoForm
+        logoUrl={group.logo_url}
+        groupName={group.name}
+        groupId={group.id}
+      />
     </div>
   );
 }
