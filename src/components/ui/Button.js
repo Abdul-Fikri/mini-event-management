@@ -25,9 +25,9 @@ export function Button({
   const isPending = pending || formPending;
 
   useEffect(() => {
-    setFormPending(formId, formPending);
+    setFormPending(formId, isPending);
     return () => setFormPending(formId, false);
-  }, [formId, formPending, setFormPending]);
+  }, [formId, isPending, setFormPending]);
 
   return (
     <button
