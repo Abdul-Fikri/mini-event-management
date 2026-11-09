@@ -27,7 +27,7 @@ Tanggal hari ini untuk aturan event menggunakan zona waktu **Asia/Jakarta (WIB)*
 - Saat membuat event, tanggal mulai wajib hari ini atau setelahnya. Tanggal selesai bersifat opsional; jika diisi, tanggalnya wajib hari ini atau setelahnya dan tidak boleh sebelum tanggal mulai.
 - Saat mengedit event lama, tanggal lampau yang sudah tersimpan boleh dipertahankan tanpa perubahan. Jika tanggal mulai atau selesai diubah, nilai barunya wajib hari ini atau setelahnya.
 - Tanggal rundown (`schedule_items.item_date`) harus berada di dalam rentang tanggal event. Tanggal lampau tetap boleh dicatat jika masih berada dalam rentang event, termasuk untuk histori event yang sudah berjalan/selesai.
-- Deadline tugas (`tasks.due_date`) boleh lampau agar tugas terlambat tetap dapat dicatat.
+- Deadline tugas (`tasks.due_date`) bersifat opsional dan fleksibel: dapat diisi tanggal lampau, hari ini, atau mendatang, serta dapat diubah kapan saja. Tidak ada batas minimum/maksimum tanggal; deadline lampau dapat digunakan untuk mencatat tugas terlambat.
 - Tanggal transaksi (`transactions.trx_date`) boleh lampau untuk pencatatan histori keuangan.
 - Modul pengadaan saat ini tidak memiliki input tanggal manual yang perlu dibatasi.
 
