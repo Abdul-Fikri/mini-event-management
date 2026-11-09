@@ -97,13 +97,14 @@ export default function AppLoadingProvider({ children }) {
   }
 
   const isLoading = navigationPending || pendingForms.size > 0;
-  const label = pendingForms.size > 0
-    ? "Sedang memproses..."
-    : "Sedang memuat halaman...";
+  const label =
+    pendingForms.size > 0
+      ? "Sedang memproses..."
+      : "Sedang memuat halaman...";
 
   return (
     <AppLoadingContext.Provider value={{ setFormPending }}>
-      <div onClick={handleNavigationClick}>
+      <div onClickCapture={handleNavigationClick}>
         {children}
         {isLoading ? <LottieLoader label={label} overlay /> : null}
       </div>
