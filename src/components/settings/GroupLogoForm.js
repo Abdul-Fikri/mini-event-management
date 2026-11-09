@@ -77,7 +77,6 @@ export default function GroupLogoForm({ logoUrl, groupName, groupId }) {
     let supabase;
 
     try {
-      supabase = createClient();
       const bytes = new Uint8Array(await file.arrayBuffer());
       if (!type.signature(bytes)) {
         setMessage("Isi file tidak sesuai dengan format gambar.");
@@ -92,10 +91,23 @@ export default function GroupLogoForm({ logoUrl, groupName, groupId }) {
         return;
       }
 
+      // Buat client setelah Server Action selesai agar pembacaan cookie
+      // menggunakan session terbaru yang mungkin baru saja di-refresh.
+      supabase = createClient();
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData?.user) {
+        setMessage("Sesi Supabase di browser tidak terbaca. Muat ulang halaman lalu login kembali.");
+        return;
+      }
+      if (userData.user.id !== prepared.ownerId) {
+        setMessage("Sesi Supabase browser tidak cocok dengan akun Owner grup. Keluar lalu login kembali.");
+        return;
+      }
+
       uploadedPath = prepared.path;
 
       // Upload dilakukan di browser agar Supabase Storage memakai session
-      // pengguna secara langsung, bukan session yang direkonstruksi di Action.
+      // pengguna yang sudah diverifikasi di atas.
       const { error: uploadError } = await supabase.storage
         .from(BUCKET)
         .upload(uploadedPath, file, {
