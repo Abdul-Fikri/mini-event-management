@@ -74,7 +74,11 @@ export default function EventForm({ event = null, members = [] }) {
           min={endDateMin}
           defaultValue={value("end_date")}
           error={state.errors?.end_date}
-          hint="Tanggal selesai tidak boleh sebelum tanggal mulai. Tanggal lampau yang sudah tersimpan boleh dipertahankan."
+          hint={
+            event?.end_date && event.end_date < today
+              ? "Tanggal selesai lama boleh dipertahankan. Jika diubah, pilih hari ini atau setelahnya."
+              : "Pilih hari ini atau tanggal setelahnya; tanggal selesai tidak boleh sebelum tanggal mulai."
+          }
         />
         <TextField
           id="location"
