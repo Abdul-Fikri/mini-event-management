@@ -16,6 +16,9 @@ try {
 }
 
 const nextConfig = {
+  experimental: {
+    serverActions: { bodySizeLimit: "3mb" },
+  },
   images: { remotePatterns: storageRemotePattern },
   turbopack: {
     rules: {
