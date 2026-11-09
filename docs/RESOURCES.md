@@ -17,14 +17,11 @@ Indeks untuk resource yang dipakai developer, pemilik project, dan AI assistant.
 ## 2. Internal documentation
 
 - [Project Handbook](PROJECT_HANDBOOK.md)
-- [AI Working Rules](AI_WORKING_RULES.md)
 - [Database & Migrations](DATABASE_AND_MIGRATIONS.md)
 - [Implementation Status](IMPLEMENTATION_STATUS.md)
 - [Role Owner dan Panitia](ROLE-OWNER-PANITIA.md)
 - [Undangan Panitia](UNDANGAN-PANITIA.md)
 - [Implementasi Rubrik UAS](IMPLEMENTASI-RUBRIK-UAS.md)
-- [AI Context](../AI_CONTEXT_NEXT_SESSION.md)
-- [Agent instructions](../AGENTS.md)
 
 ## 3. Official technical documentation
 
