@@ -213,10 +213,10 @@ Jangan deploy, mengubah env production, atau mengubah domain tanpa instruksi eks
 
 ## 12. Dokumen terkait
 
-- [AI Working Rules](AI_WORKING_RULES.md)
 - [Database & Migrations](DATABASE_AND_MIGRATIONS.md)
 - [Implementation Status](IMPLEMENTATION_STATUS.md)
 - [Resources](RESOURCES.md)
 - [Role Owner dan Panitia](ROLE-OWNER-PANITIA.md)
 - [Undangan Panitia](UNDANGAN-PANITIA.md)
+- [Implementasi Rubrik UAS](IMPLEMENTASI-RUBRIK-UAS.md)
 - [Rubrik UAS](IMPLEMENTASI-RUBRIK-UAS.md)
