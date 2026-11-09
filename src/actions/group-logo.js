@@ -29,8 +29,28 @@ function getOwnedObjectPath(url, groupId, supabaseUrl) {
 }
 
 export async function saveGroupLogo(_previousState, formData) {
-  const { group } = await requireGroup();
+  const { owner, group } = await requireGroup();
   const supabase = await createClient();
+
+  // Resolve the session on the exact client used for Storage. The group lookup
+  // above uses its own request-scoped client; explicitly loading claims here
+  // prevents the upload client from attempting Storage access before its
+  // cookie-backed user context has been resolved.
+  const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
+  const storageUserId = claimsData?.claims?.sub;
+
+  if (claimsError || !storageUserId || storageUserId !== owner.id) {
+    console.error("[saveGroupLogo] auth context mismatch:", {
+      hasClaims: Boolean(storageUserId),
+      matchesOwner: storageUserId === owner.id,
+      claimsError: claimsError?.message ?? null,
+    });
+    return {
+      ok: false,
+      message: "Sesi login tidak sinkron saat mengunggah logo. Muat ulang halaman, lalu coba lagi.",
+    };
+  }
+
   const file = formData.get("logo");
   const remove = formData.get("remove") === "true";
   const oldPath = getOwnedObjectPath(group.logo_url, group.id, process.env.NEXT_PUBLIC_SUPABASE_URL);
@@ -62,7 +82,12 @@ export async function saveGroupLogo(_previousState, formData) {
   });
   if (uploadError) {
     const detail = uploadError.message?.toLowerCase() ?? "";
-    console.error("[saveGroupLogo] upload failed:", uploadError.message);
+    console.error("[saveGroupLogo] upload failed:", {
+      message: uploadError.message,
+      statusCode: uploadError.statusCode ?? null,
+      authContextMatched: true,
+      bucket: BUCKET,
+    });
 
     if (detail.includes("bucket") && detail.includes("not found")) {
       return {
