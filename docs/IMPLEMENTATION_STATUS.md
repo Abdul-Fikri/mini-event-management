@@ -2,7 +2,7 @@
 
 Last reviewed: 9 November 2026  
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source branch reviewed: \`main\` at merge commit \`a45c594346dcedc4c993a5f0bea17543994aa6da\` (PR #16)
+Source branch reviewed: main at merge commit a95187e7fea0e3f6cba6808e0783d3295e666254 (PR #17)
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -14,12 +14,12 @@ Source branch reviewed: \`main\` at merge commit \`a45c594346dcedc4c993a5f0bea17
 | Onboarding/group | Group setup and group settings | Owner group context |
 | Dashboard | Dynamic server-rendered dashboard and summary queries | User-reported Lighthouse Performance 96 |
 | Group members | Create/read/update/delete member directory | Group-level directory |
-| Events | Create/read/update/delete events | Dynamic route \`/events/[id]\` |
+| Events | Create/read/update/delete events | Dynamic route `/events/[id]`; new or changed dates must be today or later (Asia/Jakarta), while unchanged historical dates remain editable |
 | Event committee | Add/remove member assignment; division, position, responsibility | Uses \`event_members\` |
 | Rundown | Create/update/delete schedule items | PIC restricted to current event roster |
-| Tasks | Create/update/delete tasks | Assignee restricted to current event roster |
+| Tasks | Create/update/delete tasks | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
 | Procurement | Create/update/delete procurement items | PIC restricted to current event roster |
-| Finance | Budget categories and income/expense transactions | Owner workflow |
+| Finance | Budget categories and income/expense transactions | Owner workflow; historical transaction dates remain allowed |
 | CSV export | Committee, schedule, tasks, procurement, finance, members | \`members\` export is group-wide |
 | Invitations | Create email-bound token and claim through RPC | Requires migration and correct email |
 | Panitia workspace | List assigned events and read event/rundown/tasks/procurement | Read-only in current UI |
@@ -37,6 +37,17 @@ Source branch reviewed: \`main\` at merge commit \`a45c594346dcedc4c993a5f0bea17
 - Rundown, task, and procurement forms query the current event's \`event_members\` roster for PIC/assignee options.
 - Server Actions \`saveScheduleItem\`, \`saveTask\`, and \`saveProcurementItem\` validate the selected member against the same event and group.
 - This behavior was introduced/fixed in PR #5, merged to \`main\` (merge commit \`71d7c95ad0ab8f822faaec5170a5022730c71ca8\`).
+
+
+### Event dates vs operational history
+
+- New events require a start date on or after today in Asia/Jakarta. An optional end date must also be on or after today and cannot precede the start date.
+- When editing an existing event, a past start/end date may remain unchanged. Any changed date must be today or later. The Server Action loads the stored values before applying this comparison.
+- Rundown dates remain constrained to the event's inclusive start/end range. Past dates within an existing event are allowed for historical rundown records.
+- Task deadlines are optional and fully flexible: create/update accepts past, current, or future dates; no minimum/maximum date rule is applied.
+- Finance transaction dates may be in the past for historical bookkeeping.
+- Procurement currently has no user-entered date field affected by this rule.
+- The event form's HTML `min` attributes improve the input experience; Zod validation in the Server Action remains authoritative. No database migration or historical data rewrite is required.
 
 ## 3. Architecture notes
 
@@ -85,7 +96,7 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
 ## 7. Validation status
 
-The current \`main\` source and documentation were reviewed through GitHub after PR #16. The owner reports that logo upload now succeeds. This review did not execute the user's local environment, browser E2E, Supabase production queries, \`npm run lint\`, or \`npm run build\`; deployment of the PR #16 merge was not independently checked. Earlier successful build reports must not be treated as proof that this final PR was rebuilt locally.
+The baseline `main` source and documentation were reviewed through GitHub at merge commit `a95187e7fea0e3f6cba6808e0783d3295e666254` (PR #17). PR #18 on branch `fix/event-date-validation` adds the date rules described above and is open for review. The Vercel status check succeeded for source-code commit `31b501723fdc3775054af4a0380b4365901d2d1d`. The later documentation-only head `6f5941f2f2608a13b71970054db841ffbf28aa38` is blocked by Vercel `build-rate-limit`; this is a deployment quota status, not an application build error, and does not confirm production deployment. The assistant has not run the owner's local environment, browser E2E, `npm run lint`, or `npm run build`; do not treat source review as proof of runtime correctness.
 
 Use this checklist for future UAT:
 
@@ -93,6 +104,13 @@ Use this checklist for future UAT:
 - [ ] Onboarding and group settings.
 - [ ] Member CRUD and group scoping.
 - [ ] Event CRUD and cross-group URL access rejection.
+- [ ] Creating an event with a past start date is rejected.
+- [ ] Creating an event with a past end date is rejected; an end date before the start date is rejected.
+- [ ] Editing a legacy event while keeping its existing past dates unchanged is allowed.
+- [ ] Changing a legacy event's start/end date to another past date is rejected; changing it to today/future is allowed when the date range remains valid.
+- [ ] Rundown dates inside the event range are accepted even when historical; dates outside the event range are rejected.
+- [ ] Task deadline is optional and accepts past/current/future dates on both create and update.
+- [ ] Past finance transaction dates remain accepted.
 - [ ] Add/remove event committee assignment.
 - [ ] Confirm non-assigned group member is absent from Rundown PIC dropdown.
 - [ ] Add member to event and confirm they appear in Rundown PIC dropdown.

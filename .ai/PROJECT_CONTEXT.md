@@ -39,6 +39,14 @@ Do not recreate the deleted nested legacy `event-management/` directory.
 
 Being in `members` does not automatically make someone a committee member for every event. Rundown PIC, task assignee, and procurement PIC must be restricted to the current event's `event_members`, in both UI and server-side validation.
 
+## Date behavior
+
+- New events must start today or later in Asia/Jakarta. If supplied, the end date must also be today or later and cannot precede the start date.
+- When editing an existing event, a stored past start/end date may remain unchanged; any changed date must be today or later. Server-side validation compares submitted dates with values loaded from the database.
+- Rundown dates remain within the event's date range, including historical dates for an event that has already started or ended.
+- Task deadlines are optional and fully flexible: past, current, and future dates are accepted when creating or editing a task; there is no minimum/maximum date rule. Finance transaction dates may also be historical for bookkeeping.
+- No database migration is required for these rules.
+
 ## Roles and known behavior
 - Owner authenticates with Supabase Auth and manages the group, members, events, committee, rundown, tasks, procurement, finance, exports, and settings.
 - Panitia accounts are linked through `members.auth_user_id` and should only access assigned events.
