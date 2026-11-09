@@ -179,3 +179,27 @@ Catatan: ini hipotesis optimasi yang perlu diuji dengan Lighthouse dan Network p
 Temuan bfcache:
 - Lighthouse melaporkan halaman tidak dapat dipulihkan dari back/forward cache dengan 2 alasan.
 - Dashboard adalah halaman privat yang memakai sesi/auth dan data pengguna; jangan mengubah cache-control menjadi publik atau mengorbankan isolasi data hanya demi bfcache. Periksa alasan spesifik pada panel Lighthouse sebelum mempertimbangkan perubahan.
+
+
+## 10. Perbaikan pilihan PIC berdasarkan keanggotaan event (9 November 2026)
+
+Masalah yang dilaporkan:
+- Form rundown, tugas, dan pengadaan sebelumnya mengambil daftar PIC dari seluruh anggota grup.
+- Anggota grup yang belum ditambahkan ke susunan panitia event tetap dapat dipilih sebagai PIC/petugas.
+- Akibatnya, penugasan tidak muncul pada workspace akun Panitia karena akun tersebut belum menjadi anggota event.
+
+Perubahan pada branch `fix/event-assignee-membership`:
+- Halaman rundown, tugas, dan pengadaan sekarang mengambil daftar anggota dari relasi `event_members` untuk event yang sedang dibuka, lalu mengambil detail anggota grup berdasarkan ID tersebut.
+- Server actions `saveScheduleItem`, `saveTask`, dan `saveProcurementItem` memvalidasi kembali bahwa PIC/penanggung jawab memiliki assignment pada `event_members` untuk event dan grup yang sama.
+- Validasi server-side mencegah request yang dimanipulasi mengirim ID anggota grup yang belum menjadi panitia event.
+- Anggota grup yang belum terdaftar di event tetap dapat ditambahkan melalui tab Panitia event; setelah itu namanya tersedia di pilihan PIC/petugas pada rundown, tugas, dan pengadaan.
+
+Cakupan:
+- Dropdown PIC rundown.
+- Dropdown penanggung jawab tugas.
+- Dropdown PIC pengadaan.
+
+Verifikasi:
+- Source changes telah ditinjau pada branch.
+- Belum menjalankan lint/build atau uji end-to-end browser.
+- Tidak ada perubahan skema database atau migrasi.
