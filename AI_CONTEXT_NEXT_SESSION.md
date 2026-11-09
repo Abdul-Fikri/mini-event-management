@@ -50,3 +50,9 @@ Commit `d79f368a34c67c4d875a50c69c1c85fd5dce9d17` updates `src/components/settin
 - App root is repository root, with source in `src/`; do not recreate the removed nested legacy folder.
 - Do not deploy to Vercel; the project owner handles Vercel.
 - Do not commit/push additional changes unless explicitly asked or authorized.
+
+
+## Dashboard performance follow-up (9 Nov 2026)
+- Initial production Lighthouse screenshot showed Performance 82, Accessibility 100, Best Practices 100, SEO 100. The detailed metric values were not visible, so do not state a confirmed root cause or claim a score improvement.
+- Branch `perf/dashboard-data-queries` reduces Dashboard Supabase payload: removes unused event/task columns, fetches only unfinished tasks and pending procurement rows, and restores active `force-dynamic` and Dashboard metadata exports that were accidentally escaped into a comment.
+- Changes are recorded in `docs/IMPLEMENTATION_STATUS_2026-11-08.md`. Lint, production build, and post-deploy Lighthouse have not yet been verified.
