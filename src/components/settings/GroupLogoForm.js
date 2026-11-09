@@ -70,9 +70,10 @@ export default function GroupLogoForm({ logoUrl, groupName, groupId }) {
     setMessage("");
 
     let uploadedPath = null;
-    const supabase = createClient();
+    let supabase;
 
     try {
+      supabase = createClient();
       const bytes = new Uint8Array(await file.arrayBuffer());
       if (!type.signature(bytes)) {
         setMessage("Isi file tidak sesuai dengan format gambar.");
@@ -128,7 +129,7 @@ export default function GroupLogoForm({ logoUrl, groupName, groupId }) {
       router.refresh();
     } catch (error) {
       console.error("[GroupLogoForm] upload flow failed:", error);
-      if (uploadedPath) {
+      if (uploadedPath && supabase) {
         const { error: cleanupError } = await supabase.storage
           .from(BUCKET)
           .remove([uploadedPath]);
