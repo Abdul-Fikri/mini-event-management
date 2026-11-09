@@ -22,7 +22,7 @@ export default function NavLinks() {
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
           return (
             <li key={item.href}>
-              <Link href={item.href} onClick={closeMobileNav} aria-current={active ? "page" : undefined} className={`block whitespace-nowrap rounded-md border-l-4 px-3 py-2 text-sm ${active ? "border-indigo-600 bg-indigo-50 font-semibold text-indigo-900" : "border-transparent text-zinc-700 hover:bg-zinc-100"}`}>
+              <Link prefetch={false} href={item.href} onClick={closeMobileNav} aria-current={active ? "page" : undefined} className={`block whitespace-nowrap rounded-md border-l-4 px-3 py-2 text-sm ${active ? "border-indigo-600 bg-indigo-50 font-semibold text-indigo-900" : "border-transparent text-zinc-700 hover:bg-zinc-100"}`}>
                 {item.label}
               </Link>
             </li>
