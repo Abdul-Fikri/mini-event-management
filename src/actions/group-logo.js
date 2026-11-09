@@ -5,7 +5,22 @@ import { requireGroup } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 const BUCKET = "group-logos";
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const UUID_PATTERN = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+const TYPES = {
+  "image/jpeg": {
+    ext: "jpg",
+    signature: (bytes) => bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff,
+  },
+  "image/png": {
+    ext: "png",
+    signature: (bytes) => bytes.length >= 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47 && bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a && bytes[7] === 0x0a,
+  },
+  "image/webp": {
+    ext: "webp",
+    signature: (bytes) => bytes.length >= 12 && String.fromCharCode(...bytes.slice(0, 4)) === "RIFF" && String.fromCharCode(...bytes.slice(8, 12)) === "WEBP",
+  },
+};
 
 function getOwnedObjectPath(url, groupId, supabaseUrl) {
   if (!url || !supabaseUrl) return null;
@@ -34,6 +49,34 @@ function isValidOwnedUploadPath(path, groupId) {
   );
 
   return Boolean(match && match[1].toLowerCase() === groupId.toLowerCase());
+}
+
+// Validasi file dan buat object path di server sebelum browser mengunggahnya.
+export async function prepareGroupLogoUpload(formData) {
+  const { group } = await requireGroup();
+  const file = formData.get("logo");
+
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false, message: "Pilih file gambar terlebih dahulu." };
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    return { ok: false, message: "Ukuran logo maksimal 2 MB." };
+  }
+
+  const type = TYPES[file.type];
+  if (!type) {
+    return { ok: false, message: "Format logo harus JPG, PNG, atau WebP." };
+  }
+
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  if (!type.signature(bytes)) {
+    return { ok: false, message: "Isi file tidak sesuai dengan format gambar." };
+  }
+
+  return {
+    ok: true,
+    path: `${group.id}/${crypto.randomUUID()}.${type.ext}`,
+  };
 }
 
 // Dipanggil setelah upload dari browser berhasil. RLS Storage tetap memvalidasi
