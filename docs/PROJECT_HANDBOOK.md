@@ -19,7 +19,19 @@ Prinsip domain terpenting:
 - \`event_members\` adalah daftar anggota yang benar-benar ditugaskan pada event tertentu.
 - Hanya anggota dengan relasi \`event_members\` pada event yang sama yang boleh dipilih sebagai PIC/petugas rundown, tugas, dan pengadaan.
 
-## 2. Tech stack aktual
+
+### Aturan tanggal event dan histori operasional
+
+Tanggal hari ini untuk aturan event menggunakan zona waktu **Asia/Jakarta (WIB)** agar konsisten dengan tanggal yang dipilih pengguna.
+
+- Saat membuat event, tanggal mulai wajib hari ini atau setelahnya. Tanggal selesai bersifat opsional; jika diisi, tanggalnya wajib hari ini atau setelahnya dan tidak boleh sebelum tanggal mulai.
+- Saat mengedit event lama, tanggal lampau yang sudah tersimpan boleh dipertahankan tanpa perubahan. Jika tanggal mulai atau selesai diubah, nilai barunya wajib hari ini atau setelahnya.
+- Tanggal rundown (`schedule_items.item_date`) harus berada di dalam rentang tanggal event. Tanggal lampau tetap boleh dicatat jika masih berada dalam rentang event, termasuk untuk histori event yang sudah berjalan/selesai.
+- Deadline tugas (`tasks.due_date`) boleh lampau agar tugas terlambat tetap dapat dicatat.
+- Tanggal transaksi (`transactions.trx_date`) boleh lampau untuk pencatatan histori keuangan.
+- Modul pengadaan saat ini tidak memiliki input tanggal manual yang perlu dibatasi.
+
+Batasan tanggal pada event diterapkan melalui atribut `min` pada form sebagai bantuan pengguna dan validasi Zod di Server Action sebagai aturan otoritatif. Data lama tidak perlu diubah dan tidak memerlukan migration database.
 
 | Area | Teknologi |
 |---|---|
