@@ -31,6 +31,7 @@ Folder ini berisi perubahan bertahap setelah schema awal. File yang saat ini ada
 | \`20261108_owner_panitia_foundation.sql\` | Menambah \`members.auth_user_id\`, helper membership, dan RLS read untuk Panitia per event |
 | \`20261109_member_invitations.sql\` | Tabel undangan, token hash, masa berlaku, RPC \`claim_member_invitation\` |
 | \`20261110_group_logos.sql\` | Kolom \`groups.logo_url\` dan policy Storage untuk bucket logo |
+| \`20261111_group_logo_bucket.sql\` | Memastikan bucket publik `group-logos` tersedia dengan batas 2 MB dan MIME JPG/PNG/WebP; tidak mengubah policy akses |
 
 Urutan harus dipertahankan: foundation → invitations → group logo policies → group logo bucket. Periksa isi migration dan status remote sebelum menjalankan apa pun.
 
