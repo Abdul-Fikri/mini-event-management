@@ -25,15 +25,24 @@ Buat `.env.local` di root project:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+
+# Dibutuhkan untuk upload/hapus logo grup (server-only; gunakan salah satu)
+SUPABASE_SECRET_KEY=
+# Alternatif legacy:
+# SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-Isi sendiri dari Supabase Dashboard. Jangan commit file ini atau membagikan secret/key.
+Isi sendiri dari Supabase Dashboard. Variabel `SUPABASE_SECRET_KEY` atau `SUPABASE_SERVICE_ROLE_KEY` hanya diperlukan untuk operasi logo grup. Simpan key tersebut sebagai environment variable server-only di Vercel dan lokal; **jangan** memakai prefix `NEXT_PUBLIC_`, commit nilainya, atau membagikannya di chat. Jangan gunakan kedua key privileged di browser.
 
 ```bash
 npm run dev
 ```
 
 Buka http://localhost:3000.
+
+### Supabase Storage untuk logo grup
+
+Upload dan penghapusan logo dijalankan melalui Server Actions setelah server memverifikasi Owner. Operasi Storage memakai privileged key server-side karena jalur upload browser sebelumnya ditolak oleh RLS; pembaruan `groups.logo_url` tetap memakai client session Owner. Bucket `group-logos` bersifat public untuk pengiriman gambar, bukan untuk upload publik. Detail alurnya ada di [Project Handbook](docs/PROJECT_HANDBOOK.md) dan [Database & Migrations](docs/DATABASE_AND_MIGRATIONS.md).
 
 ## Scripts
 
