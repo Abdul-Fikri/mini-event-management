@@ -47,10 +47,10 @@ Buka http://localhost:3000.
 ## Documentation
 
 1. [Project Handbook](docs/PROJECT_HANDBOOK.md) — produk, fitur, arsitektur, role, dan alur.
-2. [AI Working Rules](docs/AI_WORKING_RULES.md) — aturan wajib AI/coding agent.
 3. [Database & Migrations](docs/DATABASE_AND_MIGRATIONS.md) — schema dan prosedur Supabase.
 4. [Implementation Status](docs/IMPLEMENTATION_STATUS.md) — status implementasi, batasan, dan checklist.
-5. [Resources](docs/RESOURCES.md) — link project dan referensi resmi.
+5. [Rubrik UAS](docs/IMPLEMENTASI-RUBRIK-UAS.md) — pemetaan implementasi terhadap empat kriteria penilaian.
+6. [Resources](docs/RESOURCES.md) — link project dan referensi resmi.
 
 ## Repository structure
 
@@ -64,7 +64,7 @@ src/
 supabase/
   schema.sql     # Initial schema; bukan migration incremental
   migrations/    # Perubahan database bertahap
-docs/            # Dokumentasi project dan aturan kerja
+docs/            # Dokumentasi resmi project
 \`\`\`
 
 ## Deployment
