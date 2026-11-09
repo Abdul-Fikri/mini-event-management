@@ -58,12 +58,15 @@ Source branch reviewed: \`main\` after PR #5 merge
 | #3 | Dashboard data-query/payload improvements | Merged |
 | #4 | Disable eager prefetch on Dashboard and primary Owner navigation links | Merged |
 | #5 | Restrict event PIC/assignee selection to event committee membership; server-side validation | Merged |
+| #8 | Add Lottie route-level loading animation | Merged |
+| #9 | Add global loading feedback for navigation and shared form actions | Open draft PR; local build and user-side interaction checks reported successful; not merged at last review |
 
 Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
 ## 5. Lighthouse observations (user-reported)
 
-- Dashboard reached Performance 96 after PR #4 was merged/deployed.
+- Dashboard previously reached Performance 96 after PR #4 was merged/deployed.
+- A more recent Lighthouse run on the Vercel deployment was reported at Performance 82; the exact route and test conditions were not specified. Do not treat any one route's score as a global application score.
 - An event/Panitia route screenshot showed Performance 91, Accessibility 100, Best Practices 100, SEO 100.
 - Unused JavaScript diagnostics attributed the majority of transfer to Chrome extensions (one extension about 789.4 KiB and another about 28.1 KiB). First-party Vercel chunk shown was about 71.6 KiB, estimated savings 29.3 KiB.
 - Panitia route bfcache diagnostic reported \`Cache-Control: no-store\` and a JavaScript resource with \`no-store\`. This is not actionable in Lighthouse; do not weaken private-page cache policy just to increase score.

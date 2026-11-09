@@ -207,16 +207,15 @@ Jangan deploy, mengubah env production, atau mengubah domain tanpa instruksi eks
 1. Workspace Panitia read-only pada source yang diperiksa.
 2. Export CSV tipe \`members\` mengambil semua anggota grup, bukan hanya anggota yang terdaftar pada event. Jangan ubah tanpa keputusan produk.
 3. Fitur yang ditemukan di source belum otomatis berarti lulus E2E test.
-4. Lighthouse pada dashboard pernah mencapai Performance 96 setelah optimasi; halaman event/Panitia pernah menunjukkan Performance 91. Angka Lighthouse dapat berubah menurut device, cache, ekstensi browser, dan kondisi jaringan.
+4. Dashboard pernah mencapai Performance 96 dan halaman event/Panitia pernah menunjukkan Performance 91. Pengujian Vercel terbaru dilaporkan mendapat Performance 82; route dan kondisi pengujian terbaru belum dicatat. Angka Lighthouse dapat berubah menurut device, cache, ekstensi browser, dan kondisi jaringan.
 5. Lighthouse menunjukkan bfcache tidak tersedia pada halaman privat karena \`Cache-Control: no-store\`; jangan melemahkan kebijakan cache privat hanya demi skor.
 6. Pada audit unused JavaScript, mayoritas transfer yang terlihat berasal dari Chrome extensions. Pengukuran harus dilakukan tanpa ekstensi untuk mengukur bundle aplikasi secara lebih representatif.
 
 ## 12. Dokumen terkait
 
-- [AI Working Rules](AI_WORKING_RULES.md)
 - [Database & Migrations](DATABASE_AND_MIGRATIONS.md)
 - [Implementation Status](IMPLEMENTATION_STATUS.md)
 - [Resources](RESOURCES.md)
 - [Role Owner dan Panitia](ROLE-OWNER-PANITIA.md)
 - [Undangan Panitia](UNDANGAN-PANITIA.md)
-- [Rubrik UAS](IMPLEMENTASI-RUBRIK-UAS.md)
+- [Implementasi Rubrik UAS](IMPLEMENTASI-RUBRIK-UAS.md)
