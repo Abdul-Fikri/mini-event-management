@@ -51,6 +51,7 @@ Being in `members` does not automatically make someone a committee member for ev
 - Context API provider: `src/components/layout/AppUIContext.js`.
 - Root layout uses `next/font` (Geist and Geist Mono); `next/image` is used for app imagery including group logos.
 - Next.js 16 uses `src/proxy.js` as the Proxy convention; do not blindly add legacy `middleware.js`.
+- Group-logo upload/removal uses `src/actions/group-logo.js` and `src/lib/supabase/admin.js`; the admin client is guarded by `server-only` and must never enter browser bundles.
 
 ## Features found in source
 Authentication/onboarding, dashboard, group member CRUD, event CRUD, committee assignments, rundown CRUD, task CRUD, procurement CRUD, finance categories and transactions, CSV exports, invitation token flow, Panitia read-only workspace, group logo upload/removal, and public example-event catalog.
@@ -59,6 +60,9 @@ Authentication/onboarding, dashboard, group member CRUD, event CRUD, committee a
 - CSV `members` export is group-wide, not limited to event-assigned members; confirm product intent before changing.
 - Removing a committee member who already owns work items requires a product/data-integrity decision.
 - Invitation claiming depends on the relevant migration/RPC existing in the target database.
+- Group-logo upload requires `SUPABASE_SECRET_KEY` or legacy `SUPABASE_SERVICE_ROLE_KEY` as a server-only environment variable. Never use `NEXT_PUBLIC_` for it.
+- The group-logo bucket is public for image delivery, not public writes. PR #16 moved Storage mutations to Server Actions after `requireGroup()`; privileged Storage operations bypass Storage RLS, so server-side Owner authorization is mandatory. Group metadata is still updated with the authenticated Owner client.
+- Owner reports that logo upload now succeeds after PR #16. Re-test deletion/replacement cleanup separately.
 - SQL files in Git do not prove production migrations have been applied.
 - The current UI and code observations are not a substitute for end-to-end testing.
 

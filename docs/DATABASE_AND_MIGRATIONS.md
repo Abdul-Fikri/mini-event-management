@@ -155,3 +155,39 @@ Relasi penting: \`event_members\` menghubungkan \`members\` dengan \`events\`. J
 - Function \`SECURITY DEFINER\` harus memiliki \`search_path\` aman dan hak execute terbatas.
 - Jangan mencetak token undangan mentah atau credential di log.
 - Jangan menyalin nilai environment variable ke dokumentasi.
+
+
+## 10. Group logo Storage dan upload server-side
+
+Bucket `group-logos` digunakan untuk menyimpan logo per grup dengan pola object path `GROUP_UUID/random-file-name.ext`.
+
+### Bucket dan policy
+
+- Migration `20261110_group_logos.sql` menambahkan `groups.logo_url` dan policy owner-only pada `storage.objects`.
+- Migration `20261111_group_logo_bucket.sql` memastikan bucket `group-logos` tersedia sebagai public bucket dengan batas 2 MB dan MIME JPG/PNG/WebP.
+- Public bucket berarti gambar dapat diambil melalui public URL. Itu **tidak** berarti pengunjung anonim boleh mengunggah atau menghapus objek.
+- PR #16 tidak mengubah schema, bucket, atau policy RLS dan tidak menambahkan migration SQL.
+
+### Alur aplikasi saat ini
+
+1. `src/components/settings/GroupLogoForm.js` mengirim file ke Server Action `uploadGroupLogo()`; browser tidak melakukan upload langsung ke Storage.
+2. `src/actions/group-logo.js` memanggil `requireGroup()` sebelum operasi Storage. Identitas Owner dan grup diambil dari sesi/database server, bukan dari `group_id` yang dikirim browser.
+3. Server memvalidasi ukuran, MIME type, dan signature file.
+4. `src/lib/supabase/admin.js` membuat client privileged dengan import `server-only`. Client ini hanya dipakai di server untuk upload dan cleanup objek Storage.
+5. URL logo disimpan ke `public.groups.logo_url` memakai Supabase server client berbasis sesi Owner, dengan filter `id` grup dan `owner_id` Owner.
+6. Saat penggantian/penghapusan, file lama dibersihkan setelah metadata grup berhasil diperbarui.
+
+### Environment variable
+
+Sediakan salah satu key berikut pada environment server (lokal/Vercel):
+
+- `SUPABASE_SECRET_KEY` (pilihan utama untuk secret key baru), atau
+- `SUPABASE_SERVICE_ROLE_KEY` (kompatibilitas key legacy).
+
+Jangan menambahkan prefix `NEXT_PUBLIC_`. Jangan pernah menaruh nilai key di browser, dokumentasi, commit, screenshot, log, atau chat.
+
+### Implikasi keamanan
+
+Privileged key melewati RLS Storage. Karena itu, setiap jalur pemakaian wajib memverifikasi Owner dan grup di server terlebih dahulu. Jangan menghapus RLS, membuat bucket write-public, mengimpor admin client ke Client Component, atau memakai privileged client sebagai pengganti otorisasi. Metadata grup tetap ditulis dengan client session Owner agar kebijakan `groups` tetap berlaku.
+
+Pemilik mengonfirmasi upload logo berhasil setelah PR #16 merged. Penghapusan logo sudah diimplementasikan pada jalur server yang sama, tetapi hasil uji penghapusan setelah perubahan final perlu dicatat terpisah.
