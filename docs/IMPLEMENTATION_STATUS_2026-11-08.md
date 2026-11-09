@@ -94,6 +94,7 @@ Pemeriksaan GitHub ini membaca source code. Pemeriksaan ini tidak menjalankan br
 - [ ] Unduh setiap jenis CSV dan periksa isi, encoding, serta cakupan data.
 - [ ] Jalankan lint dan production build pada environment proyek.
 - [ ] Uji tampilan responsif, empty/loading/error/success state.
+- [ ] Uji tab aktif pada subnavigasi event: Overview, Panitia, Rundown, Tugas, Pengadaan, Keuangan, dan Ekspor.
 
 ## 5. Arahan kerja untuk sesi berikutnya
 
@@ -101,7 +102,7 @@ Pemeriksaan GitHub ini membaca source code. Pemeriksaan ini tidak menjalankan br
 2. Minta hasil uji konkret atau screenshot/error jika sebuah alur gagal.
 3. Perbaiki bug pada source yang ada; jangan mengubah schema/RLS tanpa alasan yang terverifikasi.
 4. Jangan menjalankan ulang migration/schema yang sudah diterapkan.
-5. Gunakan branch `hari-1-auth-dashboard` dan root aplikasi di `src/`; abaikan folder salinan lama `event-management/`.
+5. Gunakan branch `hari-1-auth-dashboard` dan root aplikasi di `src/`; folder legacy nested `event-management/` sudah dihapus pada branch ini.
 6. Jangan meminta atau menampilkan isi `.env.local`.
 7. Jangan commit/push perubahan baru kecuali pemilik proyek meminta atau sudah menyetujui cara kerja tersebut.
 8. Owner adalah satu-satunya role login utama; anggota panitia adalah data anggota dan dapat mengklaim undangan untuk akses workspace sesuai desain yang ada.
@@ -115,3 +116,20 @@ File:
 `src/components/settings/GroupLogoForm.js`
 
 Perubahan memakai handler `removeLogoAction` untuk menambahkan `remove=true` ke FormData sebelum memanggil Server Action, menghindari konflik atribut `name` dengan `formAction`.
+
+## 7. Perbaikan subnavigasi event
+
+Pada branch `hari-1-auth-dashboard`, subnavigasi di halaman detail event sekarang menandai tab yang sedang aktif berdasarkan pathname:
+- Overview
+- Panitia
+- Rundown
+- Tugas
+- Pengadaan
+- Keuangan
+- Ekspor
+
+Implementasi:
+- `src/components/events/EventSubnav.js` — Client Component menggunakan `usePathname()` untuk menentukan tab aktif, memberi styling aktif, dan mengisi `aria-current="page"`.
+- `src/app/(app)/events/[id]/layout.js` — menggunakan komponen `EventSubnav`.
+
+Perubahan sudah masuk ke source branch dan PR yang terbuka. Belum diklaim lolos build atau verifikasi browser; tetap uji setelah branch dideploy.
