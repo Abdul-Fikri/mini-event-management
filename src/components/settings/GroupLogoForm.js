@@ -2,7 +2,11 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { saveGroupLogoPath, removeGroupLogo } from "@/actions/group-logo";
+import {
+  prepareGroupLogoUpload,
+  saveGroupLogoPath,
+  removeGroupLogo,
+} from "@/actions/group-logo";
 import { Button } from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/client";
 
@@ -80,7 +84,15 @@ export default function GroupLogoForm({ logoUrl, groupName, groupId }) {
         return;
       }
 
-      uploadedPath = `${groupId}/${crypto.randomUUID()}.${type.ext}`;
+      const validationForm = new FormData();
+      validationForm.set("logo", file);
+      const prepared = await prepareGroupLogoUpload(validationForm);
+      if (!prepared?.ok) {
+        setMessage(prepared?.message || "File logo tidak lolos validasi.");
+        return;
+      }
+
+      uploadedPath = prepared.path;
 
       // Upload dilakukan di browser agar Supabase Storage memakai session
       // pengguna secara langsung, bukan session yang direkonstruksi di Action.
