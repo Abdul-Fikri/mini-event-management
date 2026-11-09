@@ -1,73 +1,118 @@
 # AI Project Context — Mini Event Management System
 
-> Gunakan dokumen ini sebagai konteks awal sesi AI berikutnya. Jika source code branch terbaru berbeda dari catatan ini, source code terbaru dan instruksi pemilik proyek yang berlaku.
+> Baca dokumen ini sebagai ringkasan awal. Sebelum mengubah kode, ikuti \`AGENTS.md\` dan \`docs/AI_WORKING_RULES.md\`. Jika catatan berbeda dari source branch terbaru atau instruksi pemilik project, periksa dan perbarui catatan; jangan menebak.
 
 ## Project identity
+
 - Repository: https://github.com/Abdul-Fikri/mini-event-management
-- Working branch: `hari-1-auth-dashboard`
-- Active app root: repository root; aplikasi berada di `src/`.
-- Stack: Next.js App Router, JavaScript, React, Tailwind CSS, Supabase Auth/PostgreSQL/Storage, Zod.
-- Product UI: Bahasa Indonesia.
-- Owner memiliki akun login; anggota panitia dikelola sebagai data `members`. Workspace panitia menggunakan alur undangan dan klaim akun.
+- Current base branch: \`main\`
+- Current documentation branch at update: \`docs/project-handbook-ai-rules\` (PR akan dibuat; jangan menganggap merged sebelum status GitHub dicek).
+- Active app root: repository root; source di \`src/\`.
+- Stack: Next.js 16.4.5 App Router, React 19.3.0, JavaScript, Tailwind CSS 4, Supabase Auth/PostgreSQL/Storage, Supabase JS/SSR, Zod 4.
+- No Prisma/Drizzle ORM is installed. Queries use Supabase JS Client; database changes are SQL migrations.
+- UI/product language: Bahasa Indonesia.
+- Owner mengelola grup dan event. Panitia adalah data \`members\` yang dapat ditautkan ke Auth melalui invitation.
 
-## Important: modules already implemented
-Jangan berasumsi fitur-fitur berikut belum dibuat. Source code sudah ditemukan untuk seluruh area ini:
+## Required reading
 
-1. **Event CRUD** — list/create/detail/edit/delete.
-2. **Anggota Panitia CRUD** — list/create/edit/delete anggota.
-3. **Penugasan anggota ke event** — relasi `event_members`.
-4. **Susunan Panitia** — anggota, divisi, jabatan, tanggung jawab; edit/remove assignment.
-5. **Rundown** — create/update/delete schedule items.
-6. **Tasks** — create/update/delete tasks, including assignee/status/priority/deadline fields.
-7. **Procurement** — create/update/delete procurement items, PIC, quantity, cost and status data.
-8. **Finance** — budget category and transaction CRUD; income/expense.
-9. **CSV Export** — committee, schedule, tasks, procurement, finance, members.
-10. **Panitia invitation/workspace** — create invitation, claim token, panitia home, assigned-event read-only detail.
+1. \`AGENTS.md\`
+2. \`docs/AI_WORKING_RULES.md\`
+3. \`docs/PROJECT_HANDBOOK.md\`
+4. \`docs/IMPLEMENTATION_STATUS.md\`
+5. Dokumen database atau fitur yang relevan.
 
-Core source references are listed in `docs/IMPLEMENTATION_STATUS_2026-11-08.md`.
+## Implemented modules (source-level status)
 
-## Important distinction: implemented != verified
-The features above are marked **implemented in source**, not automatically passed end-to-end tests. The AI must not claim that they work perfectly until tested in the running application with the relevant Owner/Panitia accounts and database.
+- Authentication: register/login, session handling.
+- Onboarding and group settings, including group logo.
+- Event CRUD.
+- Group member CRUD.
+- Event committee assignment through \`event_members\` (division, position, responsibility).
+- Rundown CRUD.
+- Task CRUD with assignee, status, priority, and deadline.
+- Procurement CRUD with PIC, quantity, estimates/actuals, and status.
+- Finance categories and income/expense transactions.
+- CSV export: committee, schedule, tasks, procurement, finance, and group members.
+- Invitation create/claim flow and Panitia workspace.
+- Event subnavigation active state using \`usePathname()\`.
 
-Workspace Panitia currently appears **read-only**: it shows assigned event information, rundown, tasks and procurement. Do not claim Panitia can update task statuses unless new source code confirms it.
+Implemented in source does not mean all flows have passed browser E2E, production build, or multi-user testing.
 
-## Known review notes
-- CSV export type `members` currently queries all members in the Owner's group, not only members assigned to the selected event. This may be intentional as a group-member export; ask/confirm product expectation before changing it.
-- Invitation creation stores a SHA-256 token hash and sets 48-hour expiry; claiming calls Supabase RPC `claim_member_invitation`. The relevant database migration/RPC must exist in the connected Supabase project for this flow to work.
-- Event detail subnavigation active state has been fixed on this branch. `src/components/events/EventSubnav.js` uses `usePathname()` to highlight the current tab (Overview, Panitia, Rundown, Tugas, Pengadaan, Keuangan, Ekspor), and `src/app/(app)/events/[id]/layout.js` renders it. This source change is committed on the working branch but has not yet been verified in the deployed browser.
-- The nested legacy folder `event-management/` has been removed from this branch. The active Next.js app remains at repository root.
+## Critical domain rule: member vs event member
 
-## Recent logo fix
-Commit `d79f368a34c67c4d875a50c69c1c85fd5dce9d17` updates `src/components/settings/GroupLogoForm.js`. The remove button now uses `removeLogoAction` to set `remove=true` in FormData before calling the useActionState form action.
+- \`members\` means a person in the organization/group.
+- \`event_members\` means that person is assigned to a specific event.
+- Group membership does not automatically grant membership in every event.
+- Rundown PIC, task assignee, and procurement PIC options are filtered to the current event's \`event_members\`.
+- Server Actions \`saveScheduleItem\`, \`saveTask\`, and \`saveProcurementItem\` revalidate assignment server-side.
+- Add the person in the event's Panitia tab before assigning them to event work.
+- This fix is merged through PR #5 (merge commit \`71d7c95\`). Verify current source if changing these flows.
 
-## How to continue
-- Start by checking `docs/IMPLEMENTATION_STATUS_2026-11-08.md`.
-- Do not rebuild existing modules.
-- Prioritize manual end-to-end validation and bug fixes based on concrete user results.
-- Ask for the exact error/screenshot only when a test fails; do not make the user repeat setup that is already complete.
-- Do not rerun schema/migrations without a specific reason.
-- Never request or expose `.env.local`.
-- App root is repository root, with source in `src/`; do not recreate the removed nested legacy folder.
-- Do not deploy to Vercel; the project owner handles Vercel.
-- Do not commit/push additional changes unless explicitly asked or authorized.
+## Roles and limitations
 
+- Owner has the main group-management UI and CRUD workflows.
+- Panitia account is linked to \`members.auth_user_id\` after invitation claim.
+- Panitia workspace currently displays assigned event, rundown, tasks, and procurement read-only. Do not claim Panitia can update task status unless source is changed and verified.
+- CSV export type \`members\` currently exports all group members, not only members assigned to the selected event. Do not change without product confirmation.
 
-## Dashboard performance follow-up (9 Nov 2026)
-- Initial production Lighthouse screenshot showed Performance 82, Accessibility 100, Best Practices 100, SEO 100. The detailed metric values were not visible, so do not state a confirmed root cause or claim a score improvement.
-- Branch `perf/dashboard-data-queries` reduces Dashboard Supabase payload: removes unused event/task columns, fetches only unfinished tasks and pending procurement rows, and restores active `force-dynamic` and Dashboard metadata exports that were accidentally escaped into a comment.
-- Changes are recorded in `docs/IMPLEMENTATION_STATUS_2026-11-08.md`. Lint, production build, and post-deploy Lighthouse have not yet been verified.
+## Current architecture notes
 
+- Root layout: \`src/app/layout.js\`.
+- Owner app layout: \`src/app/(app)/layout.js\`.
+- Auth layout: \`src/app/(auth)/layout.js\`.
+- Panitia workspace: \`src/app/(panitia)/panitia/\`.
+- Public catalog: \`src/app/(public)/contoh-event/\`.
+- Dynamic event route: \`src/app/(app)/events/[id]/\`.
+- Next.js 16 request interception: \`src/proxy.js\` exporting \`proxy()\`; do not rename to \`middleware.js\` without version-specific reason.
+- Supabase clients: \`src/lib/supabase/client.js\`, \`server.js\`, \`proxy.js\`.
+- Auth helpers: \`src/lib/auth.js\`.
+- Validation: \`src/lib/validators/\`.
+- Server Actions: \`src/actions/\`.
 
-## Lighthouse follow-up (9 Nov 2026)
-- After PR #3, the user reported Lighthouse: Performance 84, FCP 0.6 s, LCP 0.6 s, TBT 270 ms, CLS 0, Speed Index 2.3 s. Diagnostics: unused JS estimated 501 KiB, minify JS 13 KiB, legacy JS 14 KiB, 5 long tasks; render-blocking requests and LCP breakdown also flagged. bfcache restoration failed for 2 reasons.
-- Branch `perf/dashboard-route-prefetch` disables automatic Next Link prefetch on all 6 Dashboard links and the 1 primary navigation link to test whether preloading unused destination routes contributes to unused JS.
-- This is a measured hypothesis, not a confirmed cause. Ask to expand the "Reduce unused JavaScript" Lighthouse insight or inspect Network to identify actual scripts if the savings remain.
-- Do not weaken private dashboard cache/auth headers to force bfcache. Inspect the exact two failure reasons first.
+## Database and migration
 
+- Initial schema: \`supabase/schema.sql\`; never rerun on an existing project database.
+- Incremental SQL files: \`supabase/migrations/\`.
+- Files currently in migrations: \`20261108_owner_panitia_foundation.sql\`, \`20261109_member_invitations.sql\`, \`20261110_group_logos.sql\`.
+- Migration production state is not proven by repository files alone. Verify Supabase migration history/schema before running anything.
+- User prefers to understand and run SQL migrations manually via Supabase SQL Editor. AI may prepare/review migration files, but must not execute production SQL or change schema without explicit approval.
+- Supabase CLI is not yet configured as a project dependency; see \`docs/DATABASE_AND_MIGRATIONS.md\`.
 
-## Event PIC membership guard (9 Nov 2026)
-- Bug: rundown/task/procurement forms previously listed every group member, even if the member had not been added to the current event's `event_members` roster. This caused assigned work to be absent from the Panitia workspace.
-- Branch `fix/event-assignee-membership` filters PIC/assignee dropdowns to the current event's `event_members` assignments.
-- Server actions `saveScheduleItem`, `saveTask`, and `saveProcurementItem` also verify the selected member has an `event_members` row for the same event and group; this prevents bypassing the UI with a forged form request.
-- Add a member via the event's Panitia tab first; only then will they appear as a PIC/assignee for rundown, tasks, and procurement.
-- No database migration/schema change. Lint/build and browser E2E remain unverified.
+## Recent merged work
+
+- PR #1: initial project merge (historical).
+- PR #2: active event subnavigation and project notes.
+- PR #3: Dashboard query/payload improvements.
+- PR #4: disables eager prefetch on Dashboard and primary Owner nav links.
+- PR #5: limits event PIC/assignee dropdowns and server validation to \`event_members\`.
+- PR #4 merge commit: \`904525e\`.
+- PR #5 merge commit: \`71d7c95\`.
+- Confirm PR state with GitHub before relying on this history.
+
+## Performance observations (user-reported Lighthouse)
+
+- Dashboard reached Performance 96 after the route-prefetch change.
+- An event/Panitia route screenshot showed Performance 91, Accessibility 100, Best Practices 100, SEO 100.
+- On that route, Lighthouse's unused-JS diagnostic attributed most transfer to Chrome extensions (about 789.4 KiB and 28.1 KiB); first-party Vercel chunk was about 71.6 KiB with estimated savings 29.3 KiB.
+- Private Panitia route bfcache diagnostic reported \`Cache-Control: no-store\` and JS resource with \`no-store\`. Treat as privacy-related; do not weaken cache headers just to improve Lighthouse.
+- Scores vary with device, extensions, cache, network, and route. Do not promise fixed scores.
+
+## Environment
+
+Required variable names only:
+- \`NEXT_PUBLIC_SUPABASE_URL\`
+- \`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY\`
+
+Never request or expose \`.env.local\`, publishable key values, service-role key, passwords, or tokens.
+
+## Workflow and constraints
+
+- Read \`AGENTS.md\` and \`docs/AI_WORKING_RULES.md\` before code changes.
+- Do not recreate deleted nested \`event-management/\`.
+- Do not rebuild modules already present; inspect source first.
+- Do not run schema/migrations without a concrete reason and explicit approval.
+- Do not commit directly to \`main\`; use a branch and PR.
+- User reviews/merges PRs unless explicitly asking AI to merge.
+- User handles Vercel deployment; do not deploy.
+- Never claim lint/build/E2E passed unless actually run and result is known.
+- After meaningful work, update this file and \`docs/IMPLEMENTATION_STATUS.md\`.
