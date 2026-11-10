@@ -29,7 +29,7 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 - When editing an existing event, stored past dates may remain unchanged. Any changed start/end date must be today or later; the Server Action loads the stored dates before validating.
 - Rundown dates remain inside the event range and may be historical. Task deadlines are optional and can be created or edited to past, current, or future dates. Finance transaction dates may also be historical.
 - No database migration or historical data rewrite is included.
-- The Vercel status check succeeded for source-code commit `31b501723fdc3775054af4a0380b4365901d2d1d`. The current PR #18 head is blocked by Vercel's `build-rate-limit`; this is a deployment quota status, not an application build result. Production deployment is not confirmed. The assistant did not run `npm run lint`, `npm run build`, or browser E2E tests.
+- PR #18's earlier Vercel check was affected by `build-rate-limit`; this is a deployment quota status, not an application build result. Production deployment of the merge was not independently confirmed. The assistant did not run `npm run lint`, `npm run build`, or browser E2E tests for PR #18.
 
 ## Group logo upload
 
