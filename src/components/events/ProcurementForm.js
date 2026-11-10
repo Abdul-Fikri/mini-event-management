@@ -18,7 +18,7 @@ export default function ProcurementForm({eventId,members,item=null}){
    <TextField id={"proc-unit-"+(item?.id??"new")} name="unit" label="Satuan" hint="Contoh: pcs, kotak, meter, paket" defaultValue={value("unit")} error={state.errors?.unit}/>
   </div>
   <div className="grid gap-3 sm:grid-cols-2">
-   <TextField id={"proc-est-"+(item?.id??"new")} name="est_unit_price" label="Estimasi harga satuan (Rp)" type="number" min="0" step="1" defaultValue={value("est_unit_price")} error={state.errors?.est_unit_price}/>
+   <MoneyField id={"proc-est-"+(item?.id??"new")} name="est_unit_price" label="Estimasi harga satuan (Rp)" defaultValue={value("est_unit_price")} hint="Pemisah ribuan ditambahkan otomatis." error={state.errors?.est_unit_price}/>
    <TextField id={"proc-actual-"+(item?.id??"new")} name="actual_unit_price" label="Harga aktual satuan (Rp)" type="number" min="0" step="1" defaultValue={value("actual_unit_price")} error={state.errors?.actual_unit_price}/>
   </div>
   <div className="grid gap-3 sm:grid-cols-2">
