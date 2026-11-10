@@ -2,7 +2,7 @@ import { z } from "zod";
 import { rupiahInteger } from "@/lib/validators/money";
 
 const optionalText = (max, label) => z.string().trim().max(max, label + " maksimal " + max + " karakter.").transform(v => v || null);
-// FormData supplies strings; accept decimal digits before converting them to numbers.
+// Accept plain digits or Indonesian grouped rupiah strings before converting to numbers.
 const money = rupiahInteger.pipe(z.number().int().min(0).max(Number.MAX_SAFE_INTEGER));
 const positiveMoney = rupiahInteger.pipe(z.number().int().min(1).max(Number.MAX_SAFE_INTEGER));
 const uuidOrEmpty = z.union([z.string().uuid("Pilihan tidak valid."), z.literal("")]).transform(v => v || null);
