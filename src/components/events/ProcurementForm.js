@@ -4,6 +4,7 @@ import { saveProcurementItem } from "@/actions/procurement";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
+import { MoneyField } from "@/components/ui/MoneyField";
 const initial={message:"",errors:{},values:{}};
 export default function ProcurementForm({eventId,members,item=null}){
  const [state,action,pending]=useActionState(saveProcurementItem.bind(null,eventId,item?.id??null),initial);
