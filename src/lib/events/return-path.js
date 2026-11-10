@@ -13,9 +13,11 @@ const EVENT_SECTIONS = new Set([
 export function getEventReturnPath(eventId, formData) {
   const basePath = `/events/${eventId}`;
   const requestedPath = String(formData.get("return_to") || "");
-  const suffix = requestedPath.startsWith(basePath)
-    ? requestedPath.slice(basePath.length)
-    : "";
+  const belongsToEvent =
+    requestedPath === basePath || requestedPath.startsWith(`${basePath}/`);
 
+  if (!belongsToEvent) return basePath;
+
+  const suffix = requestedPath.slice(basePath.length);
   return EVENT_SECTIONS.has(suffix) ? requestedPath : basePath;
 }
