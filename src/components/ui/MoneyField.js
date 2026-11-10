@@ -22,7 +22,7 @@ function caretAfterDigits(formatted, digitCount) {
   return formatted.length;
 }
 
-// Input nominal menampilkan pemisah ribuan Indonesia, tetapi mengirim digit murni
+// Input nominal menampilkan pemisah ribuan Indonesia saat diketik; validator mengubahnya kembali menjadi angka.
 // melalui hidden input agar server action dan database tetap menerima angka biasa.
 export function MoneyField({
   id,
