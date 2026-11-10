@@ -4,6 +4,7 @@ import { saveBudgetCategory } from "@/actions/finance";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
+import { MoneyField } from "@/components/ui/MoneyField";
 
 const initial = { message: "", errors: {}, values: {} };
 export default function BudgetCategoryForm({ eventId, category = null }) {
