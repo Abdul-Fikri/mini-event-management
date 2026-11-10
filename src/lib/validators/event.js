@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { rupiahInteger } from "@/lib/validators/money";
 
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal tidak valid.");
 const optionalText = (max, label) =>
@@ -13,7 +14,7 @@ const baseEventSchema = z.object({
   location: optionalText(200, "Lokasi"),
   status: z.enum(["draft", "planned", "ongoing", "completed", "cancelled"]),
   coordinator_id: z.union([z.string().uuid("Koordinator tidak valid."), z.literal("")]).transform((v) => v || null),
-  target_budget: z.union([z.string(), z.literal("")]).transform((v) => v === "" ? null : Number(v)).pipe(z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).nullable()),
+  target_budget: z.union([rupiahInteger, z.literal("")]).transform((v) => v === "" ? null : v).pipe(z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).nullable()),
 }).refine((v) => !v.end_date || v.end_date >= v.start_date, {
   path: ["end_date"],
   message: "Tanggal selesai tidak boleh sebelum tanggal mulai.",
