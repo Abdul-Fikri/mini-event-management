@@ -31,6 +31,14 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 - No database migration or historical data rewrite is included.
 - PR #18's earlier Vercel check was affected by `build-rate-limit`; this is a deployment quota status, not an application build result. Production deployment of the merge was not independently confirmed. The assistant did not run `npm run lint`, `npm run build`, or browser E2E tests for PR #18.
 
+## Finance amount validation — PR #19
+
+- PR #19 is open: https://github.com/Abdul-Fikri/mini-event-management/pull/19
+- Working branch: `fix/budget-category-amount-validation`, based on the `main` head after PR #18.
+- The budget category amount validator previously used a double-escaped digit regex, causing values such as `1000000` to fail. The positive-integer regex for transaction amounts had the same issue.
+- Both patterns are corrected. Budget category amounts accept zero or a positive integer; transaction amounts must be positive integers. The form explains that input should use digits without thousand separators.
+- Direct regex checks passed for valid integer, zero, decimal, negative, and empty cases. Lint/build/browser E2E have not been run by the assistant.
+
 ## Group logo upload
 
 - Final implementation is in PR #16, merged to `main`.
