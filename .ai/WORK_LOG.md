@@ -16,7 +16,7 @@ Record significant project changes, decisions, pull requests, and verification. 
 - PR #12–#15: iterative group-logo bucket/session/RLS troubleshooting — merged.
 - PR #16: final group-logo Storage upload/removal moved to Owner-authorized server actions with a server-only Supabase admin client — merged to `main` at `a45c594346dcedc4c993a5f0bea17543994aa6da`.
 - Owner confirmed group-logo upload now succeeds after PR #16. Post-fix removal/cleanup still needs a separate UAT confirmation.
-- PR #18: add Asia/Jakarta-aware event date validation while preserving unchanged historical event dates; keep historical rundown dates in range; task deadlines are optional and fully flexible (past/current/future values accepted on create and update); preserve historical finance transactions — open on `fix/event-date-validation`. Owner confirmed the flexible task-deadline policy on 9 November 2026. Vercel check succeeded for source-code commit `31b501723fdc3775054af4a0380b4365901d2d1d`; the current PR head is blocked by Vercel `build-rate-limit`. Local lint/build/E2E were not run by the assistant.
+- PR #18: add Asia/Jakarta-aware event date validation while preserving unchanged historical event dates; keep historical rundown dates in range; task deadlines are optional and fully flexible (past/current/future values accepted on create and update); preserve historical finance transactions — merged to `main` on 10 November 2026. Owner confirmed the flexible task-deadline policy on 9 November 2026. Local lint/build/E2E were not run by the assistant.
 - PR #17: refresh README, Project Handbook, Database & Migrations, Implementation Status, and shared AI context after PR #16 — merged to `main`.
 
 ## Maintenance
