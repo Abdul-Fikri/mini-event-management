@@ -1,8 +1,9 @@
 import { z } from "zod";
 
 const optionalText = (max, label) => z.string().trim().max(max, label + " maksimal " + max + " karakter.").transform(v => v || null);
-const money = z.string().regex(/^\\d+$/, "Nominal harus berupa bilangan bulat.").transform(Number).pipe(z.number().int().min(0).max(Number.MAX_SAFE_INTEGER));
-const positiveMoney = z.string().regex(/^[1-9]\\d*$/, "Nominal harus lebih dari 0 dan berupa bilangan bulat.").transform(Number).pipe(z.number().int().min(1).max(Number.MAX_SAFE_INTEGER));
+// FormData supplies strings; accept decimal digits before converting them to numbers.
+const money = z.string().regex(/^\d+$/, "Nominal harus berupa bilangan bulat.").transform(Number).pipe(z.number().int().min(0).max(Number.MAX_SAFE_INTEGER));
+const positiveMoney = z.string().regex(/^[1-9]\d*$/, "Nominal harus lebih dari 0 dan berupa bilangan bulat.").transform(Number).pipe(z.number().int().min(1).max(Number.MAX_SAFE_INTEGER));
 const uuidOrEmpty = z.union([z.string().uuid("Pilihan tidak valid."), z.literal("")]).transform(v => v || null);
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal transaksi wajib diisi.");
 
