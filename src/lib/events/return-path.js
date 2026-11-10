@@ -1,0 +1,21 @@
+const EVENT_SECTIONS = new Set([
+  "",
+  "/panitia",
+  "/rundown",
+  "/tugas",
+  "/pengadaan",
+  "/keuangan",
+  "/ekspor",
+]);
+
+// Redirect hanya boleh kembali ke halaman dalam event yang sama.
+// Nilai return_to berasal dari hidden input, jadi tetap divalidasi di server.
+export function getEventReturnPath(eventId, formData) {
+  const basePath = `/events/${eventId}`;
+  const requestedPath = String(formData.get("return_to") || "");
+  const suffix = requestedPath.startsWith(basePath)
+    ? requestedPath.slice(basePath.length)
+    : "";
+
+  return EVENT_SECTIONS.has(suffix) ? requestedPath : basePath;
+}
