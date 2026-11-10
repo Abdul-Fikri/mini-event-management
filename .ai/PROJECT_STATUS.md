@@ -11,7 +11,7 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 - Earlier observations: Dashboard Performance 96; Event/Panitia route Performance 91. Do not compare scores without matching route and test conditions.
 
 ## GitHub state at this review
-- Current `main` head: `a95187e7fea0e3f6cba6808e0783d3295e666254` — merge commit for PR #17.
+- Current `main` head: `ace418aa87ecb38d89aad8668e9c6d5d3a92dfae` — merge commit for PR #18.
 - PR #8 (Lottie route-level loading animation): merged.
 - PR #9 (global loading feedback): merged.
 - PR #10 (public project documentation and UAS rubric mapping): merged.
