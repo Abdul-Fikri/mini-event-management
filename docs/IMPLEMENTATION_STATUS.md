@@ -103,7 +103,7 @@ Use this checklist for future UAT:
 - [ ] Owner register/login/logout and session refresh.
 - [ ] Onboarding and group settings.
 - [ ] Member CRUD and group scoping.
-- [ ] Event CRUD and cross-group URL access rejection.
+- [ ] Event CRUD and cross-group URL access rejection; confirm target budget input formats `500000` as `500.000` and normalizes it to a numeric value.
 - [ ] Creating an event with a past start date is rejected.
 - [ ] Creating an event with a past end date is rejected; an end date before the start date is rejected.
 - [ ] Editing a legacy event while keeping its existing past dates unchanged is allowed.
