@@ -36,7 +36,7 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 - PR #19 is open: https://github.com/Abdul-Fikri/mini-event-management/pull/19
 - Working branch: `fix/budget-category-amount-validation`, based on the `main` head after PR #18.
 - The budget category amount validator previously used a double-escaped digit regex, causing values such as `1000000` to fail. The positive-integer regex for transaction amounts had the same issue.
-- Both patterns are corrected. Budget category amounts accept zero or a positive integer; transaction amounts must be positive integers. A reusable `MoneyField` automatically formats rupiah values with dot thousand separators and submits raw digits for event target budgets, budget categories, transactions, and procurement unit prices.
+- Both patterns are corrected. Budget category amounts accept zero or a positive integer; transaction amounts must be positive integers. A reusable `MoneyField` automatically formats rupiah values with dot thousand separators for event target budgets, budget categories, transactions, and procurement unit prices. Shared Zod validation accepts grouped or plain-digit strings and normalizes them to numbers before persistence.
 - Direct regex checks passed for valid integer, zero, decimal, negative, and empty cases. Lint/build/browser E2E have not been run by the assistant.
 
 ## Group logo upload
