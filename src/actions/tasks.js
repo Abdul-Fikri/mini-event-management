@@ -5,9 +5,11 @@ import { requireGroup } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { taskFields,taskSchema } from "@/lib/validators/task";
 import { fieldErrors,readForm } from "@/lib/validators/helpers";
+import { getEventReturnPath } from "@/lib/events/return-path";
 const empty={message:"",errors:{},values:{}};
 export async function saveTask(eventId,taskId,_prev,formData){
  const {group}=await requireGroup();
+ const returnPath=getEventReturnPath(eventId,formData);
  const values=readForm(formData,taskFields);
  const parsed=taskSchema.safeParse(values);
  if(!parsed.success)return {...empty,message:"Periksa kembali data tugas.",errors:fieldErrors(parsed.error),values};
@@ -24,15 +26,16 @@ export async function saveTask(eventId,taskId,_prev,formData){
   :supabase.from("tasks").insert(payload).select("id").single();
  const {data,error}=await query;
  if(error||!data){console.error("[saveTask]",error?.code,error?.message);return {...empty,message:"Tugas gagal disimpan. Periksa kembali datanya.",values};}
- revalidatePath("/events/"+eventId);redirect("/events/"+eventId);
+ revalidatePath("/events/"+eventId);revalidatePath(returnPath);redirect(returnPath);
 }
 export async function deleteTask(formData){
  const {group}=await requireGroup();
  const eventId=String(formData.get("event_id")||"");
  const taskId=String(formData.get("task_id")||"");
  if(!eventId||!taskId)return;
+ const returnPath=getEventReturnPath(eventId,formData);
  const supabase=await createClient();
  const {error}=await supabase.from("tasks").delete().eq("id",taskId).eq("event_id",eventId).eq("group_id",group.id);
  if(error)throw new Error("Tugas gagal dihapus.");
- revalidatePath("/events/"+eventId);redirect("/events/"+eventId);
+ revalidatePath("/events/"+eventId);revalidatePath(returnPath);redirect(returnPath);
 }
