@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { rupiahInteger } from "@/lib/validators/money";
 const optionalText=(max,label)=>z.string().trim().max(max,label+" maksimal "+max+" karakter.").transform(v=>v||null);
-const optionalMoney=z.union([z.string().regex(/^\d+$/,"Harga harus berupa bilangan bulat."),z.literal("")]).transform(v=>v===""?null:Number(v)).pipe(z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).nullable());
+const optionalMoney=z.union([rupiahInteger,z.literal("")]).transform(v=>v===""?null:v).pipe(z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).nullable());
 export const procurementSchema=z.object({
  name:z.string().trim().min(1,"Nama barang wajib diisi.").max(160,"Nama barang maksimal 160 karakter."),
  specification:optionalText(500,"Spesifikasi"),
