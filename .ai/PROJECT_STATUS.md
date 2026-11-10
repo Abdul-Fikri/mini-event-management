@@ -23,8 +23,8 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 
 ## Event date validation — PR #18
 
-- PR #18 is open: https://github.com/Abdul-Fikri/mini-event-management/pull/18
-- Working branch: `fix/event-date-validation`, based on the latest `main` head above.
+- PR #18 is merged to `main` on 10 November 2026: https://github.com/Abdul-Fikri/mini-event-management/pull/18
+- Its event-date rules and flexible task-deadline behavior are now part of `main`.
 - New events require a start date on or after today in Asia/Jakarta; an optional end date must also be today or later and cannot precede the start date.
 - When editing an existing event, stored past dates may remain unchanged. Any changed start/end date must be today or later; the Server Action loads the stored dates before validating.
 - Rundown dates remain inside the event range and may be historical. Task deadlines are optional and can be created or edited to past, current, or future dates. Finance transaction dates may also be historical.
