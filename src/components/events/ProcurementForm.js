@@ -10,6 +10,7 @@ export default function ProcurementForm({eventId,members,item=null}){
  const [state,action,pending]=useActionState(saveProcurementItem.bind(null,eventId,item?.id??null),initial);
  const value=key=>state.values?.[key]??(item?.[key]??"");
  return <form action={action} className="space-y-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+  <input type="hidden" name="return_to" value={`/events/${eventId}/pengadaan`}/>
   {state.message?<Alert>{state.message}</Alert>:null}
   <TextField id={"proc-name-"+(item?.id??"new")} name="name" label="Nama barang / kebutuhan" defaultValue={value("name")} error={state.errors?.name} required/>
   <TextField id={"proc-spec-"+(item?.id??"new")} name="specification" label="Spesifikasi" defaultValue={value("specification")} error={state.errors?.specification}/>
