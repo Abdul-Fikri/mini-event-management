@@ -1,7 +1,5 @@
 "use client";
 
-import { useRef } from "react";
-
 const BASE =
   "block w-full rounded-md border bg-white px-3 py-2 text-sm text-zinc-900 shadow-xs placeholder:text-zinc-400 focus:outline-none focus:ring-2 disabled:bg-zinc-100";
 const NORMAL = "border-zinc-300 focus:border-indigo-600 focus:ring-indigo-600/25";
@@ -44,8 +42,6 @@ export function MoneyField({
     [hint ? hintId : null, error ? errorId : null].filter(Boolean).join(" ") ||
     undefined;
 
-  const hiddenRef = useRef(null);
-
   function handleChange(event) {
     const input = event.currentTarget;
     const cursor = input.selectionStart ?? input.value.length;
@@ -54,8 +50,6 @@ export function MoneyField({
     const formatted = formatDigits(digits);
 
     input.value = formatted;
-    if (hiddenRef.current) hiddenRef.current.value = digits;
-
     const nextCursor = caretAfterDigits(formatted, digitsBeforeCursor);
     input.setSelectionRange(nextCursor, nextCursor);
   }
@@ -72,6 +66,7 @@ export function MoneyField({
       </label>
       <input
         id={id}
+        name={name}
         type="text"
         inputMode="numeric"
         autoComplete="off"
@@ -85,7 +80,6 @@ export function MoneyField({
         onChange={handleChange}
         className={`${BASE} ${error ? INVALID : NORMAL}`}
       />
-      <input ref={hiddenRef} type="hidden" name={name} defaultValue={initialDigits} />
       {hint ? (
         <p id={hintId} className="mt-1 text-xs text-zinc-500">
           {hint}
