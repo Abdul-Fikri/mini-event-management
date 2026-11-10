@@ -29,7 +29,7 @@ Tanggal hari ini untuk aturan event menggunakan zona waktu **Asia/Jakarta (WIB)*
 - Tanggal rundown (`schedule_items.item_date`) harus berada di dalam rentang tanggal event. Tanggal lampau tetap boleh dicatat jika masih berada dalam rentang event, termasuk untuk histori event yang sudah berjalan/selesai.
 - Deadline tugas (`tasks.due_date`) bersifat opsional dan fleksibel: dapat diisi tanggal lampau, hari ini, atau mendatang, serta dapat diubah kapan saja. Tidak ada batas minimum/maksimum tanggal; deadline lampau dapat digunakan untuk mencatat tugas terlambat.
 - Tanggal transaksi (`transactions.trx_date`) boleh lampau untuk pencatatan histori keuangan.
-- Nominal anggaran kategori dan transaksi menggunakan bilangan bulat rupiah. Isi angka tanpa pemisah titik/koma, misalnya `1000000` untuk Rp1.000.000. Anggaran kategori boleh bernilai 0; nominal transaksi harus lebih dari 0.
+- Semua input nominal rupiah (target anggaran event, anggaran kategori, transaksi, dan harga satuan pengadaan) otomatis menampilkan pemisah ribuan titik saat diketik, misalnya `500000` menjadi `500.000`. Form mengirim digit murni tanpa pemisah ke Server Action dan database. Anggaran kategori boleh bernilai 0; nominal transaksi harus lebih dari 0.
 - Modul pengadaan saat ini tidak memiliki input tanggal manual yang perlu dibatasi.
 
 Batasan tanggal pada event diterapkan melalui atribut `min` pada form sebagai bantuan pengguna dan validasi Zod di Server Action sebagai aturan otoritatif. Data lama tidak perlu diubah dan tidak memerlukan migration database.
