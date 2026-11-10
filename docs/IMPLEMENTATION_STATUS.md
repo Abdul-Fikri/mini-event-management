@@ -120,7 +120,7 @@ Use this checklist for future UAT:
 - [ ] Test task status/priority/deadline and task deletion.
 - [ ] Test procurement quantities, price fields, status, and deletion; confirm estimated/actual unit prices format with thousand separators and submit raw digits.
 - [ ] Test budget category amount: typing `500000` displays `500.000` and submits `500000`; decimal and negative values are rejected (zero is allowed for a planned category).
-- [ ] Test transaction amount: positive integer input is accepted; zero, decimal, and negative values are rejected.
+- [ ] Test transaction amount: typing `500000` displays `500.000` and submits `500000`; zero, decimal, and negative values are rejected.
 - [ ] Test invitation with correct email, wrong email, expired token, and reused token.
 - [ ] Confirm Panitia only sees assigned events and direct URL to unassigned event is rejected.
 - [ ] Confirm Panitia workspace remains read-only unless product requirements change.
