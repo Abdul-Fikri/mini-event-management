@@ -4,6 +4,7 @@ import { saveTransaction } from "@/actions/finance";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
+import { MoneyField } from "@/components/ui/MoneyField";
 
 const initial = { message: "", errors: {}, values: {} };
 const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
