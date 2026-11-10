@@ -96,7 +96,7 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
 ## 7. Validation status
 
-The baseline `main` source and documentation were reviewed through GitHub at merge commit `a95187e7fea0e3f6cba6808e0783d3295e666254` (PR #17). PR #18 on branch `fix/event-date-validation` adds the date rules described above and is open for review. The Vercel status check succeeded for source-code commit `31b501723fdc3775054af4a0380b4365901d2d1d`. The later documentation-only head `6f5941f2f2608a13b71970054db841ffbf28aa38` is blocked by Vercel `build-rate-limit`; this is a deployment quota status, not an application build error, and does not confirm production deployment. The assistant has not run the owner's local environment, browser E2E, `npm run lint`, or `npm run build`; do not treat source review as proof of runtime correctness.
+The current `main` source and documentation were reviewed through GitHub at merge commit `ace418aa87ecb38d89aad8668e9c6d5d3a92dfae` (PR #18). PR #18 is merged. PR #19 on branch `fix/budget-category-amount-validation` fixes the double-escaped integer regex for budget and transaction amounts and is open for review. Regex behavior was checked directly; the assistant has not run the owner's local environment, browser E2E, `npm run lint`, or `npm run build`; do not treat source review as proof of runtime correctness.
 
 Use this checklist for future UAT:
 
