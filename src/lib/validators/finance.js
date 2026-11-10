@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { rupiahInteger } from "@/lib/validators/money";
 
 const optionalText = (max, label) => z.string().trim().max(max, label + " maksimal " + max + " karakter.").transform(v => v || null);
 // FormData supplies strings; accept decimal digits before converting them to numbers.
