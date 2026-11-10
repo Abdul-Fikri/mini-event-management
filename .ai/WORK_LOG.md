@@ -17,7 +17,7 @@ Record significant project changes, decisions, pull requests, and verification. 
 - PR #16: final group-logo Storage upload/removal moved to Owner-authorized server actions with a server-only Supabase admin client — merged to `main` at `a45c594346dcedc4c993a5f0bea17543994aa6da`.
 - Owner confirmed group-logo upload now succeeds after PR #16. Post-fix removal/cleanup still needs a separate UAT confirmation.
 - PR #18: add Asia/Jakarta-aware event date validation while preserving unchanged historical event dates; keep historical rundown dates in range; task deadlines are optional and fully flexible (past/current/future values accepted on create and update); preserve historical finance transactions — merged to `main` on 10 November 2026. Owner confirmed the flexible task-deadline policy on 9 November 2026. Local lint/build/E2E were not run by the assistant.
-- PR #19: fix double-escaped digit regexes for budget category and transaction amount validation; add an input hint and update finance documentation — open on `fix/budget-category-amount-validation`. Direct regex checks passed; local lint/build/browser E2E have not been run by the assistant.
+- PR #19: fix double-escaped digit regexes for budget category and transaction amount validation; add reusable automatic rupiah formatting for event budgets, categories, transactions, and procurement prices; update documentation and UAT — open on `fix/budget-category-amount-validation`. Direct regex behavior checks passed; local lint/build/browser E2E have not been run by the assistant.
 - PR #17: refresh README, Project Handbook, Database & Migrations, Implementation Status, and shared AI context after PR #16 — merged to `main`.
 
 ## Maintenance
