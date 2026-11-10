@@ -19,7 +19,7 @@ export default function ProcurementForm({eventId,members,item=null}){
   </div>
   <div className="grid gap-3 sm:grid-cols-2">
    <MoneyField id={"proc-est-"+(item?.id??"new")} name="est_unit_price" label="Estimasi harga satuan (Rp)" defaultValue={value("est_unit_price")} hint="Pemisah ribuan ditambahkan otomatis." error={state.errors?.est_unit_price}/>
-   <TextField id={"proc-actual-"+(item?.id??"new")} name="actual_unit_price" label="Harga aktual satuan (Rp)" type="number" min="0" step="1" defaultValue={value("actual_unit_price")} error={state.errors?.actual_unit_price}/>
+   <MoneyField id={"proc-actual-"+(item?.id??"new")} name="actual_unit_price" label="Harga aktual satuan (Rp)" defaultValue={value("actual_unit_price")} hint="Pemisah ribuan ditambahkan otomatis." error={state.errors?.actual_unit_price}/>
   </div>
   <div className="grid gap-3 sm:grid-cols-2">
    <div><label htmlFor={"proc-pic-"+(item?.id??"new")} className="mb-1 block text-sm font-medium">PIC</label><select id={"proc-pic-"+(item?.id??"new")} name="pic_member_id" defaultValue={value("pic_member_id")} className="block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm"><option value="">Belum ditentukan</option>{members.map(m=><option key={m.id} value={m.id}>{m.full_name}</option>)}</select>{state.errors?.pic_member_id?<p className="mt-1 text-sm text-red-700">{state.errors.pic_member_id}</p>:null}</div>
