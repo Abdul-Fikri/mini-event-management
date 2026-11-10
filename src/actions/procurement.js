@@ -5,9 +5,11 @@ import { requireGroup } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { procurementFields,procurementSchema } from "@/lib/validators/procurement";
 import { fieldErrors,readForm } from "@/lib/validators/helpers";
+import { getEventReturnPath } from "@/lib/events/return-path";
 const empty={message:"",errors:{},values:{}};
 export async function saveProcurementItem(eventId,itemId,_prev,formData){
  const {group}=await requireGroup();
+ const returnPath=getEventReturnPath(eventId,formData);
  const values=readForm(formData,procurementFields);
  const parsed=procurementSchema.safeParse(values);
  if(!parsed.success)return {...empty,message:"Periksa kembali data kebutuhan perlengkapan.",errors:fieldErrors(parsed.error),values};
@@ -24,15 +26,16 @@ export async function saveProcurementItem(eventId,itemId,_prev,formData){
   :supabase.from("procurement_items").insert(payload).select("id").single();
  const {data,error}=await query;
  if(error||!data){console.error("[saveProcurementItem]",error?.code,error?.message);return {...empty,message:"Data perlengkapan gagal disimpan. Periksa kembali datanya.",values};}
- revalidatePath("/events/"+eventId);redirect("/events/"+eventId);
+ revalidatePath("/events/"+eventId);revalidatePath(returnPath);redirect(returnPath);
 }
 export async function deleteProcurementItem(formData){
  const {group}=await requireGroup();
  const eventId=String(formData.get("event_id")||"");
  const itemId=String(formData.get("item_id")||"");
  if(!eventId||!itemId)return;
+ const returnPath=getEventReturnPath(eventId,formData);
  const supabase=await createClient();
  const {error}=await supabase.from("procurement_items").delete().eq("id",itemId).eq("event_id",eventId).eq("group_id",group.id);
  if(error)throw new Error("Data perlengkapan gagal dihapus.");
- revalidatePath("/events/"+eventId);redirect("/events/"+eventId);
+ revalidatePath("/events/"+eventId);revalidatePath(returnPath);redirect(returnPath);
 }

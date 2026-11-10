@@ -5,9 +5,10 @@ import { requireGroup } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { scheduleFields,scheduleSchema } from "@/lib/validators/schedule";
 import { fieldErrors,readForm } from "@/lib/validators/helpers";
+import { getEventReturnPath } from "@/lib/events/return-path";
 const empty={message:"",errors:{},values:{}};
 export async function saveScheduleItem(eventId,itemId,_prev,formData){
- const {group}=await requireGroup(); const values=readForm(formData,scheduleFields); const parsed=scheduleSchema.safeParse(values);
+ const {group}=await requireGroup(); const returnPath=getEventReturnPath(eventId,formData); const values=readForm(formData,scheduleFields); const parsed=scheduleSchema.safeParse(values);
  if(!parsed.success)return {...empty,message:"Periksa kembali data rundown.",errors:fieldErrors(parsed.error),values};
  const supabase=await createClient();
  const {data:event}=await supabase.from("events").select("id,start_date,end_date").eq("id",eventId).eq("group_id",group.id).maybeSingle();
@@ -20,10 +21,10 @@ export async function saveScheduleItem(eventId,itemId,_prev,formData){
  const query=itemId?supabase.from("schedule_items").update(payload).eq("id",itemId).eq("event_id",eventId).eq("group_id",group.id).select("id").maybeSingle():supabase.from("schedule_items").insert(payload).select("id").single();
  const {data,error}=await query;
  if(error||!data){console.error("[saveScheduleItem]",error?.code,error?.message);return {...empty,message:"Kegiatan rundown gagal disimpan. Coba periksa kembali datanya.",values};}
- revalidatePath("/events/"+eventId);redirect("/events/"+eventId);
+ revalidatePath("/events/"+eventId);revalidatePath(returnPath);redirect(returnPath);
 }
 export async function deleteScheduleItem(formData){
- const {group}=await requireGroup();const eventId=String(formData.get("event_id")||"");const itemId=String(formData.get("item_id")||"");if(!eventId||!itemId)return;
+ const {group}=await requireGroup();const eventId=String(formData.get("event_id")||"");const itemId=String(formData.get("item_id")||"");if(!eventId||!itemId)return;const returnPath=getEventReturnPath(eventId,formData);
  const supabase=await createClient();const {error}=await supabase.from("schedule_items").delete().eq("id",itemId).eq("event_id",eventId).eq("group_id",group.id);
- if(error)throw new Error("Kegiatan rundown gagal dihapus.");revalidatePath("/events/"+eventId);redirect("/events/"+eventId);
+ if(error)throw new Error("Kegiatan rundown gagal dihapus.");revalidatePath("/events/"+eventId);revalidatePath(returnPath);redirect(returnPath);
 }

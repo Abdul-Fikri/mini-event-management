@@ -19,13 +19,13 @@ Source branch reviewed: main at merge commit a95187e7fea0e3f6cba6808e0783d3295e6
 | Rundown | Create/update/delete schedule items | PIC restricted to current event roster |
 | Tasks | Create/update/delete tasks | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
 | Procurement | Create/update/delete procurement items | PIC restricted to current event roster |
-| Finance | Budget categories and income/expense transactions | Owner workflow; historical transaction dates remain allowed |
+| Finance | Budget categories and income/expense transactions | Owner workflow; budget and transaction amounts use integer rupiah values; historical transaction dates remain allowed |
 | CSV export | Committee, schedule, tasks, procurement, finance, members | \`members\` export is group-wide |
 | Invitations | Create email-bound token and claim through RPC | Requires migration and correct email |
 | Panitia workspace | List assigned events and read event/rundown/tasks/procurement | Read-only in current UI |
 | Group logo | Upload/remove through Owner-authorized Server Actions and server-only Supabase admin client | Max 2 MB; JPG/PNG/WebP; Owner verified with \`requireGroup()\`; metadata update uses Owner session client. Owner confirms upload now succeeds after PR #16. Re-test removal separately. |
 | Public catalog | Static \`/contoh-event\` page | Public content |
-| Event subnavigation | Active tab based on pathname | Overview, Panitia, Rundown, Tugas, Pengadaan, Keuangan, Ekspor |
+| Event subnavigation | Active tab based on pathname; event CRUD returns to the same subpage after success | Overview, Panitia, Rundown, Tugas, Pengadaan, Keuangan, Ekspor |
 
 ## 2. Important domain behavior
 
@@ -96,14 +96,15 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
 ## 7. Validation status
 
-The baseline `main` source and documentation were reviewed through GitHub at merge commit `a95187e7fea0e3f6cba6808e0783d3295e666254` (PR #17). PR #18 on branch `fix/event-date-validation` adds the date rules described above and is open for review. The Vercel status check succeeded for source-code commit `31b501723fdc3775054af4a0380b4365901d2d1d`. The later documentation-only head `6f5941f2f2608a13b71970054db841ffbf28aa38` is blocked by Vercel `build-rate-limit`; this is a deployment quota status, not an application build error, and does not confirm production deployment. The assistant has not run the owner's local environment, browser E2E, `npm run lint`, or `npm run build`; do not treat source review as proof of runtime correctness.
+The current `main` source and documentation were reviewed through GitHub at merge commit `ace418aa87ecb38d89aad8668e9c6d5d3a92dfae` (PR #18). PR #18 is merged. PR #19 on branch `fix/budget-category-amount-validation` fixes the double-escaped integer regex for budget and transaction amounts and adds a reusable `MoneyField` that formats rupiah with dot thousand separators while typing. It is used for event target budgets, budget categories, transactions, and procurement unit prices. A shared Zod schema accepts plain or dot-grouped rupiah strings and normalizes them to numbers before persistence. Event panitia, rundown, tasks, procurement, and finance create/edit/delete actions now return to the originating event subpage. The submitted `return_to` path is server-validated against an allowlist of pages within the same event, preventing external or cross-event redirects. Formatting and validation patterns were checked directly. Source review and route/return-path checks passed; the Vercel status for the latest navigation implementation head is failure with `build-rate-limit` (preview build quota/rate limit), not an application compilation result. The assistant has not run the owner's local environment, browser E2E, `npm run lint`, or `npm run build`; do not treat source review as proof of runtime correctness.
 
 Use this checklist for future UAT:
 
 - [ ] Owner register/login/logout and session refresh.
 - [ ] Onboarding and group settings.
 - [ ] Member CRUD and group scoping.
-- [ ] Event CRUD and cross-group URL access rejection.
+- [ ] Event CRUD and cross-group URL access rejection; confirm target budget input formats `500000` as `500.000` and normalizes it to a numeric value.
+- [ ] After create/edit/delete in Panitia, Rundown, Tugas, Pengadaan, and Keuangan, confirm the app returns to the same active event subpage rather than Overview.
 - [ ] Creating an event with a past start date is rejected.
 - [ ] Creating an event with a past end date is rejected; an end date before the start date is rejected.
 - [ ] Editing a legacy event while keeping its existing past dates unchanged is allowed.
@@ -118,8 +119,9 @@ Use this checklist for future UAT:
 - [ ] Confirm forged Server Action submissions are rejected for non-event-members.
 - [ ] Test rundown date boundaries and time validation.
 - [ ] Test task status/priority/deadline and task deletion.
-- [ ] Test procurement quantities, price fields, status, and deletion.
-- [ ] Test budget categories and income/expense transactions.
+- [ ] Test procurement quantities, price fields, status, and deletion; confirm estimated/actual unit prices format with thousand separators and are normalized to numeric values.
+- [ ] Test budget category amount: typing `500000` displays `500.000` and is normalized to numeric `500000`; decimal and negative values are rejected (zero is allowed for a planned category).
+- [ ] Test transaction amount: typing `500000` displays `500.000` and is normalized to numeric `500000`; zero, decimal, and negative values are rejected.
 - [ ] Test invitation with correct email, wrong email, expired token, and reused token.
 - [ ] Confirm Panitia only sees assigned events and direct URL to unassigned event is rejected.
 - [ ] Confirm Panitia workspace remains read-only unless product requirements change.

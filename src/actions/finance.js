@@ -5,9 +5,9 @@ import { requireGroup } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { budgetCategoryFields, budgetCategorySchema, transactionFields, transactionSchema } from "@/lib/validators/finance";
 import { fieldErrors, readForm } from "@/lib/validators/helpers";
+import { getEventReturnPath } from "@/lib/events/return-path";
 
 const empty = { message: "", errors: {}, values: {} };
-const path = eventId => "/events/" + eventId;
 
 async function ownedEvent(supabase, eventId, groupId) {
   const { data } = await supabase.from("events").select("id").eq("id", eventId).eq("group_id", groupId).maybeSingle();
@@ -16,6 +16,7 @@ async function ownedEvent(supabase, eventId, groupId) {
 
 export async function saveBudgetCategory(eventId, categoryId, _prev, formData) {
   const { group } = await requireGroup();
+  const returnPath = getEventReturnPath(eventId, formData);
   const values = readForm(formData, budgetCategoryFields);
   const parsed = budgetCategorySchema.safeParse(values);
   if (!parsed.success) return { ...empty, message: "Periksa kembali kategori anggaran.", errors: fieldErrors(parsed.error), values };
@@ -30,8 +31,9 @@ export async function saveBudgetCategory(eventId, categoryId, _prev, formData) {
     const message = error?.code === "23505" ? "Nama kategori tersebut sudah digunakan pada event ini." : "Kategori anggaran gagal disimpan.";
     return { ...empty, message, values };
   }
-  revalidatePath(path(eventId));
-  redirect(path(eventId));
+  revalidatePath(`/events/${eventId}`);
+  revalidatePath(returnPath);
+  redirect(returnPath);
 }
 
 export async function deleteBudgetCategory(formData) {
@@ -39,18 +41,21 @@ export async function deleteBudgetCategory(formData) {
   const eventId = String(formData.get("event_id") || "");
   const categoryId = String(formData.get("category_id") || "");
   if (!eventId || !categoryId) return;
+  const returnPath = getEventReturnPath(eventId, formData);
   const supabase = await createClient();
   const { error } = await supabase.from("budget_categories").delete().eq("id", categoryId).eq("event_id", eventId).eq("group_id", group.id);
   if (error) {
-    if (error.code === "23503") redirect(path(eventId) + "?finance_error=category_in_use");
+    if (error.code === "23503") redirect(`${returnPath}?finance_error=category_in_use`);
     throw new Error("Kategori anggaran gagal dihapus.");
   }
-  revalidatePath(path(eventId));
-  redirect(path(eventId));
+  revalidatePath(`/events/${eventId}`);
+  revalidatePath(returnPath);
+  redirect(returnPath);
 }
 
 export async function saveTransaction(eventId, transactionId, _prev, formData) {
   const { group } = await requireGroup();
+  const returnPath = getEventReturnPath(eventId, formData);
   const values = readForm(formData, transactionFields);
   const parsed = transactionSchema.safeParse(values);
   if (!parsed.success) return { ...empty, message: "Periksa kembali data transaksi.", errors: fieldErrors(parsed.error), values };
@@ -70,8 +75,9 @@ export async function saveTransaction(eventId, transactionId, _prev, formData) {
     : supabase.from("transactions").insert(payload).select("id").single();
   const { data, error } = await query;
   if (error || !data) return { ...empty, message: "Transaksi gagal disimpan. Periksa kembali datanya.", values };
-  revalidatePath(path(eventId));
-  redirect(path(eventId));
+  revalidatePath(`/events/${eventId}`);
+  revalidatePath(returnPath);
+  redirect(returnPath);
 }
 
 export async function deleteTransaction(formData) {
@@ -79,9 +85,11 @@ export async function deleteTransaction(formData) {
   const eventId = String(formData.get("event_id") || "");
   const transactionId = String(formData.get("transaction_id") || "");
   if (!eventId || !transactionId) return;
+  const returnPath = getEventReturnPath(eventId, formData);
   const supabase = await createClient();
   const { error } = await supabase.from("transactions").delete().eq("id", transactionId).eq("event_id", eventId).eq("group_id", group.id);
   if (error) throw new Error("Transaksi gagal dihapus.");
-  revalidatePath(path(eventId));
-  redirect(path(eventId));
+  revalidatePath(`/events/${eventId}`);
+  revalidatePath(returnPath);
+  redirect(returnPath);
 }

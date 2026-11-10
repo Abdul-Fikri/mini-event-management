@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requireGroup } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { fieldErrors, readForm } from "@/lib/validators/helpers";
+import { getEventReturnPath } from "@/lib/events/return-path";
 
 const schema = z.object({
   member_id: z.string().uuid("Pilih anggota yang valid."),
@@ -17,6 +18,7 @@ const empty = { message:"", errors:{}, values:{} };
 
 export async function saveEventMember(eventId, assignmentId, _prev, formData) {
   const { group } = await requireGroup();
+  const returnPath = getEventReturnPath(eventId, formData);
   const values = readForm(formData, fields);
   const parsed = schema.safeParse(values);
   if (!parsed.success) return { ...empty, message:"Periksa kembali isian susunan panitia.", errors:fieldErrors(parsed.error), values };
@@ -35,7 +37,8 @@ export async function saveEventMember(eventId, assignmentId, _prev, formData) {
     return { ...empty, message:error?.code === "23505" ? "Anggota ini sudah terdaftar dalam susunan panitia event." : "Susunan panitia gagal disimpan.", values };
   }
   revalidatePath(`/events/${eventId}`);
-  redirect(`/events/${eventId}`);
+  revalidatePath(returnPath);
+  redirect(returnPath);
 }
 
 export async function deleteEventMember(formData) {
@@ -43,9 +46,11 @@ export async function deleteEventMember(formData) {
   const eventId = String(formData.get("event_id") || "");
   const assignmentId = String(formData.get("assignment_id") || "");
   if (!eventId || !assignmentId) return;
+  const returnPath = getEventReturnPath(eventId, formData);
   const supabase = await createClient();
   const { error } = await supabase.from("event_members").delete().eq("id",assignmentId).eq("event_id",eventId).eq("group_id",group.id);
   if (error) throw new Error("Anggota gagal dikeluarkan dari susunan panitia.");
   revalidatePath(`/events/${eventId}`);
-  redirect(`/events/${eventId}`);
+  revalidatePath(returnPath);
+  redirect(returnPath);
 }

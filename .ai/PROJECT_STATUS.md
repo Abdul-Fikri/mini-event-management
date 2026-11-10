@@ -11,7 +11,7 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 - Earlier observations: Dashboard Performance 96; Event/Panitia route Performance 91. Do not compare scores without matching route and test conditions.
 
 ## GitHub state at this review
-- Current `main` head: `a95187e7fea0e3f6cba6808e0783d3295e666254` — merge commit for PR #17.
+- Current `main` head: `ace418aa87ecb38d89aad8668e9c6d5d3a92dfae` — merge commit for PR #18.
 - PR #8 (Lottie route-level loading animation): merged.
 - PR #9 (global loading feedback): merged.
 - PR #10 (public project documentation and UAS rubric mapping): merged.
@@ -23,13 +23,21 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 
 ## Event date validation — PR #18
 
-- PR #18 is open: https://github.com/Abdul-Fikri/mini-event-management/pull/18
-- Working branch: `fix/event-date-validation`, based on the latest `main` head above.
+- PR #18 is merged to `main` on 10 November 2026: https://github.com/Abdul-Fikri/mini-event-management/pull/18
+- Its event-date rules and flexible task-deadline behavior are now part of `main`.
 - New events require a start date on or after today in Asia/Jakarta; an optional end date must also be today or later and cannot precede the start date.
 - When editing an existing event, stored past dates may remain unchanged. Any changed start/end date must be today or later; the Server Action loads the stored dates before validating.
 - Rundown dates remain inside the event range and may be historical. Task deadlines are optional and can be created or edited to past, current, or future dates. Finance transaction dates may also be historical.
 - No database migration or historical data rewrite is included.
-- The Vercel status check succeeded for source-code commit `31b501723fdc3775054af4a0380b4365901d2d1d`. The current PR #18 head is blocked by Vercel's `build-rate-limit`; this is a deployment quota status, not an application build result. Production deployment is not confirmed. The assistant did not run `npm run lint`, `npm run build`, or browser E2E tests.
+- PR #18's earlier Vercel check was affected by `build-rate-limit`; this is a deployment quota status, not an application build result. Production deployment of the merge was not independently confirmed. The assistant did not run `npm run lint`, `npm run build`, or browser E2E tests for PR #18.
+
+## Finance amount validation — PR #19
+
+- PR #19 is open: https://github.com/Abdul-Fikri/mini-event-management/pull/19
+- Working branch: `fix/budget-category-amount-validation`, based on the `main` head after PR #18.
+- The budget category amount validator previously used a double-escaped digit regex, causing values such as `1000000` to fail. The positive-integer regex for transaction amounts had the same issue.
+- Both patterns are corrected. Budget category amounts accept zero or a positive integer; transaction amounts must be positive integers. A reusable `MoneyField` automatically formats rupiah values with dot thousand separators for event target budgets, budget categories, transactions, and procurement unit prices. Shared Zod validation accepts grouped or plain-digit strings and normalizes them to numbers before persistence.
+- Direct regex/formatting checks passed. Panitia, rundown, task, procurement, and finance create/edit/delete actions now carry a validated `return_to` path and redirect to the originating subpage after success. The helper only allows known routes under the same event ID. The Vercel status for the latest navigation implementation head is failure with `build-rate-limit` (preview build quota/rate limit); this is not a source compilation result. Local lint/build/browser E2E have not been run by the assistant.
 
 ## Group logo upload
 
