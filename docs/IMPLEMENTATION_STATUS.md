@@ -25,7 +25,7 @@ Source branch reviewed: main at merge commit a95187e7fea0e3f6cba6808e0783d3295e6
 | Panitia workspace | List assigned events and read event/rundown/tasks/procurement | Read-only in current UI |
 | Group logo | Upload/remove through Owner-authorized Server Actions and server-only Supabase admin client | Max 2 MB; JPG/PNG/WebP; Owner verified with \`requireGroup()\`; metadata update uses Owner session client. Owner confirms upload now succeeds after PR #16. Re-test removal separately. |
 | Public catalog | Static \`/contoh-event\` page | Public content |
-| Event subnavigation | Active tab based on pathname | Overview, Panitia, Rundown, Tugas, Pengadaan, Keuangan, Ekspor |
+| Event subnavigation | Active tab based on pathname; event CRUD returns to the same subpage after success | Overview, Panitia, Rundown, Tugas, Pengadaan, Keuangan, Ekspor |
 
 ## 2. Important domain behavior
 
