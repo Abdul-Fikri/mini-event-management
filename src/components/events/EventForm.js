@@ -131,14 +131,12 @@ export default function EventForm({ event = null, members = [] }) {
             </p>
           ) : null}
         </div>
-        <TextField
+        <MoneyField
           id="target_budget"
           name="target_budget"
           label="Target anggaran (Rp)"
-          type="number"
-          min="0"
-          step="1"
           defaultValue={value("target_budget")}
+          hint="Pemisah ribuan ditambahkan otomatis, contoh: 500.000."
           error={state.errors?.target_budget}
         />
       </div>
