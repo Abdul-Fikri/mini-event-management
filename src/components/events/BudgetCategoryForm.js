@@ -11,6 +11,7 @@ export default function BudgetCategoryForm({ eventId, category = null }) {
   const [state, action, pending] = useActionState(saveBudgetCategory.bind(null, eventId, category?.id ?? null), initial);
   const value = key => state.values?.[key] ?? (category?.[key] ?? "");
   return <form action={action} className="space-y-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+    <input type="hidden" name="return_to" value={`/events/${eventId}/keuangan`}/>
     {state.message ? <Alert>{state.message}</Alert> : null}
     <TextField id={"budget-name-" + (category?.id ?? "new")} name="name" label="Nama kategori" defaultValue={value("name")} error={state.errors?.name} required/>
     <MoneyField id={"budget-plan-" + (category?.id ?? "new")} name="planned_amount" label="Anggaran rencana (Rp)" defaultValue={value("planned_amount")} hint="Pemisah ribuan ditambahkan otomatis, contoh: 500.000." error={state.errors?.planned_amount} required/>
