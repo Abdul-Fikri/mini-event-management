@@ -8,6 +8,10 @@ const NORMAL = "border-zinc-300 focus:border-indigo-600 focus:ring-indigo-600/25
 const INVALID = "border-red-500 focus:border-red-600 focus:ring-red-600/25";
 
 const onlyDigits = value => String(value ?? "").replace(/\D/g, "");
+const normalizeDigits = value => {
+  const digits = onlyDigits(value);
+  return digits.replace(/^0+/, "") || (digits ? "0" : "");
+};
 const formatDigits = digits => digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
 function caretAfterDigits(formatted, digitCount) {
@@ -32,7 +36,7 @@ export function MoneyField({
   required = false,
   placeholder = "0",
 }) {
-  const initialDigits = onlyDigits(defaultValue).replace(/^0+(?=\\d)/, "");
+  const initialDigits = normalizeDigits(defaultValue);
   const initialFormatted = formatDigits(initialDigits);
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
@@ -46,7 +50,7 @@ export function MoneyField({
     const input = event.currentTarget;
     const cursor = input.selectionStart ?? input.value.length;
     const digitsBeforeCursor = onlyDigits(input.value.slice(0, cursor)).length;
-    const digits = onlyDigits(input.value).replace(/^0+(?=\d)/, "");
+    const digits = normalizeDigits(input.value);
     const formatted = formatDigits(digits);
 
     input.value = formatted;
