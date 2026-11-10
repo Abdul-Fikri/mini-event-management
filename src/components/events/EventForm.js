@@ -5,6 +5,7 @@ import { saveEvent } from "@/actions/events";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
+import { MoneyField } from "@/components/ui/MoneyField";
 import { getTodayJakartaDate } from "@/lib/dates";
 
 const initial = { ok: false, message: "", errors: {}, values: {} };
