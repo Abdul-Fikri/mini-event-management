@@ -191,3 +191,20 @@ Jangan menambahkan prefix `NEXT_PUBLIC_`. Jangan pernah menaruh nilai key di bro
 Privileged key melewati RLS Storage. Karena itu, setiap jalur pemakaian wajib memverifikasi Owner dan grup di server terlebih dahulu. Jangan menghapus RLS, membuat bucket write-public, mengimpor admin client ke Client Component, atau memakai privileged client sebagai pengganti otorisasi. Metadata grup tetap ditulis dengan client session Owner agar kebijakan `groups` tetap berlaku.
 
 Pemilik mengonfirmasi upload logo berhasil setelah PR #16 merged. Penghapusan logo sudah diimplementasikan pada jalur server yang sama, tetapi hasil uji penghapusan setelah perubahan final perlu dicatat terpisah.
+
+## 11. Event lifecycle dan status mode
+
+Migration `20261112_event_lifecycle_automation.sql` menambahkan:
+
+- `events.status_mode` dengan nilai `automatic` atau `manual`.
+- `events.planning_start_date`, `events.preparation_start_date`, dan `events.evaluation_end_date`.
+- Constraint untuk mode status, urutan tanggal perencanaan/persiapan, serta akhir evaluasi setelah tanggal selesai event.
+- Nilai status tambahan: `planning`, `preparation`, dan `evaluation`.
+
+Kolom `status_mode` sengaja ditambahkan dengan default sementara `manual` agar seluruh event yang sudah ada tetap manual. Setelah backfill implisit oleh PostgreSQL, default kolom diubah menjadi `automatic` untuk event baru. Migration tidak mengubah nilai status yang sudah tersimpan dan tidak mengubah RLS/policy.
+
+Status otomatis dihitung oleh aplikasi pada saat membaca data berdasarkan tanggal Asia/Jakarta; migration ini tidak membuat cron, trigger, atau scheduled job. Kolom `status` tetap menyimpan status manual atau snapshot status saat penyimpanan, sedangkan tampilan mode otomatis wajib menggunakan resolver aplikasi.
+
+`supabase/schema.sql` juga diperbarui agar instalasi database baru memiliki struktur yang sama dengan skema setelah migration.
+
+**Status migration:** file SQL sudah dibuat di branch fitur, tetapi belum diterapkan ke Supabase. Owner harus meninjau dan menerapkannya ke database yang dituju sebelum runtime testing. Keberadaan file di Git bukan bukti migration sudah diterapkan.
