@@ -47,7 +47,7 @@ Source branch reviewed: main at merge commit a95187e7fea0e3f6cba6808e0783d3295e6
 - Task deadlines are optional and fully flexible: create/update accepts past, current, or future dates; no minimum/maximum date rule is applied.
 - Finance transaction dates may be in the past for historical bookkeeping.
 - Procurement currently has no user-entered date field affected by this rule.
-- The event form's HTML `min` attributes improve the input experience; Zod validation in the Server Action remains authoritative. No database migration or historical data rewrite is required.
+- The event form's HTML `min` attributes improve the input experience; Zod validation in the Server Action remains authoritative. These PR #18 validation rules did not require a migration or historical rewrite. The separate lifecycle automation feature is documented below and does require migration `20261112_event_lifecycle_automation.sql`.
 
 ## 3. Architecture notes
 
