@@ -14,7 +14,7 @@ export default function ProcurementForm({eventId,members,categories,item=null}){
  const [state,action,pending]=useActionState(saveProcurementItem.bind(null,eventId,item?.id??null),initial);
  const value=key=>state.values?.[key]??(item?.[key]??"");
  const selectedStatus = value("status") || "not_started";
- const defaultPurchaseDate = value("purchased_date") || (["purchased","ready"].includes(selectedStatus) ? today : "");
+ const defaultPurchaseDate = value("purchased_date") || "";
  return <form action={action} className="space-y-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
   <input type="hidden" name="return_to" value={`/events/${eventId}/pengadaan`}/>
   {state.message?<Alert>{state.message}</Alert>:null}
