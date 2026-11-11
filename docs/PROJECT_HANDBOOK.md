@@ -39,6 +39,7 @@ Pengadaan dan Keuangan tetap merupakan dua halaman dengan tanggung jawab berbeda
 
 - **Diminta** berarti kebutuhan diajukan, belum menjadi komitmen dan belum menjadi pengeluaran.
 - **Dipesan** berarti pesanan sudah dikonfirmasi. Nilai estimasi totalnya masuk ke komitmen anggaran, tetapi belum mengurangi saldo kas dan belum dihitung sebagai pengeluaran aktual.
+- Data lama dengan status `requested` tetap dianggap Diminta setelah migration; ubah manual menjadi Dipesan jika pesanan tersebut sebenarnya sudah dikonfirmasi.
 - **Sudah dibeli** atau **Siap digunakan** berarti pembelian telah terjadi. Harga aktual satuan wajib lebih dari Rp0; database otomatis membuat atau memperbarui satu transaksi bertipe expense pada tabel transactions.
 - Total transaksi pembelian dihitung dari harga aktual satuan dikali jumlah dan dibulatkan ke Rupiah terdekat. Tanggal transaksi mengikuti tanggal pembelian; jika kosong, tanggal hari ini Asia/Jakarta digunakan.
 - Pengadaan dapat memilih kategori anggaran. Kategori, deskripsi, tanggal, supplier/referensi, dan nominal transaksi otomatis mengikuti perubahan pada item pengadaan.
