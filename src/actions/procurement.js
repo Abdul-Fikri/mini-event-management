@@ -105,9 +105,18 @@ export async function syncProcurementItemToFinance(formData){
  if(!item)redirect(`${returnPath}?procurement_error=item_not_found`);
  if(!purchasedStatuses.has(item.status))redirect(`${returnPath}?procurement_error=not_purchased`);
  if(!item.actual_unit_price||item.actual_unit_price<=0)redirect(`${returnPath}?procurement_error=missing_actual_price`);
- const {error}=await supabase.from("procurement_items").update({purchased_date:item.purchased_date||getTodayJakartaDate()}).eq("id",itemId).eq("event_id",eventId).eq("group_id",group.id);
- if(error){
-  console.error("[syncProcurementItemToFinance]",error.code,error.message);
+ const {error:updateError}=await supabase.from("procurement_items").update({purchased_date:item.purchased_date||getTodayJakartaDate()}).eq("id",itemId).eq("event_id",eventId).eq("group_id",group.id);
+ if(updateError){
+  console.error("[syncProcurementItemToFinance:update]",updateError.code,updateError.message);
+  redirect(`${returnPath}?procurement_error=sync_failed`);
+ }
+ const {error:syncError}=await supabase.rpc("upsert_procurement_expense_for_item",{
+  p_item_id:itemId,
+  p_event_id:eventId,
+  p_group_id:group.id
+ });
+ if(syncError){
+  console.error("[syncProcurementItemToFinance:rpc]",syncError.code,syncError.message);
   redirect(`${returnPath}?procurement_error=sync_failed`);
  }
  procurementPaths(eventId,returnPath);
