@@ -1,41 +1,139 @@
 -- Integrate procurement commitments with the event finance ledger.
 -- Ordered items contribute to commitments; purchased items create one linked expense.
+-- Existing compatible columns are preserved; no column is dropped or overwritten.
 begin;
 
 alter table public.procurement_items
-  add column category_id uuid,
-  add column purchased_date date;
+  add column if not exists category_id uuid,
+  add column if not exists purchased_date date;
+
+-- Do not silently accept a same-named column with an incompatible type.
+do $$
+declare
+  category_id_type text;
+  purchased_date_type text;
+begin
+  select udt_name into category_id_type
+    from information_schema.columns
+   where table_schema = 'public'
+     and table_name = 'procurement_items'
+     and column_name = 'category_id';
+
+  select udt_name into purchased_date_type
+    from information_schema.columns
+   where table_schema = 'public'
+     and table_name = 'procurement_items'
+     and column_name = 'purchased_date';
+
+  if category_id_type is distinct from 'uuid' then
+    raise exception 'public.procurement_items.category_id must be uuid (found: %).',
+      category_id_type;
+  end if;
+
+  if purchased_date_type is distinct from 'date' then
+    raise exception 'public.procurement_items.purchased_date must be date (found: %).',
+      purchased_date_type;
+  end if;
+end;
+$$;
 
 alter table public.procurement_items
   drop constraint if exists procurement_items_status_check;
 
 alter table public.procurement_items
   add constraint procurement_items_status_check
-    check (status in ('not_started', 'requested', 'ordered', 'purchased', 'ready', 'not_needed')),
-  add constraint procurement_items_category_id_event_id_fkey
-    foreign key (category_id, event_id)
-    references public.budget_categories (id, event_id)
-    on delete set null (category_id),
-  add constraint procurement_items_id_event_group_key
-    unique (id, event_id, group_id);
+    check (status in ('not_started', 'requested', 'ordered', 'purchased', 'ready', 'not_needed'));
+
+-- Add integration constraints only when their named versions are absent.
+-- Existing columns/constraints are retained; incompatible column types stop above.
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+     where conrelid = 'public.procurement_items'::regclass
+       and conname = 'procurement_items_category_id_event_id_fkey'
+  ) then
+    alter table public.procurement_items
+      add constraint procurement_items_category_id_event_id_fkey
+      foreign key (category_id, event_id)
+      references public.budget_categories (id, event_id)
+      on delete set null (category_id);
+  end if;
+
+  if not exists (
+    select 1 from pg_constraint
+     where conrelid = 'public.procurement_items'::regclass
+       and conname = 'procurement_items_id_event_group_key'
+  ) then
+    alter table public.procurement_items
+      add constraint procurement_items_id_event_group_key
+      unique (id, event_id, group_id);
+  end if;
+end;
+$$;
 
 alter table public.transactions
-  add column procurement_item_id uuid,
-  add constraint transactions_procurement_item_id_key
-    unique (procurement_item_id),
-  add constraint transactions_procurement_item_expense_check
-    check (procurement_item_id is null or type = 'expense'),
-  add constraint transactions_procurement_item_id_event_id_group_id_fkey
-    foreign key (procurement_item_id, event_id, group_id)
-    references public.procurement_items (id, event_id, group_id)
-    on delete set null (procurement_item_id);
+  add column if not exists procurement_item_id uuid;
 
-create index procurement_category_idx
+do $$
+declare
+  procurement_item_id_type text;
+begin
+  select udt_name into procurement_item_id_type
+    from information_schema.columns
+   where table_schema = 'public'
+     and table_name = 'transactions'
+     and column_name = 'procurement_item_id';
+
+  if procurement_item_id_type is distinct from 'uuid' then
+    raise exception 'public.transactions.procurement_item_id must be uuid (found: %).',
+      procurement_item_id_type;
+  end if;
+end;
+$$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+     where conrelid = 'public.transactions'::regclass
+       and conname = 'transactions_procurement_item_id_key'
+  ) then
+    alter table public.transactions
+      add constraint transactions_procurement_item_id_key
+      unique (procurement_item_id);
+  end if;
+
+  if not exists (
+    select 1 from pg_constraint
+     where conrelid = 'public.transactions'::regclass
+       and conname = 'transactions_procurement_item_expense_check'
+  ) then
+    alter table public.transactions
+      add constraint transactions_procurement_item_expense_check
+      check (procurement_item_id is null or type = 'expense');
+  end if;
+
+  if not exists (
+    select 1 from pg_constraint
+     where conrelid = 'public.transactions'::regclass
+       and conname = 'transactions_procurement_item_id_event_id_group_id_fkey'
+  ) then
+    alter table public.transactions
+      add constraint transactions_procurement_item_id_event_id_group_id_fkey
+      foreign key (procurement_item_id, event_id, group_id)
+      references public.procurement_items (id, event_id, group_id)
+      on delete set null (procurement_item_id);
+  end if;
+end;
+$$;
+
+create index if not exists procurement_category_idx
   on public.procurement_items (category_id)
   where category_id is not null;
 
 -- If an item is marked as purchased/ready without a date, use today's Jakarta date.
-create function public.prepare_procurement_purchase_date()
+create or replace function public.prepare_procurement_purchase_date()
 returns trigger
 language plpgsql
 set search_path = ''
@@ -55,7 +153,7 @@ $$;
 
 -- Shared upsert routine. It is SECURITY INVOKER so table grants and Owner RLS
 -- remain in force for both the trigger and the explicit legacy-sync action.
-create function public.upsert_procurement_expense_for_item(
+create or replace function public.upsert_procurement_expense_for_item(
   p_item_id uuid,
   p_event_id uuid,
   p_group_id uuid
@@ -146,7 +244,7 @@ $$;
 -- Automatically create an expense when a new item is inserted as purchased,
 -- or when an existing item transitions into purchased/ready. Already-linked
 -- items remain synchronized when their purchase details are edited.
-create function public.sync_procurement_expense()
+create or replace function public.sync_procurement_expense()
 returns trigger
 language plpgsql
 set search_path = ''
@@ -180,12 +278,14 @@ begin
 end;
 $$;
 
+drop trigger if exists procurement_prepare_purchase_date on public.procurement_items;
 create trigger procurement_prepare_purchase_date
   before insert or update
   on public.procurement_items
   for each row
   execute function public.prepare_procurement_purchase_date();
 
+drop trigger if exists procurement_sync_finance_expense on public.procurement_items;
 create trigger procurement_sync_finance_expense
   after insert or update of
     status,
