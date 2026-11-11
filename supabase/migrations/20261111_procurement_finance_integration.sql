@@ -42,7 +42,11 @@ set search_path = ''
 as $$
 begin
   if new.status in ('purchased', 'ready') and new.purchased_date is null then
-    new.purchased_date := (now() at time zone 'Asia/Jakarta')::date;
+    if tg_op = 'INSERT' then
+      new.purchased_date := (now() at time zone 'Asia/Jakarta')::date;
+    elsif old.status not in ('purchased', 'ready') then
+      new.purchased_date := (now() at time zone 'Asia/Jakarta')::date;
+    end if;
   end if;
 
   return new;
