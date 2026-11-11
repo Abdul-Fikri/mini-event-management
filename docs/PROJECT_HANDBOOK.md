@@ -47,7 +47,7 @@ Pengadaan dan Keuangan tetap merupakan dua halaman dengan tanggung jawab berbeda
 - Constraint unik pada transactions.procurement_item_id mencegah satu item pengadaan membuat transaksi otomatis lebih dari satu kali.
 - Jika item Pengadaan dihapus setelah dibeli, transaksi pengeluarannya tetap disimpan sebagai histori; relasi item dilepas dan referensi sumber Pengadaan tetap ada.
 - Item berstatus Dipesan ditampilkan di Keuangan sebagai komitmen. Rumus sisa setelah komitmen = total anggaran kategori dikurangi pengeluaran aktual dikurangi komitmen. Saldo kas tetap = pemasukan dikurangi pengeluaran aktual.
-- Item lama yang sudah dibeli sebelum integrasi dapat disinkronkan dari halaman Pengadaan. Pengguna harus memastikan pembelian tersebut belum dicatat manual di Keuangan agar tidak terjadi duplikasi.
+- Item lama yang sudah dibeli sebelum integrasi tidak di-backfill otomatis. Item tersebut dapat disinkronkan satu per satu dari halaman Pengadaan setelah pengguna memastikan pembelian belum dicatat manual di Keuangan. Jika tanggal pembelian lama belum tersedia, isi tanggal sebenarnya pada form sebelum sinkronisasi; sistem tidak menebak tanggal histori.
 
 Batasan tanggal pada event diterapkan melalui atribut min pada form sebagai bantuan pengguna dan validasi Zod di Server Action sebagai aturan otoritatif. Data lama tidak perlu diubah untuk aturan tanggal event.
 
