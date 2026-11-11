@@ -199,9 +199,11 @@ create trigger procurement_sync_finance_expense
   for each row
   execute function public.sync_procurement_expense();
 
-revoke all on function public.prepare_procurement_purchase_date() from public, anon, authenticated;
-revoke all on function public.sync_procurement_expense() from public, anon, authenticated;
+revoke all on function public.prepare_procurement_purchase_date() from public, anon;
+revoke all on function public.sync_procurement_expense() from public, anon;
 revoke all on function public.upsert_procurement_expense_for_item(uuid, uuid, uuid) from public, anon;
+grant execute on function public.prepare_procurement_purchase_date() to authenticated;
+grant execute on function public.sync_procurement_expense() to authenticated;
 grant execute on function public.upsert_procurement_expense_for_item(uuid, uuid, uuid) to authenticated;
 
 commit;
