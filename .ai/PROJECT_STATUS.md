@@ -72,3 +72,13 @@ See `docs/IMPLEMENTASI-RUBRIK-UAS.md` for the public evidence mapping. Treat imp
 3. Test event membership boundaries, direct URL access to an unassigned event, and cross-group ID tampering.
 4. Confirm logo removal/replacement cleanup after PR #16.
 5. Record actual lint/build and Vercel production verification after the next code change.
+
+## Event lifecycle automation — implementation branch
+
+- Working branch: `feat/event-lifecycle-automation`, based on current `main` head `741ef267d36bc69aa13fdd84840de766f8af644b`.
+- PR #20 remains open and is not part of this branch.
+- Implemented in this branch: automatic/manual status mode, lifecycle dates and validation, shared Asia/Jakarta status resolver, dashboard/event list/Owner workspace/Panitia status display updates, SQL migration, initial schema update, and requirements/UAT documentation.
+- New events default to automatic mode. Existing rows become manual when the migration adds `status_mode`, preserving their existing status values.
+- Migration `20261112_event_lifecycle_automation.sql` has been authored but has not been applied to Supabase. Runtime behavior is therefore not yet verified.
+- Local `npm run lint`, `npm run build`, and browser E2E have not been run by the assistant because the repository could not be cloned in the execution environment. Do not claim these checks passed.
+- Review the live PR and Preview status after it is opened; do not merge or apply the migration without the Owner's explicit approval.
