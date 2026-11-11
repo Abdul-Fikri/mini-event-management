@@ -96,7 +96,7 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
 ## 7. Validation status
 
-PR #18 and PR #19 are merged to `main`. PR #19 corrected rupiah validation/formatting and preserves the originating event subpage after panitia, rundown, task, procurement, and finance CRUD. The current integration work is on branch `feat/procurement-finance-integration` and adds ordered procurement commitments plus database-triggered finance expenses for purchased/ready items. Source review is in progress; the new SQL migration has not been applied to Supabase. The assistant has not run local `npm run lint`, `npm run build`, or browser E2E for this integration; do not treat source review as runtime verification.
+PR #18 and PR #19 are merged to `main`. PR #19 corrected rupiah validation/formatting and preserves the originating event subpage after panitia, rundown, task, procurement, and finance CRUD. PR #20 is open on `feat/procurement-finance-integration`; it adds ordered procurement commitments plus database-triggered finance expenses for purchased/ready items. The Vercel Preview status for the current PR #20 head succeeded and GitHub reports the PR mergeable/clean. The SQL migration has not been applied to Supabase, and the assistant has not run local `npm run lint`, `npm run build`, or browser E2E; do not treat the Preview check as proof of end-to-end database behavior.
 
 Use this checklist for future UAT:
 
