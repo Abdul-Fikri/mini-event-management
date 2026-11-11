@@ -5,10 +5,11 @@ export default async function EventFinancePage({ params, searchParams }) {
   const { id } = await params;
   const query = await searchParams;
   const { group, event, supabase } = await getEventContext(id);
-  const [{ data: categories }, { data: transactions }, { data: members }] = await Promise.all([
+  const [{ data: categories }, { data: transactions }, { data: members }, { data: commitments }] = await Promise.all([
     supabase.from("budget_categories").select("*").eq("event_id", id).eq("group_id", group.id).order("name"),
     supabase.from("transactions").select("*").eq("event_id", id).eq("group_id", group.id).order("trx_date", { ascending: false }).order("created_at", { ascending: false }),
     supabase.from("members").select("id,full_name").eq("group_id", group.id).order("full_name"),
+    supabase.from("procurement_items").select("id,name,quantity,unit,est_unit_price,category_id").eq("event_id", id).eq("group_id", group.id).eq("status", "ordered").order("created_at"),
   ]);
-  return <FinanceSection eventId={id} targetBudget={event.target_budget} categories={categories ?? []} transactions={transactions ?? []} members={members ?? []} financeError={query?.finance_error ?? ""}/>;
+  return <FinanceSection eventId={id} targetBudget={event.target_budget} categories={categories ?? []} transactions={transactions ?? []} members={members ?? []} commitments={commitments ?? []} financeError={query?.finance_error ?? ""}/>;
 }
