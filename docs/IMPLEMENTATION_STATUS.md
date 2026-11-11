@@ -143,7 +143,7 @@ Use this checklist for future UAT:
 
 ## 9. Event lifecycle automation
 
-- Branch implementasi: `feat/event-lifecycle-automation` (PR dibuat setelah review source dan dokumentasi).
+- Branch implementasi: `feat/event-lifecycle-automation`; PR #21 terbuka: https://github.com/Abdul-Fikri/mini-event-management/pull/21. Belum di-merge.
 - Event baru menggunakan `status_mode=automatic`; migration mengisi event lama sebagai `manual` agar status yang sudah dipilih tidak berubah.
 - Timeline: tanggal perencanaan dan persiapan opsional (wajib berpasangan), tanggal mulai wajib, tanggal selesai opsional, dan akhir evaluasi opsional.
 - Status otomatis: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (opsional) → Selesai. Dibatalkan tetap dipilih manual.
