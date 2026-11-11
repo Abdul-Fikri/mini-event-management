@@ -122,8 +122,8 @@ Status rinci dan checklist pengujian berada di [Implementation Status](IMPLEMENT
 | Susunan Panitia | Menugaskan anggota grup ke event, mengatur divisi/jabatan/tanggung jawab |
 | Rundown | CRUD agenda/timeline kegiatan dan PIC |
 | Tugas | CRUD pekerjaan, PIC, deadline, prioritas, status |
-| Pengadaan | CRUD kebutuhan, kuantitas, estimasi/aktual, supplier, PIC, status |
-| Keuangan | Kategori anggaran dan transaksi pemasukan/pengeluaran |
+| Pengadaan | CRUD kebutuhan, kuantitas, estimasi/aktual, supplier, PIC, kategori, tanggal dan status; Dipesan menjadi komitmen dan Sudah dibeli otomatis membuat pengeluaran |
+| Keuangan | Kategori anggaran, seluruh transaksi pemasukan/pengeluaran, komitmen pembelian dari Pengadaan, dan saldo kas |
 | Ekspor | CSV susunan panitia, rundown, tugas, pengadaan, keuangan, anggota |
 | Workspace Panitia | Melihat event yang ditugaskan dan detail operasional read-only |
 | Pengaturan | Profil grup dan logo |
