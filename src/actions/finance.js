@@ -69,6 +69,10 @@ export async function saveTransaction(eventId, transactionId, _prev, formData) {
     const { data: member } = await supabase.from("members").select("id").eq("id", parsed.data.recorded_by).eq("group_id", group.id).maybeSingle();
     if (!member) return { ...empty, message: "Pencatat transaksi tidak ditemukan pada grup ini.", values };
   }
+  if (transactionId) {
+    const { data: existing } = await supabase.from("transactions").select("procurement_item_id").eq("id", transactionId).eq("event_id", eventId).eq("group_id", group.id).maybeSingle();
+    if (existing?.procurement_item_id) return { ...empty, message: "Transaksi ini berasal dari Pengadaan. Ubah nominal, tanggal, atau kategorinya melalui halaman Pengadaan agar kedua halaman tetap sinkron.", values };
+  }
   const payload = { ...parsed.data, group_id: group.id, event_id: eventId };
   const query = transactionId
     ? supabase.from("transactions").update(payload).eq("id", transactionId).eq("event_id", eventId).eq("group_id", group.id).select("id").maybeSingle()
@@ -87,6 +91,8 @@ export async function deleteTransaction(formData) {
   if (!eventId || !transactionId) return;
   const returnPath = getEventReturnPath(eventId, formData);
   const supabase = await createClient();
+  const { data: transaction } = await supabase.from("transactions").select("procurement_item_id").eq("id", transactionId).eq("event_id", eventId).eq("group_id", group.id).maybeSingle();
+  if (transaction?.procurement_item_id) redirect(`${returnPath}?finance_error=procurement_managed`);
   const { error } = await supabase.from("transactions").delete().eq("id", transactionId).eq("event_id", eventId).eq("group_id", group.id);
   if (error) throw new Error("Transaksi gagal dihapus.");
   revalidatePath(`/events/${eventId}`);
