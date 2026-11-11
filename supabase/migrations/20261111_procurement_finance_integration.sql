@@ -133,7 +133,7 @@ end;
 $$;
 
 create trigger procurement_prepare_purchase_date
-  before insert or update of status, purchased_date
+  before insert or update
   on public.procurement_items
   for each row
   execute function public.prepare_procurement_purchase_date();
