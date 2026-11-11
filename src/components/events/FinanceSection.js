@@ -50,8 +50,14 @@ export default function FinanceSection({ eventId, targetBudget, categories, tran
         const commitment = commitmentByCategory.get(c.id) ?? 0;
         const remaining = Number(c.planned_amount) - actual - commitment;
         const used = transactions.some(t => t.category_id === c.id);
+        const hasCommitments = commitments.some(item => item.category_id === c.id);
+        const deleteMessage = used
+          ? "Kategori ini memiliki transaksi terkait dan tidak dapat dihapus selama transaksi tersebut masih ada."
+          : hasCommitments
+            ? "Kategori ini dipakai item pengadaan berstatus Dipesan. Jika kategori dihapus, item tersebut akan menjadi Tanpa kategori. Lanjutkan?"
+            : "Hapus kategori anggaran ini?";
         return <article key={c.id} className="rounded-lg border border-zinc-200 p-3">
-          <div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0 flex-1"><h4 className="font-medium">{c.name}</h4><p className="mt-1 text-sm text-zinc-600">Rencana: {currency(c.planned_amount)} · Aktual: {currency(actual)} · Komitmen: {currency(commitment)} · Sisa: <span className={remaining < 0 ? "font-semibold text-red-700" : "font-medium"}>{currency(remaining)}</span></p></div><form action={deleteBudgetCategory}><input type="hidden" name="event_id" value={eventId}/><input type="hidden" name="return_to" value={`/events/${eventId}/keuangan`}/><input type="hidden" name="category_id" value={c.id}/><ConfirmDeleteButton message={used ? "Kategori ini memiliki transaksi terkait. Hapus transaksi terkait terlebih dahulu. Tetap coba hapus kategori?" : "Hapus kategori anggaran ini?"}>Hapus</ConfirmDeleteButton></form></div>
+          <div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0 flex-1"><h4 className="font-medium">{c.name}</h4><p className="mt-1 text-sm text-zinc-600">Rencana: {currency(c.planned_amount)} · Aktual: {currency(actual)} · Komitmen: {currency(commitment)} · Sisa: <span className={remaining < 0 ? "font-semibold text-red-700" : "font-medium"}>{currency(remaining)}</span></p></div><form action={deleteBudgetCategory}><input type="hidden" name="event_id" value={eventId}/><input type="hidden" name="return_to" value={`/events/${eventId}/keuangan`}/><input type="hidden" name="category_id" value={c.id}/><ConfirmDeleteButton message={deleteMessage}>Hapus</ConfirmDeleteButton></form></div>
           <details className="mt-3"><summary className="cursor-pointer text-sm font-medium text-indigo-700">Edit kategori</summary><div className="mt-3"><BudgetCategoryForm eventId={eventId} category={c}/></div></details>
         </article>;
       })}</div> : <p className="rounded-md border border-dashed border-zinc-300 p-4 text-center text-sm text-zinc-600">Belum ada kategori anggaran.</p>}
