@@ -3,6 +3,8 @@
 Record significant project changes, decisions, pull requests, and verification. Keep entries concise. Never store secrets, credentials, raw tokens, or private personal data.
 
 ## Recent history
+
+- 11 November 2026: fixed `20261111_procurement_finance_integration.sql` after the Owner's SQL Editor reported PostgreSQL `42701` because `procurement_items.category_id` already existed. The migration now preserves compatible pre-existing columns, validates expected types, guards named constraints/indexes, and recreates its trigger functions safely. `supabase/schema.sql` is aligned with the Procurement–Finance structure and triggers. No Supabase SQL was executed; production migration status remains unconfirmed. Local lint/build/E2E were not run.
 - PR #2: event subnavigation active state and docs — merged.
 - PR #3: dashboard query/payload improvements — merged.
 - PR #4: disable eager prefetch on Dashboard and primary Owner navigation links — merged.
