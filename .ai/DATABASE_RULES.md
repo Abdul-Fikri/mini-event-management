@@ -11,6 +11,7 @@
   - `20261109_member_invitations.sql`
   - `20261110_group_logos.sql`
   - `20261111_group_logo_bucket.sql`
+  - `20261112_event_lifecycle_automation.sql`
 - Verify actual remote migration history and schema before assuming a migration was applied.
 - Owner prefers reviewing and manually applying SQL in Supabase SQL Editor unless another workflow is agreed.
 - Never connect to or mutate production, run production migrations, or change production data without explicit approval.
