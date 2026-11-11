@@ -5,9 +5,10 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { MoneyField } from "@/components/ui/MoneyField";
+import { getTodayJakartaDate } from "@/lib/dates";
 
 const initial={message:"",errors:{},values:{}};
-const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(new Date());
+const today = getTodayJakartaDate();
 
 export default function ProcurementForm({eventId,members,categories,item=null}){
  const [state,action,pending]=useActionState(saveProcurementItem.bind(null,eventId,item?.id??null),initial);
