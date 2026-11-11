@@ -20,3 +20,4 @@
 - Never log raw invitation tokens, cookies, or credentials.
 - A migration file existing in Git is not evidence it has been applied to the production database.
 - After a migration, record the environment, migration name, and verification result without recording secrets.
+- Event lifecycle migration: `20261112_event_lifecycle_automation.sql`. Existing events are backfilled to manual mode; future inserts default to automatic. The migration adds timeline date constraints and extends the event status check. The migration file is not evidence that it has been applied.
