@@ -31,7 +31,7 @@ Tanggal hari ini untuk aturan event menggunakan zona waktu **Asia/Jakarta (WIB)*
 - Tanggal transaksi (`transactions.trx_date`) boleh lampau untuk pencatatan histori keuangan.
 - Semua input nominal rupiah (target anggaran event, anggaran kategori, transaksi, dan harga satuan pengadaan) otomatis menampilkan pemisah ribuan titik saat diketik, misalnya `500000` menjadi `500.000`. Validator menerima angka biasa maupun format bertitik, lalu menormalisasikannya menjadi number sebelum disimpan. Anggaran kategori boleh bernilai 0; nominal transaksi harus lebih dari 0.
 - Setelah CRUD data panitia, rundown, tugas, pengadaan, atau keuangan berhasil, pengguna dikembalikan ke subhalaman event yang sama tempat aksi dilakukan (bukan selalu ke Overview). Nilai `return_to` divalidasi di Server Action dan hanya menerima rute subhalaman dalam event yang sama.
-- Tanggal pembelian pengadaan (procurement_items.purchased_date) boleh lampau untuk mencatat tanggal pembelian sebenarnya. Jika status menjadi Sudah dibeli/Siap digunakan dan tanggal dikosongkan, sistem menggunakan tanggal hari ini di Asia/Jakarta.
+- Tanggal pembelian pengadaan (procurement_items.purchased_date) boleh lampau untuk mencatat tanggal pembelian sebenarnya. Saat item baru dibuat sebagai Sudah dibeli/Siap digunakan atau status berubah ke salah satu status tersebut, tanggal kosong otomatis memakai hari ini di Asia/Jakarta. Untuk item lama yang sudah berstatus dibeli tetapi belum memiliki tanggal, sistem tidak menebak tanggal; isi tanggal sebenarnya sebelum sinkronisasi manual.
 
 ### Integrasi Pengadaan dan Keuangan
 
