@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 9 November 2026 — PR #18 date validation in review
+Last updated: 11 November 2026 — procurement/finance integration in progress
 
 ## Owner-reported verification
 - App is deployed on Vercel: https://mini-event-management-gules.vercel.app
@@ -11,7 +11,7 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 - Earlier observations: Dashboard Performance 96; Event/Panitia route Performance 91. Do not compare scores without matching route and test conditions.
 
 ## GitHub state at this review
-- Current `main` head: `ace418aa87ecb38d89aad8668e9c6d5d3a92dfae` — merge commit for PR #18.
+- Current `main` head at the start of the PR #20 branch: `741ef267d36bc69aa13fdd84840de766f8af644b` — after PR #19 merge.
 - PR #8 (Lottie route-level loading animation): merged.
 - PR #9 (global loading feedback): merged.
 - PR #10 (public project documentation and UAS rubric mapping): merged.
@@ -31,44 +31,19 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 - No database migration or historical data rewrite is included.
 - PR #18's earlier Vercel check was affected by `build-rate-limit`; this is a deployment quota status, not an application build result. Production deployment of the merge was not independently confirmed. The assistant did not run `npm run lint`, `npm run build`, or browser E2E tests for PR #18.
 
-## Finance amount validation — PR #19
+## Finance amount validation and subpage navigation — PR #19
 
-- PR #19 is open: https://github.com/Abdul-Fikri/mini-event-management/pull/19
-- Working branch: `fix/budget-category-amount-validation`, based on the `main` head after PR #18.
-- The budget category amount validator previously used a double-escaped digit regex, causing values such as `1000000` to fail. The positive-integer regex for transaction amounts had the same issue.
-- Both patterns are corrected. Budget category amounts accept zero or a positive integer; transaction amounts must be positive integers. A reusable `MoneyField` automatically formats rupiah values with dot thousand separators for event target budgets, budget categories, transactions, and procurement unit prices. Shared Zod validation accepts grouped or plain-digit strings and normalizes them to numbers before persistence.
-- Direct regex/formatting checks passed. Panitia, rundown, task, procurement, and finance create/edit/delete actions now carry a validated `return_to` path and redirect to the originating subpage after success. The helper only allows known routes under the same event ID. The Vercel status for the latest navigation implementation head is failure with `build-rate-limit` (preview build quota/rate limit); this is not a source compilation result. Local lint/build/browser E2E have not been run by the assistant.
+- PR #19: https://github.com/Abdul-Fikri/mini-event-management/pull/19 — merged to `main`.
+- It fixed the double-escaped integer regex for budget category and transaction amount validation, added reusable MoneyField rupiah formatting, and preserves the originating event subpage after panitia/rundown/task/procurement/finance CRUD.
+- Direct regex/formatting and return-path source checks passed. The owner handles Vercel deployment; the assistant did not independently verify a production deployment or run local lint/build/browser E2E for PR #19.
 
-## Group logo upload
+## Procurement and finance integration — PR #20
 
-- Final implementation is in PR #16, merged to `main`.
-- `src/actions/group-logo.js` calls `requireGroup()` before using the privileged Storage client.
-- `src/lib/supabase/admin.js` is guarded by `server-only` and reads `SUPABASE_SECRET_KEY` or legacy `SUPABASE_SERVICE_ROLE_KEY`.
-- Storage upload/removal uses the privileged client; `groups.logo_url` is updated with the authenticated Owner session client and Owner/group filters.
-- The bucket is public for image delivery; it is not configured for anonymous writes. Existing Storage RLS policies were not removed by PR #16.
-- Upload validation: maximum 2 MB, JPG/PNG/WebP MIME and file signature.
-- Owner confirms upload works after PR #16. Confirm removal and old-object cleanup separately.
-- Do not expose the privileged key through `NEXT_PUBLIC_` or import the admin client into client code.
-
-## Loading behavior
-- Root `src/app/loading.js` provides a route-level Lottie fallback.
-- Global loading provider tracks internal link navigation and submissions through shared Button/ConfirmDeleteButton patterns.
-- Custom controls and programmatic router navigation that bypass shared patterns may not be tracked.
-- Timeout fallback prevents the overlay from remaining indefinitely.
-
-## UAS evidence
-1. Architecture: App Router, nested layouts, dynamic `[id]`, Server/Client Components.
-2. Rendering: static public `/contoh-event`, dynamic private `/dashboard`.
-3. CRUD/state/auth: Supabase CRUD, Context API, Supabase Auth, Next.js 16 `src/proxy.js`.
-4. Performance/SEO/deployment: `next/image`, `next/font`, Metadata, owner-reported successful build, and owner-reported Vercel deployment. Latest Lighthouse report was 82; no minimum score is stated in the rubric.
-
-See `docs/IMPLEMENTASI-RUBRIK-UAS.md` for the public evidence mapping. Treat implementation notes as source observations, not as proof of end-to-end behavior.
-
-
-## Next recommended work
-
-1. Run focused manual UAT with one Owner and one Panitia account.
-2. Test invitation happy path plus wrong-email, expired, reused, and already-claimed cases.
-3. Test event membership boundaries, direct URL access to an unassigned event, and cross-group ID tampering.
-4. Confirm logo removal/replacement cleanup after PR #16.
-5. Record actual lint/build and Vercel production verification after the next code change.
+- PR #20: https://github.com/Abdul-Fikri/mini-event-management/pull/20 — open, not merged; branch `feat/procurement-finance-integration`.
+- Vercel Preview has succeeded on PR #20. Recheck the live status for the current head before merge; a Preview success is not a Production deployment.
+- `requested` is only requested; `ordered` contributes estimated costs to commitments; new items created as `purchased`/`ready`, or existing items transitioned into those states, automatically create one linked expense through a database trigger.
+- Procurement category, purchase date, actual unit price, quantity, name, and supplier synchronize to the linked finance transaction. The unique transaction link prevents duplicates. Linked expenses are managed from Procurement; manual Finance transactions remain editable.
+- Existing purchased items are not backfilled automatically. Their edit operations do not silently create a second expense; use the per-item legacy sync action only after checking manual Finance records. If their purchase date is unknown, enter the actual date before syncing.
+- Deleting a purchased procurement item preserves its expense as a historical finance transaction.
+- Migration `20261111_procurement_finance_integration.sql` is committed to PR #20 but has NOT been applied to Supabase. The owner must review/apply it before runtime testing.
+- The assistant has not run `npm run lint`, `npm run build`, browser E2E, or applied the database migration.

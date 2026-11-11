@@ -31,9 +31,25 @@ Tanggal hari ini untuk aturan event menggunakan zona waktu **Asia/Jakarta (WIB)*
 - Tanggal transaksi (`transactions.trx_date`) boleh lampau untuk pencatatan histori keuangan.
 - Semua input nominal rupiah (target anggaran event, anggaran kategori, transaksi, dan harga satuan pengadaan) otomatis menampilkan pemisah ribuan titik saat diketik, misalnya `500000` menjadi `500.000`. Validator menerima angka biasa maupun format bertitik, lalu menormalisasikannya menjadi number sebelum disimpan. Anggaran kategori boleh bernilai 0; nominal transaksi harus lebih dari 0.
 - Setelah CRUD data panitia, rundown, tugas, pengadaan, atau keuangan berhasil, pengguna dikembalikan ke subhalaman event yang sama tempat aksi dilakukan (bukan selalu ke Overview). Nilai `return_to` divalidasi di Server Action dan hanya menerima rute subhalaman dalam event yang sama.
-- Modul pengadaan saat ini tidak memiliki input tanggal manual yang perlu dibatasi.
+- Tanggal pembelian pengadaan (procurement_items.purchased_date) boleh lampau untuk mencatat tanggal pembelian sebenarnya. Saat item baru dibuat sebagai Sudah dibeli/Siap digunakan atau status berubah ke salah satu status tersebut, tanggal kosong otomatis memakai hari ini di Asia/Jakarta. Untuk item lama yang sudah berstatus dibeli tetapi belum memiliki tanggal, sistem tidak menebak tanggal; isi tanggal sebenarnya sebelum sinkronisasi manual.
 
-Batasan tanggal pada event diterapkan melalui atribut `min` pada form sebagai bantuan pengguna dan validasi Zod di Server Action sebagai aturan otoritatif. Data lama tidak perlu diubah dan tidak memerlukan migration database.
+### Integrasi Pengadaan dan Keuangan
+
+Pengadaan dan Keuangan tetap merupakan dua halaman dengan tanggung jawab berbeda, tetapi memakai transaksi yang saling terhubung:
+
+- **Diminta** berarti kebutuhan diajukan, belum menjadi komitmen dan belum menjadi pengeluaran.
+- **Dipesan** berarti pesanan sudah dikonfirmasi. Nilai estimasi totalnya masuk ke komitmen anggaran, tetapi belum mengurangi saldo kas dan belum dihitung sebagai pengeluaran aktual.
+- Data lama dengan status `requested` tetap dianggap Diminta setelah migration; ubah manual menjadi Dipesan jika pesanan tersebut sebenarnya sudah dikonfirmasi.
+- **Sudah dibeli** atau **Siap digunakan** berarti pembelian telah terjadi. Harga aktual satuan wajib lebih dari Rp0; database otomatis membuat atau memperbarui satu transaksi bertipe expense pada tabel transactions.
+- Total transaksi pembelian dihitung dari harga aktual satuan dikali jumlah dan dibulatkan ke Rupiah terdekat. Tanggal transaksi mengikuti tanggal pembelian; jika kosong, tanggal hari ini Asia/Jakarta digunakan.
+- Pengadaan dapat memilih kategori anggaran. Kategori, deskripsi, tanggal, supplier/referensi, dan nominal transaksi otomatis mengikuti perubahan pada item pengadaan.
+- Transaksi yang berasal dari Pengadaan diberi penanda sumber dan dikelola dari halaman Pengadaan. Transaksi manual yang dibuat langsung dari Keuangan tetap dapat diedit/dihapus.
+- Constraint unik pada transactions.procurement_item_id mencegah satu item pengadaan membuat transaksi otomatis lebih dari satu kali.
+- Jika item Pengadaan dihapus setelah dibeli, transaksi pengeluarannya tetap disimpan sebagai histori; relasi item dilepas dan referensi sumber Pengadaan tetap ada.
+- Item berstatus Dipesan ditampilkan di Keuangan sebagai komitmen. Rumus sisa setelah komitmen = total anggaran kategori dikurangi pengeluaran aktual dikurangi komitmen. Saldo kas tetap = pemasukan dikurangi pengeluaran aktual.
+- Item lama yang sudah dibeli sebelum integrasi tidak di-backfill otomatis. Item tersebut dapat disinkronkan satu per satu dari halaman Pengadaan setelah pengguna memastikan pembelian belum dicatat manual di Keuangan. Jika tanggal pembelian lama belum tersedia, isi tanggal sebenarnya pada form sebelum sinkronisasi; sistem tidak menebak tanggal histori.
+
+Batasan tanggal pada event diterapkan melalui atribut min pada form sebagai bantuan pengguna dan validasi Zod di Server Action sebagai aturan otoritatif. Data lama tidak perlu diubah untuk aturan tanggal event.
 
 ## 2. Tech stack aktual
 
@@ -107,8 +123,8 @@ Status rinci dan checklist pengujian berada di [Implementation Status](IMPLEMENT
 | Susunan Panitia | Menugaskan anggota grup ke event, mengatur divisi/jabatan/tanggung jawab |
 | Rundown | CRUD agenda/timeline kegiatan dan PIC |
 | Tugas | CRUD pekerjaan, PIC, deadline, prioritas, status |
-| Pengadaan | CRUD kebutuhan, kuantitas, estimasi/aktual, supplier, PIC, status |
-| Keuangan | Kategori anggaran dan transaksi pemasukan/pengeluaran |
+| Pengadaan | CRUD kebutuhan, kuantitas, estimasi/aktual, supplier, PIC, kategori, tanggal dan status; Dipesan menjadi komitmen dan Sudah dibeli otomatis membuat pengeluaran |
+| Keuangan | Kategori anggaran, seluruh transaksi pemasukan/pengeluaran, komitmen pembelian dari Pengadaan, dan saldo kas |
 | Ekspor | CSV susunan panitia, rundown, tugas, pengadaan, keuangan, anggota |
 | Workspace Panitia | Melihat event yang ditugaskan dan detail operasional read-only |
 | Pengaturan | Profil grup dan logo |
@@ -204,7 +220,7 @@ Tabel utama yang ada di schema awal:
 | \`budget_categories\` | Kategori anggaran |
 | \`transactions\` | Pemasukan/pengeluaran |
 
-Migration menambahkan relasi akun Panitia dan invitation, serta dukungan logo grup/Storage policy. Detail dan prosedur operasional ada di [Database & Migrations](DATABASE_AND_MIGRATIONS.md).
+Migration menambahkan relasi akun Panitia dan invitation, dukungan logo grup/Storage policy, serta integrasi Pengadaan–Keuangan: kategori/tanggal pembelian pada item pengadaan, relasi transaksi ke item, dan trigger sinkronisasi otomatis. Detail dan prosedur operasional ada di [Database & Migrations](DATABASE_AND_MIGRATIONS.md).
 
 **Status penerapan migration ke Supabase production harus diverifikasi melalui migration history/database aktual.** Keberadaan file SQL di GitHub tidak membuktikan bahwa SQL tersebut sudah diterapkan.
 

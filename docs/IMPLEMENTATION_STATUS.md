@@ -18,8 +18,8 @@ Source branch reviewed: main at merge commit a95187e7fea0e3f6cba6808e0783d3295e6
 | Event committee | Add/remove member assignment; division, position, responsibility | Uses \`event_members\` |
 | Rundown | Create/update/delete schedule items | PIC restricted to current event roster |
 | Tasks | Create/update/delete tasks | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
-| Procurement | Create/update/delete procurement items | PIC restricted to current event roster |
-| Finance | Budget categories and income/expense transactions | Owner workflow; budget and transaction amounts use integer rupiah values; historical transaction dates remain allowed |
+| Procurement | Create/update/delete procurement items; assign budget category; separate requested/ordered/purchased/ready states | PIC restricted to current event roster; ordered items become budget commitments; purchased/ready items automatically create or update one linked finance expense |
+| Finance | Budget categories, manual income/expense transactions, procurement-linked expenses, and ordered-item commitments | Linked procurement expenses are managed from Procurement; manual finance transactions remain editable; historical transaction dates remain allowed |
 | CSV export | Committee, schedule, tasks, procurement, finance, members | \`members\` export is group-wide |
 | Invitations | Create email-bound token and claim through RPC | Requires migration and correct email |
 | Panitia workspace | List assigned events and read event/rundown/tasks/procurement | Read-only in current UI |
@@ -96,7 +96,7 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
 ## 7. Validation status
 
-The current `main` source and documentation were reviewed through GitHub at merge commit `ace418aa87ecb38d89aad8668e9c6d5d3a92dfae` (PR #18). PR #18 is merged. PR #19 on branch `fix/budget-category-amount-validation` fixes the double-escaped integer regex for budget and transaction amounts and adds a reusable `MoneyField` that formats rupiah with dot thousand separators while typing. It is used for event target budgets, budget categories, transactions, and procurement unit prices. A shared Zod schema accepts plain or dot-grouped rupiah strings and normalizes them to numbers before persistence. Event panitia, rundown, tasks, procurement, and finance create/edit/delete actions now return to the originating event subpage. The submitted `return_to` path is server-validated against an allowlist of pages within the same event, preventing external or cross-event redirects. Formatting and validation patterns were checked directly. Source review and route/return-path checks passed; the Vercel status for the latest navigation implementation head is failure with `build-rate-limit` (preview build quota/rate limit), not an application compilation result. The assistant has not run the owner's local environment, browser E2E, `npm run lint`, or `npm run build`; do not treat source review as proof of runtime correctness.
+PR #18 and PR #19 are merged to `main`. PR #19 corrected rupiah validation/formatting and preserves the originating event subpage after panitia, rundown, task, procurement, and finance CRUD. PR #20 is open on `feat/procurement-finance-integration`; it adds ordered procurement commitments plus database-triggered finance expenses for purchased/ready items. Vercel Preview has succeeded on PR #20; check the live status of the latest head before merge. GitHub reports no merge conflict. The SQL migration has not been applied to Supabase, and the assistant has not run local `npm run lint`, `npm run build`, or browser E2E; do not treat Preview status as proof of end-to-end database behavior.
 
 Use this checklist for future UAT:
 
@@ -120,6 +120,13 @@ Use this checklist for future UAT:
 - [ ] Test rundown date boundaries and time validation.
 - [ ] Test task status/priority/deadline and task deletion.
 - [ ] Test procurement quantities, price fields, status, and deletion; confirm estimated/actual unit prices format with thousand separators and are normalized to numeric values.
+- [ ] Test procurement category mapping and purchase date; verify all statuses (Belum dimulai, Diminta, Dipesan, Sudah dibeli, Siap digunakan, Tidak diperlukan).
+- [ ] Confirm Dipesan contributes to commitment totals but not cash expenses; verify category-level and overall remaining-after-commitment calculations.
+- [ ] Confirm changing an item to Sudah dibeli with a positive actual price creates exactly one linked expense in Keuangan; saving it again or changing price/quantity/category/date updates the same transaction rather than duplicating it.
+- [ ] Confirm Sudah dibeli/Siap digunakan without a positive actual price is rejected and does not partially save the item.
+- [ ] Confirm linked procurement expenses are read-only in Keuangan and direct Server Action edits/deletes are rejected; manual finance transactions remain editable.
+- [ ] Delete a purchased procurement item and confirm its expense remains in Keuangan with a Pengadaan-origin reference.
+- [ ] For pre-integration purchased items, review whether they were already manually recorded before using Catat ke Keuangan; if the purchase date is blank, enter the actual historical date before syncing.
 - [ ] Test budget category amount: typing `500000` displays `500.000` and is normalized to numeric `500000`; decimal and negative values are rejected (zero is allowed for a planned category).
 - [ ] Test transaction amount: typing `500000` displays `500.000` and is normalized to numeric `500000`; zero, decimal, and negative values are rejected.
 - [ ] Test invitation with correct email, wrong email, expired token, and reused token.

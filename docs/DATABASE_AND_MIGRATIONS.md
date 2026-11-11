@@ -32,8 +32,9 @@ Folder ini berisi perubahan bertahap setelah schema awal. File yang saat ini ada
 | \`20261109_member_invitations.sql\` | Tabel undangan, token hash, masa berlaku, RPC \`claim_member_invitation\` |
 | \`20261110_group_logos.sql\` | Kolom \`groups.logo_url\` dan policy Storage untuk bucket logo |
 | \`20261111_group_logo_bucket.sql\` | Memastikan bucket publik \`group-logos\` tersedia dengan batas 2 MB dan MIME JPG/PNG/WebP; tidak mengubah policy akses |
+| 20261111_procurement_finance_integration.sql | Menambah status Dipesan, kategori/tanggal pembelian, relasi transaksi ke item, dan trigger otomatis sinkronisasi pengeluaran |
 
-Urutan harus dipertahankan: foundation → invitations → group logo policies → group logo bucket. Periksa isi migration dan status remote sebelum menjalankan apa pun.
+Migration tambahan pada branch integrasi: 20261111_procurement_finance_integration.sql menambah status Dipesan, kategori/tanggal pembelian, relasi item pengadaan ke transaksi, dan trigger otomatis pencatatan pengeluaran. Urutan harus dipertahankan: foundation → invitations → group logo policies → group logo bucket → procurement-finance integration. Periksa isi migration dan status remote sebelum menjalankan apa pun.
 
 **Penting:** file SQL di GitHub tidak membuktikan migration sudah dijalankan. Status migration production belum dianggap terkonfirmasi sampai diperiksa pada Supabase project yang benar.
 
@@ -138,11 +139,13 @@ Contoh ini hanya ilustrasi. Jangan jalankan di production sebelum memeriksa apak
 - \`event_members\`: assignment anggota ke event.
 - \`schedule_items\`: rundown.
 - \`tasks\`: tugas.
-- \`procurement_items\`: kebutuhan/pengadaan.
+- `procurement_items`: kebutuhan/pengadaan; migration integrasi menambahkan `category_id`, `purchased_date`, dan status `ordered`.
 - \`budget_categories\`: kategori anggaran.
-- \`transactions\`: transaksi pemasukan/pengeluaran.
+- `transactions`: transaksi pemasukan/pengeluaran; migration integrasi menambahkan `procurement_item_id` yang unik dan nullable.
 - \`member_invitations\`: undangan akun Panitia (migration).
 - \`storage.objects\`: objek logo pada bucket \`group-logos\`.
+
+Relasi Pengadaan–Keuangan: satu item pengadaan maksimal memiliki satu transaksi pengeluaran otomatis. Foreign key komposit menjaga item dan transaksi tetap berada pada event/grup yang sama. Penghapusan item pengadaan melepas relasi tetapi mempertahankan transaksi sebagai histori. Trigger membuat transaksi saat item baru dibuat berstatus purchased/ready atau saat status berubah dari status non-pembelian ke purchased/ready; perubahan berikutnya pada item yang sudah terhubung menyinkronkan nominal, kategori, tanggal, deskripsi, dan referensi. Item lama tidak di-backfill otomatis dan memerlukan aksi sinkronisasi eksplisit. Trigger/helper berjalan sebagai invoker dan tetap tunduk pada policy RLS Owner yang sudah ada; migration tidak mengubah policy RLS.
 
 Relasi penting: \`event_members\` menghubungkan \`members\` dengan \`events\`. Jangan menyamakan anggota grup dengan anggota event.
 

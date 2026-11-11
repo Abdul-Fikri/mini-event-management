@@ -61,8 +61,19 @@ Being in `members` does not automatically make someone a committee member for ev
 - Next.js 16 uses `src/proxy.js` as the Proxy convention; do not blindly add legacy `middleware.js`.
 - Group-logo upload/removal uses `src/actions/group-logo.js` and `src/lib/supabase/admin.js`; the admin client is guarded by `server-only` and must never enter browser bundles.
 
+## Procurement and finance domain behavior
+
+- Procurement and Finance remain separate pages with linked data.
+- Status requested means requested only; ordered means confirmed order and contributes estimated cost to commitments; purchased/ready means an actual purchase and creates/updates one linked transactions expense. Existing rows that used requested before the status split remain requested/Diminta; review and change to ordered/Dipesan manually only when the order was actually confirmed.
+- The database trigger is the source of truth for the automatic expense. transactions.procurement_item_id is unique and nullable; do not create a second manual expense for the same purchase.
+- Procurement category, actual unit price, quantity, supplier, and purchase date synchronize to the linked finance transaction. Linked transactions are managed from Procurement, not edited/deleted from Finance.
+- Deleting a purchased procurement item keeps its finance transaction as history and clears only the item link.
+- Finance cash balance remains income minus actual expenses. Budget remaining after commitments is category budget minus actual expenses minus estimated costs of ordered procurement items.
+- Existing purchased items from before this integration are not backfilled automatically, and editing them does not silently create a second expense. Review manual finance records before using the per-item legacy sync action; if their purchase date is unknown in the record, enter the actual date before syncing.
+- Migration 20261111_procurement_finance_integration.sql must be applied to the target Supabase database before using this integration. Repository presence does not prove production application.
+
 ## Features found in source
-Authentication/onboarding, dashboard, group member CRUD, event CRUD, committee assignments, rundown CRUD, task CRUD, procurement CRUD, finance categories and transactions, CSV exports, invitation token flow, Panitia read-only workspace, group logo upload/removal, and public example-event catalog.
+Authentication/onboarding, dashboard, group member CRUD, event CRUD, committee assignments, rundown CRUD, task CRUD, procurement CRUD with finance-linked expenses and commitments, finance categories/manual transactions, CSV exports, invitation token flow, Panitia read-only workspace, group logo upload/removal, and public example-event catalog.
 
 ## Known caveats
 - CSV `members` export is group-wide, not limited to event-assigned members; confirm product intent before changing.
