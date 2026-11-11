@@ -32,12 +32,14 @@ Folder ini berisi perubahan bertahap setelah schema awal. File yang saat ini ada
 | \`20261109_member_invitations.sql\` | Tabel undangan, token hash, masa berlaku, RPC \`claim_member_invitation\` |
 | \`20261110_group_logos.sql\` | Kolom \`groups.logo_url\` dan policy Storage untuk bucket logo |
 | \`20261111_group_logo_bucket.sql\` | Memastikan bucket publik \`group-logos\` tersedia dengan batas 2 MB dan MIME JPG/PNG/WebP; tidak mengubah policy akses |
-| 20261111_procurement_finance_integration.sql | Menambah status Dipesan, kategori/tanggal pembelian, relasi transaksi ke item, dan trigger otomatis sinkronisasi pengeluaran |
+| `20261111_procurement_finance_integration.sql` | Menambah status Dipesan, kategori/tanggal pembelian, relasi transaksi ke item, dan trigger otomatis sinkronisasi pengeluaran; mempertahankan kolom kompatibel yang sudah ada dan memvalidasi tipenya |
 | `20261112_event_lifecycle_automation.sql` | Menambah mode status otomatis/manual, tanggal fase perencanaan/persiapan/evaluasi, dan constraint urutan tanggal |
 
 Migration tambahan yang sudah masuk `main`: `20261111_procurement_finance_integration.sql` menambah status Dipesan, kategori/tanggal pembelian, relasi item pengadaan ke transaksi, dan trigger otomatis pencatatan pengeluaran. Migration event lifecycle `20261112_event_lifecycle_automation.sql` menambah mode status otomatis/manual dan tanggal timeline. Urutan migration: foundation → invitations → group logo policies → group logo bucket → procurement-finance integration → event lifecycle automation. Periksa isi migration dan status remote sebelum menjalankan apa pun.
 
 **Penting:** file SQL di GitHub tidak membuktikan migration sudah dijalankan. Status migration production belum dianggap terkonfirmasi sampai diperiksa pada Supabase project yang benar.
+
+`supabase/schema.sql` juga memuat struktur Procurement–Finance yang sama untuk instalasi database baru: kategori/tanggal pembelian, status `ordered`, relasi unik ke transaksi, dan trigger sinkronisasi. Jangan jalankan ulang `schema.sql` pada database yang sudah berisi tabel project.
 
 ## 3. Cara manual melalui Supabase SQL Editor
 
@@ -53,6 +55,8 @@ Ini cara paling sederhana untuk belajar dan mengelola SQL secara manual.
 8. Periksa hasil sukses/error.
 9. Verifikasi objek yang diharapkan di Table Editor/SQL Editor.
 10. Catat tanggal, nama file, environment, dan hasil penerapan.
+
+Jika SQL Editor melaporkan `42701: column ... already exists`, jangan hapus kolom tersebut. Migration Procurement–Finance kini menggunakan `ADD COLUMN IF NOT EXISTS` untuk kolom integrasi dan memeriksa tipe `uuid`/`date` yang diharapkan. Ambil file terbaru dari `main`, review kembali objek terkait, lalu jalankan hanya jika migration memang belum berhasil diterapkan. Percobaan yang gagal bukan bukti bahwa migration sudah selesai.
 
 Jangan menjalankan migration lama berulang kali. Beberapa statement mungkin memakai \`IF NOT EXISTS\`, tetapi itu tidak menjamin keseluruhan migration aman diulang karena bisa ada policy/function/constraint yang berubah.
 
