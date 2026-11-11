@@ -44,3 +44,16 @@ npm run lint
 npm run build
 ```
 For behavior changes, test affected flows and authorization boundaries. Report checks that were not run and distinguish local/owner-reported results from independently verified results.
+
+## Documentation is part of every implementation
+
+For every meaningful implementation or behavior change, update the relevant documentation in the same branch/PR before considering the work complete:
+
+- Requirements/specification and acceptance criteria when product behavior changes.
+- `docs/PROJECT_HANDBOOK.md` for user-facing product behavior or architecture.
+- `docs/IMPLEMENTATION_STATUS.md` and UAT/checklists for implementation state and verification.
+- `docs/DATABASE_AND_MIGRATIONS.md`, `supabase/schema.sql`, and migration notes whenever database structure or behavior changes.
+- `.ai/PROJECT_CONTEXT.md`, `.ai/PROJECT_STATUS.md`, and `.ai/WORK_LOG.md` so the next AI/agent has current architecture, status, and decision history.
+- Update `AGENTS.md` or this file when a permanent workflow, safety, or engineering rule changes.
+
+Keep documentation in the same PR as the implementation. Record what was actually tested, what remains unverified, and whether migrations were authored, applied, or confirmed in production. If a category genuinely does not apply, do not invent changes; state why in the PR summary.
