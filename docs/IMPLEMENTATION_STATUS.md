@@ -2,7 +2,7 @@
 
 Last reviewed: 11 November 2026  
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source branch reviewed: `main` at merge commit `a71611b1cdc78ea3030040c6559979858ddca1d4` (PR #20)
+Source branch reviewed: `main` at merge commit `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80` (PR #21)
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -74,6 +74,8 @@ Source branch reviewed: `main` at merge commit `a71611b1cdc78ea3030040c655997985
 | #10 | Public project documentation and UAS rubric mapping | Merged |
 | #11 | Shared AI project context and agent instructions | Merged |
 | #16 | Move group-logo Storage upload/removal to Owner-authorized server actions | Merged; final logo upload path; owner reports upload now succeeds |
+| #20 | Integrate Procurement with Finance: ordered commitments and linked purchase expenses | Merged 11 Nov 2026; migration application to Supabase is not confirmed |
+| #21 | Automate event lifecycle status with automatic/manual modes | Merged 11 Nov 2026 at `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80`; migration application to Supabase is not confirmed |
 
 Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
@@ -96,7 +98,7 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
 ## 7. Validation status
 
-PR #18, PR #19, and PR #20 are merged to `main`. PR #20 adds ordered procurement commitments plus database-triggered finance expenses for purchased/ready items. Its migration has not been applied to Supabase. Vercel Preview succeeded before the merge, but this is not proof of Production deployment or runtime database behavior. The assistant has not run local `npm run lint`, `npm run build`, or browser E2E for PR #20.
+PR #18, PR #19, PR #20, and PR #21 are merged to `main`. PR #20 adds ordered procurement commitments plus database-triggered finance expenses for purchased/ready items. PR #21 adds automatic/manual event lifecycle status. The SQL files for PR #20 (`20261111_procurement_finance_integration.sql`) and PR #21 (`20261112_event_lifecycle_automation.sql`) are present in `main`, but application to the target Supabase database is **not confirmed**. PR #20 Vercel Preview succeeded before merge; PR #21 Preview later reported `build-rate-limit`, a deployment quota/rate-limit result rather than an application compile result. Neither Preview result proves Production deployment or runtime database behavior. The assistant has not run local `npm run lint`, `npm run build`, or browser E2E for PR #20/#21.
 
 Use this checklist for future UAT:
 
@@ -112,6 +114,17 @@ Use this checklist for future UAT:
 - [ ] Rundown dates inside the event range are accepted even when historical; dates outside the event range are rejected.
 - [ ] Task deadline is optional and accepts past/current/future dates on both create and update.
 - [ ] Past finance transaction dates remain accepted.
+- [ ] New event defaults to `status_mode=automatic`.
+- [ ] Existing events remain in manual mode after migration and retain their saved status.
+- [ ] Planning and preparation dates are both optional but must be supplied together; their order must be planning < preparation < event start.
+- [ ] Automatic status transitions follow Asia/Jakarta calendar boundaries: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (if configured) → Selesai.
+- [ ] Event end date is inclusive; a one-day event is ongoing on its start date and completed the following day unless evaluation is configured.
+- [ ] Evaluation remains active through `evaluation_end_date` inclusive and becomes completed the next day.
+- [ ] Manual status does not change when dates pass; cancellation is available only in manual mode.
+- [ ] Switching automatic → manual preserves the currently effective status as the initial manual selection; switching back resumes timeline-derived status.
+- [ ] Dashboard, event list, Owner workspace, and Panitia views display the same effective status.
+- [ ] Forged hidden/browser status values cannot override server-side lifecycle resolution.
+- [ ] Invalid timeline values are rejected by Server Action validation and database constraints after the migration is applied.
 - [ ] Add/remove event committee assignment.
 - [ ] Confirm non-assigned group member is absent from Rundown PIC dropdown.
 - [ ] Add member to event and confirm they appear in Rundown PIC dropdown.
@@ -148,16 +161,26 @@ Use this checklist for future UAT:
 4. Decide how to handle removing an event committee member who still owns rundown/task/procurement records.
 5. Avoid broad rewrites or additional performance tuning without evidence.
 
-## 9. Event lifecycle automation
+## 9. Event lifecycle automation — PR #21 merged
 
-- Branch implementasi: `feat/event-lifecycle-automation`; PR #21 terbuka: https://github.com/Abdul-Fikri/mini-event-management/pull/21. Branch diperbarui dengan `main` setelah PR #20 di-merge; PR #21 belum di-merge.
-- Event baru menggunakan `status_mode=automatic`; migration mengisi event lama sebagai `manual` agar status yang sudah dipilih tidak berubah.
-- Timeline: tanggal perencanaan dan persiapan opsional (wajib berpasangan), tanggal mulai wajib, tanggal selesai opsional, dan akhir evaluasi opsional.
-- Status otomatis: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (opsional) → Selesai. Dibatalkan tetap dipilih manual.
-- Resolver menggunakan tanggal kalender Asia/Jakarta dan dipakai pada dashboard, daftar event, header ruang kerja Owner, serta daftar/detail event Panitia.
-- Tidak ada cron/background job. Status otomatis dihitung saat data dibaca; Server Action menghitung ulang status saat event disimpan dan tidak mempercayai nilai status tersembunyi dari browser.
-- Migration: `supabase/migrations/20261112_event_lifecycle_automation.sql`. File belum diterapkan ke Supabase; jangan menganggap runtime sudah aktif sebelum migration diterapkan.
-- RLS tidak diubah. Validasi tanggal tetap dijalankan di Server Action dan diperkuat constraint database.
-- Acceptance criteria dan daftar UAT: `docs/EVENT_LIFECYCLE_REQUIREMENTS.md`.
-- Pada head PR #21 sebelum sinkronisasi `main`, Vercel pernah success lalu check berikutnya gagal dengan `build-rate-limit` (kuota Preview), bukan hasil kompilasi aplikasi. Check Vercel pada head hasil sinkronisasi gagal dengan `build-rate-limit` (kuota deployment Preview), bukan kegagalan kompilasi aplikasi. Commit dokumentasi sesudahnya akan memicu check baru.
-- Verifikasi lokal `npm run lint`, `npm run build`, dan browser E2E belum dijalankan oleh assistant karena checkout repository tidak tersedia di environment ini. Runtime UAT menunggu migration diterapkan.
+- PR #21: https://github.com/Abdul-Fikri/mini-event-management/pull/21 — closed and merged to `main` on 11 November 2026.
+- Verified `main` HEAD and merge commit: `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80`.
+- Event baru default ke `status_mode=automatic`; event lama menjadi `manual` saat migration agar status tersimpan tidak berubah.
+- Timeline: tanggal mulai perencanaan dan persiapan opsional tetapi harus berpasangan; tanggal mulai event wajib; tanggal selesai dan akhir evaluasi opsional.
+- Urutan status otomatis berbasis tanggal kalender Asia/Jakarta: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (opsional) → Selesai. Tanggal akhir event dan evaluasi bersifat inklusif. Event satu hari dianggap berlangsung pada tanggal mulai.
+- Dibatalkan hanya dipilih dalam mode manual. Status otomatis dihitung saat data dibaca; tidak memerlukan cron/background job.
+- Resolver bersama: `src/lib/events/status.js`. Dashboard, daftar event, workspace Owner, dan tampilan event Panitia harus memakai resolver yang sama.
+- Server Action menghitung status otomatis di server dan tidak mempercayai hidden field dari browser. Migration tidak mengubah RLS.
+- Migration: `supabase/migrations/20261112_event_lifecycle_automation.sql`. Keberadaan file di `main` **tidak membuktikan migration diterapkan**. Penerapan pada Supabase target belum terkonfirmasi.
+- Migration PR #20 `20261111_procurement_finance_integration.sql` juga ada di `main`; status penerapannya pada Supabase target belum terkonfirmasi.
+- Vercel Preview PR #21 melaporkan `build-rate-limit` setelah sinkronisasi branch. Ini adalah hasil pembatasan kuota Preview, bukan bukti compile aplikasi gagal atau berhasil.
+- Assistant belum menjalankan lint, build, atau browser E2E untuk PR #20/#21. Runtime UAT harus menunggu verifikasi migration history dan penerapan migration yang memang masih pending.
+- Checklist acceptance criteria rinci tetap berada di [Event Lifecycle Requirements](EVENT_LIFECYCLE_REQUIREMENTS.md).
+
+## 10. Next priorities
+
+1. Verifikasi migration history aktual untuk kedua migration PR #20/#21 tanpa mengulang audit schema/RLS lama yang sudah dinyatakan lulus.
+2. Review dan terapkan hanya migration yang benar-benar pending melalui workflow manual Supabase SQL Editor yang disetujui Owner.
+3. Jalankan UAT Owner dan Panitia, terutama invitation flow, direct URL authorization, Procurement → Finance linked transaction, dan automatic/manual event lifecycle.
+4. Uji upload, replace, delete, dan cleanup logo; uji CSV exports serta loading/error/empty states.
+5. Perbaiki masalah konkret yang ditemukan. Hindari penambahan fitur besar sebelum stabilisasi.
