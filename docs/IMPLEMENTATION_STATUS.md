@@ -126,7 +126,7 @@ Use this checklist for future UAT:
 - [ ] Confirm Sudah dibeli/Siap digunakan without a positive actual price is rejected and does not partially save the item.
 - [ ] Confirm linked procurement expenses are read-only in Keuangan and direct Server Action edits/deletes are rejected; manual finance transactions remain editable.
 - [ ] Delete a purchased procurement item and confirm its expense remains in Keuangan with a Pengadaan-origin reference.
-- [ ] For pre-integration purchased items, review whether they were already manually recorded before using Catat ke Keuangan.
+- [ ] For pre-integration purchased items, review whether they were already manually recorded before using Catat ke Keuangan; if the purchase date is blank, enter the actual historical date before syncing.
 - [ ] Test budget category amount: typing `500000` displays `500.000` and is normalized to numeric `500000`; decimal and negative values are rejected (zero is allowed for a planned category).
 - [ ] Test transaction amount: typing `500000` displays `500.000` and is normalized to numeric `500000`; zero, decimal, and negative values are rejected.
 - [ ] Test invitation with correct email, wrong email, expired token, and reused token.
