@@ -1,12 +1,13 @@
 import { deleteProcurementItem, syncProcurementItemToFinance } from "@/actions/procurement";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import ProcurementForm from "@/components/events/ProcurementForm";
+import { Alert } from "@/components/ui/Alert";
 
 const currency=value=>value==null?"—":new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(value);
 const statusLabel={not_started:"Belum dimulai",requested:"Diminta",ordered:"Dipesan",purchased:"Sudah dibeli",ready:"Siap digunakan",not_needed:"Tidak diperlukan"};
 const dateFmt=value=>value?new Intl.DateTimeFormat("id-ID",{dateStyle:"medium",timeZone:"Asia/Jakarta"}).format(new Date(value+"T00:00:00")):"—";
 
-export default function ProcurementSection({eventId,items,members,categories,linkedProcurementIds=[]}){
+export default function ProcurementSection({eventId,items,members,categories,linkedProcurementIds=[],procurementError=""}){
  const memberById=new Map(members.map(m=>[m.id,m]));
  const categoryById=new Map(categories.map(c=>[c.id,c]));
  const linkedIds=new Set(linkedProcurementIds);
@@ -18,6 +19,10 @@ export default function ProcurementSection({eventId,items,members,categories,lin
  items.forEach(i=>{count[i.status]=(count[i.status]??0)+1;});
  return <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
   <div><h2 className="text-lg font-semibold">Manajemen perlengkapan</h2><p className="text-sm text-zinc-600">Kelola kebutuhan dan progres pembelian. Item berstatus Dipesan menjadi komitmen anggaran; item Sudah dibeli otomatis masuk ke pengeluaran Keuangan.</p></div>
+  {procurementError==="missing_actual_price"?<Alert>Isi harga aktual lebih dari Rp0 sebelum mencatat pembelian ke Keuangan.</Alert>:null}
+  {procurementError==="sync_failed"?<Alert>Pengadaan belum berhasil disinkronkan. Pastikan migration integrasi Pengadaan–Keuangan sudah diterapkan, lalu coba lagi.</Alert>:null}
+  {procurementError==="item_not_found"?<Alert>Item pengadaan tidak ditemukan.</Alert>:null}
+  {procurementError==="not_purchased"?<Alert>Hanya item berstatus Sudah dibeli atau Siap digunakan yang dapat dicatat sebagai pengeluaran.</Alert>:null}
   <div className="grid gap-2 sm:grid-cols-3">
    <div className="rounded-md bg-zinc-50 p-3"><p className="text-xs text-zinc-500">Total estimasi kebutuhan</p><p className="mt-1 text-lg font-semibold">{currency(estimate)}</p></div>
    <div className="rounded-md bg-amber-50 p-3"><p className="text-xs text-amber-800">Komitmen (status Dipesan)</p><p className="mt-1 text-lg font-semibold">{currency(commitment)}</p></div>
