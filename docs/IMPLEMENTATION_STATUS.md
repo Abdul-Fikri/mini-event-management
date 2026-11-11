@@ -159,5 +159,5 @@ Use this checklist for future UAT:
 - Migration: `supabase/migrations/20261112_event_lifecycle_automation.sql`. File belum diterapkan ke Supabase; jangan menganggap runtime sudah aktif sebelum migration diterapkan.
 - RLS tidak diubah. Validasi tanggal tetap dijalankan di Server Action dan diperkuat constraint database.
 - Acceptance criteria dan daftar UAT: `docs/EVENT_LIFECYCLE_REQUIREMENTS.md`.
-- Vercel check pada head PR #21 sebelumnya sempat success, tetapi check pada head terbaru berstatus failure dengan `build-rate-limit` (kuota Preview Vercel), bukan hasil kompilasi aplikasi. Head terbaru belum mendapat validasi build Vercel.
+- Pada head PR #21 sebelum sinkronisasi `main`, Vercel pernah success lalu check berikutnya gagal dengan `build-rate-limit` (kuota Preview), bukan hasil kompilasi aplikasi. Setelah branch diperbarui, check Vercel untuk head baru masih pending.
 - Verifikasi lokal `npm run lint`, `npm run build`, dan browser E2E belum dijalankan oleh assistant karena checkout repository tidak tersedia di environment ini. Runtime UAT menunggu migration diterapkan.
