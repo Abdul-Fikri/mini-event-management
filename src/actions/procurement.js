@@ -54,7 +54,11 @@ export async function saveProcurementItem(eventId,itemId,_prev,formData){
  let existingItem=null;
  let hasLinkedExpense=false;
  if(itemId){
-  const {data}=await supabase.from("procurement_items").select("id,status,purchased_date,actual_unit_price").eq("id",itemId).eq("event_id",eventId).eq("group_id",group.id).maybeSingle();
+  const {data,error:existingError}=await supabase.from("procurement_items").select("id,status,purchased_date,actual_unit_price").eq("id",itemId).eq("event_id",eventId).eq("group_id",group.id).maybeSingle();
+  if(existingError){
+   if(existingError.code==="42703"||existingError.code==="PGRST204")return {...empty,message:"Kolom integrasi belum tersedia. Terapkan migration 20261111_procurement_finance_integration.sql terlebih dahulu.",values};
+   return {...empty,message:"Gagal memuat data pengadaan yang akan diedit.",values};
+  }
   if(!data)return {...empty,message:"Data pengadaan tidak ditemukan.",values};
   existingItem=data;
   const {data:linked,error:linkedError}=await supabase.from("transactions").select("id").eq("procurement_item_id",itemId).eq("event_id",eventId).eq("group_id",group.id).maybeSingle();
