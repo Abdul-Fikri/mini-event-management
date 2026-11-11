@@ -34,6 +34,11 @@ alter table public.events
   );
 
 alter table public.events
+  drop constraint if exists events_status_mode_check,
+  drop constraint if exists events_planning_dates_check,
+  drop constraint if exists events_evaluation_end_date_check;
+
+alter table public.events
   add constraint events_status_mode_check
   check (status_mode in ('automatic', 'manual'));
 
