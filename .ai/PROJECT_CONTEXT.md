@@ -69,7 +69,7 @@ Being in `members` does not automatically make someone a committee member for ev
 - Procurement category, actual unit price, quantity, supplier, and purchase date synchronize to the linked finance transaction. Linked transactions are managed from Procurement, not edited/deleted from Finance.
 - Deleting a purchased procurement item keeps its finance transaction as history and clears only the item link.
 - Finance cash balance remains income minus actual expenses. Budget remaining after commitments is category budget minus actual expenses minus estimated costs of ordered procurement items.
-- Existing purchased items from before this integration are not backfilled automatically. Review manual finance records before using the per-item legacy sync action.
+- Existing purchased items from before this integration are not backfilled automatically, and editing them does not silently create a second expense. Review manual finance records before using the per-item legacy sync action; if their purchase date is unknown in the record, enter the actual date before syncing.
 - Migration 20261111_procurement_finance_integration.sql must be applied to the target Supabase database before using this integration. Repository presence does not prove production application.
 
 ## Features found in source
