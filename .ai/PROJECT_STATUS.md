@@ -80,6 +80,6 @@ See `docs/IMPLEMENTASI-RUBRIK-UAS.md` for the public evidence mapping. Treat imp
 - Implemented in this branch: automatic/manual status mode, lifecycle dates and validation, shared Asia/Jakarta status resolver, dashboard/event list/Owner workspace/Panitia status display updates, SQL migration, initial schema update, and requirements/UAT documentation.
 - New events default to automatic mode. Existing rows become manual when the migration adds `status_mode`, preserving their existing status values.
 - Migration `20261112_event_lifecycle_automation.sql` has been authored but has not been applied to Supabase. Runtime behavior is therefore not yet verified.
-- Vercel check pada head terbaru PR #21 berstatus success. Ini mengonfirmasi Preview check/deployment, bukan runtime database UAT; runtime tetap menunggu migration diterapkan ke database target.
+- Vercel check pada head PR #21 sebelumnya sempat success, tetapi check pada head terbaru berstatus failure dengan `build-rate-limit` (kuota Preview Vercel), bukan hasil kompilasi aplikasi. Head terbaru belum mendapat validasi build Vercel; runtime tetap menunggu migration diterapkan ke database target.
 - Local `npm run lint`, `npm run build`, and browser E2E have not been run by the assistant because the repository could not be cloned in the execution environment. Do not claim these checks passed.
 - Review the live PR and Preview status after it is opened; do not merge or apply the migration without the Owner's explicit approval.
