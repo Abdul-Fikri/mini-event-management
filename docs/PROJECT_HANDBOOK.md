@@ -31,9 +31,24 @@ Tanggal hari ini untuk aturan event menggunakan zona waktu **Asia/Jakarta (WIB)*
 - Tanggal transaksi (`transactions.trx_date`) boleh lampau untuk pencatatan histori keuangan.
 - Semua input nominal rupiah (target anggaran event, anggaran kategori, transaksi, dan harga satuan pengadaan) otomatis menampilkan pemisah ribuan titik saat diketik, misalnya `500000` menjadi `500.000`. Validator menerima angka biasa maupun format bertitik, lalu menormalisasikannya menjadi number sebelum disimpan. Anggaran kategori boleh bernilai 0; nominal transaksi harus lebih dari 0.
 - Setelah CRUD data panitia, rundown, tugas, pengadaan, atau keuangan berhasil, pengguna dikembalikan ke subhalaman event yang sama tempat aksi dilakukan (bukan selalu ke Overview). Nilai `return_to` divalidasi di Server Action dan hanya menerima rute subhalaman dalam event yang sama.
-- Modul pengadaan saat ini tidak memiliki input tanggal manual yang perlu dibatasi.
+- Tanggal pembelian pengadaan (procurement_items.purchased_date) boleh lampau untuk mencatat tanggal pembelian sebenarnya. Jika status menjadi Sudah dibeli/Siap digunakan dan tanggal dikosongkan, sistem menggunakan tanggal hari ini di Asia/Jakarta.
 
-Batasan tanggal pada event diterapkan melalui atribut `min` pada form sebagai bantuan pengguna dan validasi Zod di Server Action sebagai aturan otoritatif. Data lama tidak perlu diubah dan tidak memerlukan migration database.
+### Integrasi Pengadaan dan Keuangan
+
+Pengadaan dan Keuangan tetap merupakan dua halaman dengan tanggung jawab berbeda, tetapi memakai transaksi yang saling terhubung:
+
+- **Diminta** berarti kebutuhan diajukan, belum menjadi komitmen dan belum menjadi pengeluaran.
+- **Dipesan** berarti pesanan sudah dikonfirmasi. Nilai estimasi totalnya masuk ke komitmen anggaran, tetapi belum mengurangi saldo kas dan belum dihitung sebagai pengeluaran aktual.
+- **Sudah dibeli** atau **Siap digunakan** berarti pembelian telah terjadi. Harga aktual satuan wajib lebih dari Rp0; database otomatis membuat atau memperbarui satu transaksi bertipe expense pada tabel transactions.
+- Total transaksi pembelian dihitung dari harga aktual satuan dikali jumlah dan dibulatkan ke Rupiah terdekat. Tanggal transaksi mengikuti tanggal pembelian; jika kosong, tanggal hari ini Asia/Jakarta digunakan.
+- Pengadaan dapat memilih kategori anggaran. Kategori, deskripsi, tanggal, supplier/referensi, dan nominal transaksi otomatis mengikuti perubahan pada item pengadaan.
+- Transaksi yang berasal dari Pengadaan diberi penanda sumber dan dikelola dari halaman Pengadaan. Transaksi manual yang dibuat langsung dari Keuangan tetap dapat diedit/dihapus.
+- Constraint unik pada transactions.procurement_item_id mencegah satu item pengadaan membuat transaksi otomatis lebih dari satu kali.
+- Jika item Pengadaan dihapus setelah dibeli, transaksi pengeluarannya tetap disimpan sebagai histori; relasi item dilepas dan referensi sumber Pengadaan tetap ada.
+- Item berstatus Dipesan ditampilkan di Keuangan sebagai komitmen. Rumus sisa setelah komitmen = total anggaran kategori dikurangi pengeluaran aktual dikurangi komitmen. Saldo kas tetap = pemasukan dikurangi pengeluaran aktual.
+- Item lama yang sudah dibeli sebelum integrasi dapat disinkronkan dari halaman Pengadaan. Pengguna harus memastikan pembelian tersebut belum dicatat manual di Keuangan agar tidak terjadi duplikasi.
+
+Batasan tanggal pada event diterapkan melalui atribut min pada form sebagai bantuan pengguna dan validasi Zod di Server Action sebagai aturan otoritatif. Data lama tidak perlu diubah untuk aturan tanggal event.
 
 ## 2. Tech stack aktual
 
