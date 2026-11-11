@@ -73,7 +73,7 @@ Being in `members` does not automatically make someone a committee member for ev
 - Migration 20261111_procurement_finance_integration.sql must be applied to the target Supabase database before using this integration. Repository presence does not prove production application.
 
 ## Features found in source
-Authentication/onboarding, dashboard, group member CRUD, event CRUD, committee assignments, rundown CRUD, task CRUD, procurement CRUD, finance categories and transactions, CSV exports, invitation token flow, Panitia read-only workspace, group logo upload/removal, and public example-event catalog.
+Authentication/onboarding, dashboard, group member CRUD, event CRUD, committee assignments, rundown CRUD, task CRUD, procurement CRUD with finance-linked expenses and commitments, finance categories/manual transactions, CSV exports, invitation token flow, Panitia read-only workspace, group logo upload/removal, and public example-event catalog.
 
 ## Known caveats
 - CSV `members` export is group-wide, not limited to event-assigned members; confirm product intent before changing.
