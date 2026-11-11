@@ -64,7 +64,7 @@ Being in `members` does not automatically make someone a committee member for ev
 ## Procurement and finance domain behavior
 
 - Procurement and Finance remain separate pages with linked data.
-- Status requested means requested only; ordered means confirmed order and contributes estimated cost to commitments; purchased/ready means an actual purchase and creates/updates one linked transactions expense.
+- Status requested means requested only; ordered means confirmed order and contributes estimated cost to commitments; purchased/ready means an actual purchase and creates/updates one linked transactions expense. Existing rows that used requested before the status split remain requested/Diminta; review and change to ordered/Dipesan manually only when the order was actually confirmed.
 - The database trigger is the source of truth for the automatic expense. transactions.procurement_item_id is unique and nullable; do not create a second manual expense for the same purchase.
 - Procurement category, actual unit price, quantity, supplier, and purchase date synchronize to the linked finance transaction. Linked transactions are managed from Procurement, not edited/deleted from Finance.
 - Deleting a purchased procurement item keeps its finance transaction as history and clears only the item link.
