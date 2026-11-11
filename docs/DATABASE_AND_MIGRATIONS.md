@@ -32,6 +32,7 @@ Folder ini berisi perubahan bertahap setelah schema awal. File yang saat ini ada
 | \`20261109_member_invitations.sql\` | Tabel undangan, token hash, masa berlaku, RPC \`claim_member_invitation\` |
 | \`20261110_group_logos.sql\` | Kolom \`groups.logo_url\` dan policy Storage untuk bucket logo |
 | \`20261111_group_logo_bucket.sql\` | Memastikan bucket publik \`group-logos\` tersedia dengan batas 2 MB dan MIME JPG/PNG/WebP; tidak mengubah policy akses |
+| 20261111_procurement_finance_integration.sql | Menambah status Dipesan, kategori/tanggal pembelian, relasi transaksi ke item, dan trigger otomatis sinkronisasi pengeluaran |
 
 Migration tambahan pada branch integrasi: 20261111_procurement_finance_integration.sql menambah status Dipesan, kategori/tanggal pembelian, relasi item pengadaan ke transaksi, dan trigger otomatis pencatatan pengeluaran. Urutan harus dipertahankan: foundation → invitations → group logo policies → group logo bucket → procurement-finance integration. Periksa isi migration dan status remote sebelum menjalankan apa pun.
 
