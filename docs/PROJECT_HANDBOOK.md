@@ -3,7 +3,7 @@
 Dokumen utama untuk memahami produk, arsitektur, fitur, dan cara kerja aplikasi.
 
 - Repository: https://github.com/Abdul-Fikri/mini-event-management
-- Last reviewed: 9 November 2026
+- Last reviewed: 11 November 2026
 - Active app root: repository root
 - Source directory: \`src/\`
 
@@ -49,7 +49,7 @@ Pengadaan dan Keuangan tetap merupakan dua halaman dengan tanggung jawab berbeda
 - Item berstatus Dipesan ditampilkan di Keuangan sebagai komitmen. Rumus sisa setelah komitmen = total anggaran kategori dikurangi pengeluaran aktual dikurangi komitmen. Saldo kas tetap = pemasukan dikurangi pengeluaran aktual.
 - Item lama yang sudah dibeli sebelum integrasi tidak di-backfill otomatis. Item tersebut dapat disinkronkan satu per satu dari halaman Pengadaan setelah pengguna memastikan pembelian belum dicatat manual di Keuangan. Jika tanggal pembelian lama belum tersedia, isi tanggal sebenarnya pada form sebelum sinkronisasi; sistem tidak menebak tanggal histori.
 
-Batasan tanggal pada event diterapkan melalui atribut min pada form sebagai bantuan pengguna dan validasi Zod di Server Action sebagai aturan otoritatif. Data lama tidak perlu diubah untuk aturan tanggal event.
+Aturan validasi tanggal mulai/selesai dari PR #18 diterapkan melalui atribut `min` pada form dan validasi Zod di Server Action; aturan itu sendiri tidak memerlukan migration atau rewrite data. Fitur siklus hidup/status otomatis menambahkan kolom timeline dan mode status melalui migration `20261112_event_lifecycle_automation.sql`; lihat bagian siklus hidup di bawah.
 
 ## 2. Tech stack aktual
 
@@ -261,7 +261,21 @@ Jangan deploy, mengubah env production, atau mengubah domain tanpa instruksi eks
 
 - [Database & Migrations](DATABASE_AND_MIGRATIONS.md)
 - [Implementation Status](IMPLEMENTATION_STATUS.md)
+- [Event Lifecycle Requirements](EVENT_LIFECYCLE_REQUIREMENTS.md)
 - [Resources](RESOURCES.md)
 - [Role Owner dan Panitia](ROLE-OWNER-PANITIA.md)
 - [Undangan Panitia](UNDANGAN-PANITIA.md)
 - [Implementasi Rubrik UAS](IMPLEMENTASI-RUBRIK-UAS.md)
+
+## 13. Siklus hidup dan mode status event
+
+Status event memiliki dua mode yang dapat dipilih Owner:
+
+- **Otomatis**: status efektif dihitung dari tanggal timeline dalam zona waktu Asia/Jakarta. Event baru menggunakan mode ini secara default.
+- **Manual**: status yang dipilih Owner tetap digunakan dan tidak berubah hanya karena tanggal berganti. Event yang sudah ada sebelum migration tetap berada pada mode ini agar status historisnya tidak berubah.
+
+Timeline mendukung tanggal mulai perencanaan (opsional), mulai persiapan (opsional), mulai event (wajib), selesai event (opsional), dan akhir evaluasi (opsional). Tanggal perencanaan dan persiapan harus diisi bersama dan berurutan sebelum event dimulai. Jika tanggal selesai event kosong, event dianggap berlangsung satu hari. Jika akhir evaluasi diisi, status Evaluasi berlaku sampai tanggal tersebut; setelahnya status menjadi Selesai.
+
+Urutan status otomatis: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (jika digunakan) → Selesai. Status Dibatalkan dipilih secara manual dengan mengubah mode ke Manual. Mengubah kembali ke Otomatis akan melanjutkan perhitungan berdasarkan timeline.
+
+Status otomatis dihitung saat data dibaca oleh resolver bersama; tidak memerlukan cron atau perubahan status berkala di database. Dashboard, daftar event, ruang kerja Owner, dan tampilan event Panitia harus memakai resolver yang sama. Rincian aturan dan acceptance criteria ada di `docs/EVENT_LIFECYCLE_REQUIREMENTS.md`.

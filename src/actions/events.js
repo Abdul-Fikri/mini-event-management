@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireGroup } from "@/lib/auth";
 import { getTodayJakartaDate } from "@/lib/dates";
+import { getEffectiveEventStatus } from "@/lib/events/status";
 import { createClient } from "@/lib/supabase/server";
 import { createEventSchema, eventFields } from "@/lib/validators/event";
 import { fieldErrors, readForm } from "@/lib/validators/helpers";
@@ -41,8 +42,9 @@ export async function saveEvent(id, _prev, formData) {
     existingEvent = data;
   }
 
+  const today = getTodayJakartaDate();
   const parsed = createEventSchema({
-    today: getTodayJakartaDate(),
+    today,
     existingEvent,
   }).safeParse(values);
 
@@ -55,7 +57,17 @@ export async function saveEvent(id, _prev, formData) {
     };
   }
 
-  const payload = { ...parsed.data, group_id: group.id };
+  const payload = {
+    ...parsed.data,
+    group_id: group.id,
+  };
+
+  // Status otomatis selalu dihitung ulang di server; nilai hidden dari browser
+  // tidak pernah menjadi sumber kebenaran untuk mode otomatis.
+  if (payload.status_mode === "automatic") {
+    payload.status = getEffectiveEventStatus(payload, today);
+  }
+
   const query = id
     ? supabase
         .from("events")
@@ -82,6 +94,7 @@ export async function saveEvent(id, _prev, formData) {
 
   revalidatePath("/dashboard");
   revalidatePath("/events");
+  if (id) revalidatePath(`/events/${id}`);
   redirect(id ? `/events/${id}` : "/events");
 }
 
