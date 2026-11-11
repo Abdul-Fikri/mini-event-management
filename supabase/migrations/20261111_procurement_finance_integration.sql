@@ -49,53 +49,56 @@ begin
 end;
 $$;
 
--- Keep exactly one finance expense in sync with each purchased procurement item.
--- This is an invoker trigger: the existing Owner RLS policies still apply.
-create function public.sync_procurement_expense()
-returns trigger
+-- Shared upsert routine. It is SECURITY INVOKER so table grants and Owner RLS
+-- remain in force for both the trigger and the explicit legacy-sync action.
+create function public.upsert_procurement_expense_for_item(
+  p_item_id uuid,
+  p_event_id uuid,
+  p_group_id uuid
+)
+returns uuid
 language plpgsql
 set search_path = ''
 as $$
 declare
-  linked_transaction_id uuid;
+  item public.procurement_items%rowtype;
   expense_amount bigint;
-  expense_date date;
   expense_reference text;
+  transaction_id uuid;
 begin
-  select t.id
-    into linked_transaction_id
-    from public.transactions t
-   where t.procurement_item_id = new.id
-     and t.event_id = new.event_id
-     and t.group_id = new.group_id
-   limit 1;
+  select *
+    into item
+    from public.procurement_items p
+   where p.id = p_item_id
+     and p.event_id = p_event_id
+     and p.group_id = p_group_id
+   for update;
 
-  -- A merely requested/ordered item is not an actual cash expense.
-  -- If a linked expense already exists, keep it synchronized even if the
-  -- procurement status is later corrected; money already spent stays recorded.
-  if new.status not in ('purchased', 'ready') and linked_transaction_id is null then
-    return new;
+  if not found then
+    raise exception 'Item pengadaan tidak ditemukan pada event/grup ini.'
+      using errcode = 'P0002';
   end if;
 
-  if new.actual_unit_price is null or new.actual_unit_price <= 0 then
+  if item.status not in ('purchased', 'ready') then
+    raise exception 'Hanya item Sudah dibeli/Siap digunakan yang dapat dicatat sebagai pengeluaran.'
+      using errcode = '23514';
+  end if;
+
+  if item.actual_unit_price is null or item.actual_unit_price <= 0 then
     raise exception 'Harga aktual wajib lebih dari Rp0 sebelum pembelian dicatat ke Keuangan.'
       using errcode = '23514';
   end if;
 
-  if round(new.actual_unit_price * new.quantity) <= 0
-     or round(new.actual_unit_price * new.quantity) > 9007199254740991 then
+  if round(item.actual_unit_price * item.quantity) <= 0
+     or round(item.actual_unit_price * item.quantity) > 9007199254740991 then
     raise exception 'Total pembelian tidak valid atau melebihi batas nominal yang didukung.'
       using errcode = '23514';
   end if;
-  expense_amount := round(new.actual_unit_price * new.quantity)::bigint;
+  expense_amount := round(item.actual_unit_price * item.quantity)::bigint;
 
-  expense_date := coalesce(
-    new.purchased_date,
-    (now() at time zone 'Asia/Jakarta')::date
-  );
   expense_reference := left(
     'Pengadaan otomatis' ||
-    case when new.supplier is not null then ' · ' || new.supplier else '' end,
+    case when item.supplier is not null then ' · ' || item.supplier else '' end,
     200
   );
 
@@ -111,15 +114,15 @@ begin
     procurement_item_id
   )
   values (
-    new.group_id,
-    new.event_id,
-    new.category_id,
+    item.group_id,
+    item.event_id,
+    item.category_id,
     'expense',
-    expense_date,
-    left('Pembelian: ' || new.name, 200),
+    coalesce(item.purchased_date, (now() at time zone 'Asia/Jakarta')::date),
+    left('Pembelian: ' || item.name, 200),
     expense_amount,
     expense_reference,
-    new.id
+    item.id
   )
   on conflict (procurement_item_id)
   do update set
@@ -129,7 +132,45 @@ begin
     description = excluded.description,
     amount = excluded.amount,
     reference = excluded.reference,
-    updated_at = now();
+    updated_at = now()
+  returning id into transaction_id;
+
+  return transaction_id;
+end;
+$$;
+
+-- Automatically create an expense when a new item is inserted as purchased,
+-- or when an existing item transitions into purchased/ready. Already-linked
+-- items remain synchronized when their purchase details are edited.
+create function public.sync_procurement_expense()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+declare
+  linked_transaction_id uuid;
+begin
+  if tg_op = 'INSERT' then
+    if new.status in ('purchased', 'ready') then
+      perform public.upsert_procurement_expense_for_item(new.id, new.event_id, new.group_id);
+    end if;
+    return new;
+  end if;
+
+  select t.id
+    into linked_transaction_id
+    from public.transactions t
+   where t.procurement_item_id = new.id
+     and t.event_id = new.event_id
+     and t.group_id = new.group_id
+   limit 1;
+
+  if linked_transaction_id is not null then
+    perform public.upsert_procurement_expense_for_item(new.id, new.event_id, new.group_id);
+  elsif new.status in ('purchased', 'ready')
+    and old.status not in ('purchased', 'ready') then
+    perform public.upsert_procurement_expense_for_item(new.id, new.event_id, new.group_id);
+  end if;
 
   return new;
 end;
@@ -156,5 +197,7 @@ create trigger procurement_sync_finance_expense
 
 revoke all on function public.prepare_procurement_purchase_date() from public, anon, authenticated;
 revoke all on function public.sync_procurement_expense() from public, anon, authenticated;
+revoke all on function public.upsert_procurement_expense_for_item(uuid, uuid, uuid) from public, anon;
+grant execute on function public.upsert_procurement_expense_for_item(uuid, uuid, uuid) to authenticated;
 
 commit;
