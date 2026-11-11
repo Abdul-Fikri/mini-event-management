@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { saveEvent } from "@/actions/events";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
@@ -43,17 +43,6 @@ export default function EventForm({ event = null, members = [] }) {
   const [evaluationEndDate, setEvaluationEndDate] = useState(
     value("evaluation_end_date"),
   );
-
-  useEffect(() => {
-    if (!Object.keys(state.values ?? {}).length) return;
-    setStatusMode(state.values.status_mode || "automatic");
-    setManualStatus(state.values.status || "planned");
-    setStartDate(state.values.start_date || "");
-    setEndDate(state.values.end_date || "");
-    setPlanningStartDate(state.values.planning_start_date || "");
-    setPreparationStartDate(state.values.preparation_start_date || "");
-    setEvaluationEndDate(state.values.evaluation_end_date || "");
-  }, [state.values]);
 
   const previewStatus = getEffectiveEventStatus(
     {
