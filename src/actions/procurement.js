@@ -18,7 +18,7 @@ function procurementPaths(eventId,returnPath){
  if(returnPath)revalidatePath(returnPath);
 }
 
-function validateExpenseData(parsed,existingItem,hasLinkedExpense,values){
+function validateExpenseData(parsed,hasLinkedExpense,values){
  const shouldSync=purchasedStatuses.has(parsed.status)||hasLinkedExpense;
  if(!shouldSync)return null;
  if(!parsed.actual_unit_price||parsed.actual_unit_price<=0){
@@ -62,7 +62,7 @@ export async function saveProcurementItem(eventId,itemId,_prev,formData){
   hasLinkedExpense=Boolean(linked);
  }
 
- const expenseError=validateExpenseData(parsed.data,existingItem,hasLinkedExpense,values);
+ const expenseError=validateExpenseData(parsed.data,hasLinkedExpense,values);
  if(expenseError)return expenseError;
 
  const shouldSync=purchasedStatuses.has(parsed.data.status)||hasLinkedExpense;
@@ -93,7 +93,8 @@ export async function syncProcurementItemToFinance(formData){
  if(!eventId||!itemId)return;
  const returnPath=getEventReturnPath(eventId,formData);
  const supabase=await createClient();
- const {data:item}=await supabase.from("procurement_items").select("id,status,actual_unit_price,purchased_date").eq("id",itemId).eq("event_id",eventId).eq("group_id",group.id).maybeSingle();
+ const {data:item,error:itemError}=await supabase.from("procurement_items").select("id,status,actual_unit_price,purchased_date").eq("id",itemId).eq("event_id",eventId).eq("group_id",group.id).maybeSingle();
+ if(itemError)redirect(`${returnPath}?procurement_error=sync_failed`);
  if(!item)redirect(`${returnPath}?procurement_error=item_not_found`);
  if(!purchasedStatuses.has(item.status))redirect(`${returnPath}?procurement_error=not_purchased`);
  if(!item.actual_unit_price||item.actual_unit_price<=0)redirect(`${returnPath}?procurement_error=missing_actual_price`);
