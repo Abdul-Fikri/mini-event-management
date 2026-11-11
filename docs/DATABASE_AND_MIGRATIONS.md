@@ -144,6 +144,8 @@ Contoh ini hanya ilustrasi. Jangan jalankan di production sebelum memeriksa apak
 - \`member_invitations\`: undangan akun Panitia (migration).
 - \`storage.objects\`: objek logo pada bucket \`group-logos\`.
 
+Relasi Pengadaan–Keuangan: satu item pengadaan maksimal memiliki satu transaksi pengeluaran otomatis. Foreign key komposit menjaga item dan transaksi tetap berada pada event/grup yang sama. Penghapusan item pengadaan melepas relasi tetapi mempertahankan transaksi sebagai histori. Trigger database menyinkronkan nominal, kategori, tanggal, deskripsi, dan referensi transaksi dari item berstatus purchased/ready. Trigger berjalan sebagai invoker dan tetap tunduk pada policy RLS Owner yang sudah ada; migration tidak mengubah policy RLS.
+
 Relasi penting: \`event_members\` menghubungkan \`members\` dengan \`events\`. Jangan menyamakan anggota grup dengan anggota event.
 
 ## 9. Keamanan
