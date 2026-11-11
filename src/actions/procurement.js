@@ -72,10 +72,10 @@ export async function saveProcurementItem(eventId,itemId,_prev,formData){
  const expenseError=validateExpenseData(parsed.data,hasLinkedExpense,values);
  if(expenseError)return expenseError;
 
- const shouldSync=purchasedStatuses.has(parsed.data.status)||hasLinkedExpense;
+ const transitioningToPurchased=purchasedStatuses.has(parsed.data.status)&&(!existingItem||!purchasedStatuses.has(existingItem.status));
  const payload={
   ...parsed.data,
-  purchased_date:shouldSync?(parsed.data.purchased_date||existingItem?.purchased_date||getTodayJakartaDate()):parsed.data.purchased_date,
+  purchased_date:parsed.data.purchased_date||existingItem?.purchased_date||(transitioningToPurchased?getTodayJakartaDate():null),
   group_id:group.id,
   event_id:eventId
  };
@@ -105,11 +105,7 @@ export async function syncProcurementItemToFinance(formData){
  if(!item)redirect(`${returnPath}?procurement_error=item_not_found`);
  if(!purchasedStatuses.has(item.status))redirect(`${returnPath}?procurement_error=not_purchased`);
  if(!item.actual_unit_price||item.actual_unit_price<=0)redirect(`${returnPath}?procurement_error=missing_actual_price`);
- const {error:updateError}=await supabase.from("procurement_items").update({purchased_date:item.purchased_date||getTodayJakartaDate()}).eq("id",itemId).eq("event_id",eventId).eq("group_id",group.id);
- if(updateError){
-  console.error("[syncProcurementItemToFinance:update]",updateError.code,updateError.message);
-  redirect(`${returnPath}?procurement_error=sync_failed`);
- }
+ if(!item.purchased_date)redirect(`${returnPath}?procurement_error=missing_purchase_date`);
  const {error:syncError}=await supabase.rpc("upsert_procurement_expense_for_item",{
   p_item_id:itemId,
   p_event_id:eventId,
