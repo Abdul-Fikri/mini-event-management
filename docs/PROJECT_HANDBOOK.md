@@ -33,7 +33,7 @@ Tanggal hari ini untuk aturan event menggunakan zona waktu **Asia/Jakarta (WIB)*
 - Setelah CRUD data panitia, rundown, tugas, pengadaan, atau keuangan berhasil, pengguna dikembalikan ke subhalaman event yang sama tempat aksi dilakukan (bukan selalu ke Overview). Nilai `return_to` divalidasi di Server Action dan hanya menerima rute subhalaman dalam event yang sama.
 - Modul pengadaan saat ini tidak memiliki input tanggal manual yang perlu dibatasi.
 
-Batasan tanggal pada event diterapkan melalui atribut `min` pada form sebagai bantuan pengguna dan validasi Zod di Server Action sebagai aturan otoritatif. Data lama tidak perlu diubah dan tidak memerlukan migration database.
+Aturan validasi tanggal mulai/selesai dari PR #18 diterapkan melalui atribut `min` pada form dan validasi Zod di Server Action; aturan itu sendiri tidak memerlukan migration atau rewrite data. Fitur siklus hidup/status otomatis menambahkan kolom timeline dan mode status melalui migration `20261112_event_lifecycle_automation.sql`; lihat bagian siklus hidup di bawah.
 
 ## 2. Tech stack aktual
 
@@ -245,6 +245,7 @@ Jangan deploy, mengubah env production, atau mengubah domain tanpa instruksi eks
 
 - [Database & Migrations](DATABASE_AND_MIGRATIONS.md)
 - [Implementation Status](IMPLEMENTATION_STATUS.md)
+- [Event Lifecycle Requirements](EVENT_LIFECYCLE_REQUIREMENTS.md)
 - [Resources](RESOURCES.md)
 - [Role Owner dan Panitia](ROLE-OWNER-PANITIA.md)
 - [Undangan Panitia](UNDANGAN-PANITIA.md)
