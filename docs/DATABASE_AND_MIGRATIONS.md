@@ -33,7 +33,7 @@ Folder ini berisi perubahan bertahap setelah schema awal. File yang saat ini ada
 | \`20261110_group_logos.sql\` | Kolom \`groups.logo_url\` dan policy Storage untuk bucket logo |
 | \`20261111_group_logo_bucket.sql\` | Memastikan bucket publik \`group-logos\` tersedia dengan batas 2 MB dan MIME JPG/PNG/WebP; tidak mengubah policy akses |
 
-Urutan harus dipertahankan: foundation → invitations → group logo policies → group logo bucket. Periksa isi migration dan status remote sebelum menjalankan apa pun.
+Migration tambahan pada branch integrasi: 20261111_procurement_finance_integration.sql menambah status Dipesan, kategori/tanggal pembelian, relasi item pengadaan ke transaksi, dan trigger otomatis pencatatan pengeluaran. Urutan harus dipertahankan: foundation → invitations → group logo policies → group logo bucket → procurement-finance integration. Periksa isi migration dan status remote sebelum menjalankan apa pun.
 
 **Penting:** file SQL di GitHub tidak membuktikan migration sudah dijalankan. Status migration production belum dianggap terkonfirmasi sampai diperiksa pada Supabase project yang benar.
 
