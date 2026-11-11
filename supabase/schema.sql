@@ -201,13 +201,16 @@ create table public.procurement_items (
   unit              text check (char_length(unit) <= 30),
   est_unit_price    bigint check (est_unit_price >= 0 and est_unit_price <= 9007199254740991),
   actual_unit_price bigint check (actual_unit_price >= 0 and actual_unit_price <= 9007199254740991),
+  category_id       uuid,
+  purchased_date    date,
   pic_member_id     uuid,
   status            text not null default 'not_started'
-                    check (status in ('not_started','requested','purchased','ready','not_needed')),
+                    check (status in ('not_started','requested','ordered','purchased','ready','not_needed')),
   supplier          text check (char_length(supplier) <= 120),
   notes             text check (char_length(notes) <= 1000),
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now(),
+  unique (id, event_id, group_id),             -- target FK komposit dari transactions
   foreign key (event_id, group_id) references public.events (id, group_id) on delete cascade,
   foreign key (pic_member_id, group_id)
     references public.members (id, group_id) on delete set null (pic_member_id)
@@ -228,6 +231,13 @@ create table public.budget_categories (
   foreign key (event_id, group_id) references public.events (id, group_id) on delete cascade
 );
 
+-- Procurement category must belong to the same event as the item.
+alter table public.procurement_items
+  add constraint procurement_items_category_id_event_id_fkey
+  foreign key (category_id, event_id)
+  references public.budget_categories (id, event_id)
+  on delete set null (category_id);
+
 -- 2.9 transactions: pemasukan (income) & pengeluaran (expense)
 create table public.transactions (
   id          uuid primary key default gen_random_uuid(),
@@ -239,16 +249,22 @@ create table public.transactions (
   description text not null check (char_length(btrim(description)) between 1 and 200),
   amount      bigint not null check (amount > 0 and amount <= 9007199254740991),
   recorded_by uuid,
+  procurement_item_id uuid,
   reference   text check (char_length(reference) <= 200),
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now(),
+  unique (procurement_item_id),
+  check (procurement_item_id is null or type = 'expense'),
   foreign key (event_id, group_id) references public.events (id, group_id) on delete cascade,
   -- NO ACTION (bukan RESTRICT): kategori yang dipakai transaksi tidak bisa
   -- dihapus sendiri, tetapi penghapusan event tetap boleh menghapus keduanya.
   foreign key (category_id, event_id)
     references public.budget_categories (id, event_id),
   foreign key (recorded_by, group_id)
-    references public.members (id, group_id) on delete set null (recorded_by)
+    references public.members (id, group_id) on delete set null (recorded_by),
+  foreign key (procurement_item_id, event_id, group_id)
+    references public.procurement_items (id, event_id, group_id)
+    on delete set null (procurement_item_id)
 );
 
 -- 3. Index ---------------------------------------------------------------
@@ -262,6 +278,7 @@ create index tasks_event_status_idx      on public.tasks (event_id, status);
 create index tasks_assigned_idx          on public.tasks (assigned_to) where assigned_to is not null;
 create index procurement_event_idx       on public.procurement_items (event_id, status);
 create index procurement_pic_idx         on public.procurement_items (pic_member_id) where pic_member_id is not null;
+create index procurement_category_idx    on public.procurement_items (category_id) where category_id is not null;
 create index transactions_event_idx      on public.transactions (event_id, trx_date);
 create index transactions_category_idx   on public.transactions (category_id) where category_id is not null;
 create index transactions_recorded_by_idx on public.transactions (recorded_by) where recorded_by is not null;
@@ -278,7 +295,176 @@ begin
          for each row execute function public.set_updated_at()',
       t || '_set_updated_at', t);
   end loop;
-end $$;
+end $;
+
+
+-- 4.1 Procurement → Finance synchronization --------------------------
+-- Invoker functions preserve the authenticated Owner's existing RLS boundary.
+create function public.prepare_procurement_purchase_date()
+returns trigger
+language plpgsql
+set search_path = ''
+as $
+begin
+  if new.status in ('purchased', 'ready') and new.purchased_date is null then
+    if tg_op = 'INSERT' then
+      new.purchased_date := (now() at time zone 'Asia/Jakarta')::date;
+    elsif old.status not in ('purchased', 'ready') then
+      new.purchased_date := (now() at time zone 'Asia/Jakarta')::date;
+    end if;
+  end if;
+
+  return new;
+end;
+$;
+
+create function public.upsert_procurement_expense_for_item(
+  p_item_id uuid,
+  p_event_id uuid,
+  p_group_id uuid
+)
+returns uuid
+language plpgsql
+set search_path = ''
+as $
+declare
+  item public.procurement_items%rowtype;
+  expense_amount bigint;
+  expense_reference text;
+  transaction_id uuid;
+begin
+  select *
+    into item
+    from public.procurement_items p
+   where p.id = p_item_id
+     and p.event_id = p_event_id
+     and p.group_id = p_group_id
+   for update;
+
+  if not found then
+    raise exception 'Item pengadaan tidak ditemukan pada event/grup ini.'
+      using errcode = 'P0002';
+  end if;
+
+  if item.status not in ('purchased', 'ready') then
+    raise exception 'Hanya item Sudah dibeli/Siap digunakan yang dapat dicatat sebagai pengeluaran.'
+      using errcode = '23514';
+  end if;
+
+  if item.actual_unit_price is null or item.actual_unit_price <= 0 then
+    raise exception 'Harga aktual wajib lebih dari Rp0 sebelum pembelian dicatat ke Keuangan.'
+      using errcode = '23514';
+  end if;
+
+  if round(item.actual_unit_price * item.quantity) <= 0
+     or round(item.actual_unit_price * item.quantity) > 9007199254740991 then
+    raise exception 'Total pembelian tidak valid atau melebihi batas nominal yang didukung.'
+      using errcode = '23514';
+  end if;
+  expense_amount := round(item.actual_unit_price * item.quantity)::bigint;
+
+  expense_reference := left(
+    'Pengadaan otomatis' ||
+    case when item.supplier is not null then ' · ' || item.supplier else '' end,
+    200
+  );
+
+  insert into public.transactions (
+    group_id,
+    event_id,
+    category_id,
+    type,
+    trx_date,
+    description,
+    amount,
+    reference,
+    procurement_item_id
+  )
+  values (
+    item.group_id,
+    item.event_id,
+    item.category_id,
+    'expense',
+    coalesce(item.purchased_date, (now() at time zone 'Asia/Jakarta')::date),
+    left('Pembelian: ' || item.name, 200),
+    expense_amount,
+    expense_reference,
+    item.id
+  )
+  on conflict (procurement_item_id)
+  do update set
+    type = 'expense',
+    category_id = excluded.category_id,
+    trx_date = excluded.trx_date,
+    description = excluded.description,
+    amount = excluded.amount,
+    reference = excluded.reference,
+    updated_at = now()
+  returning id into transaction_id;
+
+  return transaction_id;
+end;
+$;
+
+create function public.sync_procurement_expense()
+returns trigger
+language plpgsql
+set search_path = ''
+as $
+declare
+  linked_transaction_id uuid;
+begin
+  if tg_op = 'INSERT' then
+    if new.status in ('purchased', 'ready') then
+      perform public.upsert_procurement_expense_for_item(new.id, new.event_id, new.group_id);
+    end if;
+    return new;
+  end if;
+
+  select t.id
+    into linked_transaction_id
+    from public.transactions t
+   where t.procurement_item_id = new.id
+     and t.event_id = new.event_id
+     and t.group_id = new.group_id
+   limit 1;
+
+  if linked_transaction_id is not null then
+    perform public.upsert_procurement_expense_for_item(new.id, new.event_id, new.group_id);
+  elsif new.status in ('purchased', 'ready')
+    and old.status not in ('purchased', 'ready') then
+    perform public.upsert_procurement_expense_for_item(new.id, new.event_id, new.group_id);
+  end if;
+
+  return new;
+end;
+$;
+
+create trigger procurement_prepare_purchase_date
+  before insert or update
+  on public.procurement_items
+  for each row
+  execute function public.prepare_procurement_purchase_date();
+
+create trigger procurement_sync_finance_expense
+  after insert or update of
+    status,
+    actual_unit_price,
+    quantity,
+    name,
+    supplier,
+    purchased_date,
+    category_id
+  on public.procurement_items
+  for each row
+  execute function public.sync_procurement_expense();
+
+revoke all on function public.prepare_procurement_purchase_date() from public, anon;
+revoke all on function public.sync_procurement_expense() from public, anon;
+revoke all on function public.upsert_procurement_expense_for_item(uuid, uuid, uuid) from public, anon;
+grant execute on function public.prepare_procurement_purchase_date() to authenticated;
+grant execute on function public.sync_procurement_expense() to authenticated;
+grant execute on function public.upsert_procurement_expense_for_item(uuid, uuid, uuid) to authenticated;
 
 -- 5. Hak akses (least privilege) -------------------------------------
 -- Cabut semua hak bawaan dari anon dan authenticated (default Supabase bisa
