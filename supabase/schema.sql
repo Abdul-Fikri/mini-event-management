@@ -210,7 +210,7 @@ create table public.procurement_items (
   notes             text check (char_length(notes) <= 1000),
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now(),
-  unique (id, event_id, group_id),             -- target FK komposit dari transactions
+  constraint procurement_items_id_event_group_key unique (id, event_id, group_id), -- target FK komposit
   foreign key (event_id, group_id) references public.events (id, group_id) on delete cascade,
   foreign key (pic_member_id, group_id)
     references public.members (id, group_id) on delete set null (pic_member_id)
@@ -253,8 +253,9 @@ create table public.transactions (
   reference   text check (char_length(reference) <= 200),
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now(),
-  unique (procurement_item_id),
-  check (procurement_item_id is null or type = 'expense'),
+  constraint transactions_procurement_item_id_key unique (procurement_item_id),
+  constraint transactions_procurement_item_expense_check
+    check (procurement_item_id is null or type = 'expense'),
   foreign key (event_id, group_id) references public.events (id, group_id) on delete cascade,
   -- NO ACTION (bukan RESTRICT): kategori yang dipakai transaksi tidak bisa
   -- dihapus sendiri, tetapi penghapusan event tetap boleh menghapus keduanya.
