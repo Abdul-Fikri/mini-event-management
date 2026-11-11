@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 9 November 2026 — PR #18 date validation in review
+Last updated: 11 November 2026 — procurement/finance integration in progress
 
 ## Owner-reported verification
 - App is deployed on Vercel: https://mini-event-management-gules.vercel.app
@@ -31,13 +31,20 @@ Last updated: 9 November 2026 — PR #18 date validation in review
 - No database migration or historical data rewrite is included.
 - PR #18's earlier Vercel check was affected by `build-rate-limit`; this is a deployment quota status, not an application build result. Production deployment of the merge was not independently confirmed. The assistant did not run `npm run lint`, `npm run build`, or browser E2E tests for PR #18.
 
-## Finance amount validation — PR #19
+## Finance amount validation and subpage navigation — PR #19
 
-- PR #19 is open: https://github.com/Abdul-Fikri/mini-event-management/pull/19
-- Working branch: `fix/budget-category-amount-validation`, based on the `main` head after PR #18.
-- The budget category amount validator previously used a double-escaped digit regex, causing values such as `1000000` to fail. The positive-integer regex for transaction amounts had the same issue.
-- Both patterns are corrected. Budget category amounts accept zero or a positive integer; transaction amounts must be positive integers. A reusable `MoneyField` automatically formats rupiah values with dot thousand separators for event target budgets, budget categories, transactions, and procurement unit prices. Shared Zod validation accepts grouped or plain-digit strings and normalizes them to numbers before persistence.
-- Direct regex/formatting checks passed. Panitia, rundown, task, procurement, and finance create/edit/delete actions now carry a validated `return_to` path and redirect to the originating subpage after success. The helper only allows known routes under the same event ID. The Vercel status for the latest navigation implementation head is failure with `build-rate-limit` (preview build quota/rate limit); this is not a source compilation result. Local lint/build/browser E2E have not been run by the assistant.
+- PR #19: https://github.com/Abdul-Fikri/mini-event-management/pull/19 — merged to `main`.
+- It fixed the double-escaped integer regex for budget category and transaction amount validation, added reusable MoneyField rupiah formatting, and preserves the originating event subpage after panitia/rundown/task/procurement/finance CRUD.
+- Direct regex/formatting and return-path source checks passed. The owner handles Vercel deployment; the assistant did not independently verify a production deployment or run local lint/build/browser E2E for PR #19.
+
+## Procurement and finance integration — implementation branch
+
+- Branch: `feat/procurement-finance-integration`, based on `main` after PR #19.
+- Status `requested` is only requested; `ordered` contributes estimated costs to commitments; `purchased`/`ready` automatically create or update one linked expense through a database trigger.
+- Procurement category, purchase date, actual unit price, quantity, name, and supplier synchronize to the linked finance transaction. The unique transaction link prevents duplicates. Linked expenses are managed from Procurement; manual finance transactions remain editable.
+- Deleting a purchased procurement item preserves its expense as a historical finance transaction.
+- Migration `20261111_procurement_finance_integration.sql` is committed to this branch but has NOT been applied to Supabase. Do not claim runtime behavior until the owner applies it and tests the flow.
+- The assistant has not run `npm run lint`, `npm run build`, browser E2E, or applied the database migration.
 
 ## Group logo upload
 
