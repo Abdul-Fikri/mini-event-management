@@ -60,6 +60,9 @@ export async function saveProcurementItem(eventId,itemId,_prev,formData){
   const {data:linked,error:linkedError}=await supabase.from("transactions").select("id").eq("procurement_item_id",itemId).eq("event_id",eventId).eq("group_id",group.id).maybeSingle();
   if(linkedError)return {...empty,message:"Gagal memeriksa hubungan transaksi pengadaan. Pastikan migration integrasi Pengadaan–Keuangan sudah diterapkan.",values};
   hasLinkedExpense=Boolean(linked);
+  if(hasLinkedExpense&&!purchasedStatuses.has(parsed.data.status)){
+   return {...empty,message:"Pembelian ini sudah tercatat sebagai pengeluaran. Status tidak dapat dikembalikan ke Diminta/Dipesan; gunakan Sudah dibeli atau Siap digunakan.",values};
+  }
  }
 
  const expenseError=validateExpenseData(parsed.data,hasLinkedExpense,values);
