@@ -65,7 +65,7 @@ export async function saveProcurementItem(eventId,itemId,_prev,formData){
   if(linkedError)return {...empty,message:"Gagal memeriksa hubungan transaksi pengadaan. Pastikan migration integrasi Pengadaan–Keuangan sudah diterapkan.",values};
   hasLinkedExpense=Boolean(linked);
   if(hasLinkedExpense&&!purchasedStatuses.has(parsed.data.status)){
-   return {...empty,message:"Pembelian ini sudah tercatat sebagai pengeluaran. Status tidak dapat dikembalikan ke Diminta/Dipesan; gunakan Sudah dibeli atau Siap digunakan.",values};
+   return {...empty,message:"Pembelian ini sudah tercatat sebagai pengeluaran. Status tidak dapat dikembalikan ke Belum dimulai, Diminta, Dipesan, atau Tidak diperlukan; gunakan Sudah dibeli atau Siap digunakan.",values};
   }
  }
 
