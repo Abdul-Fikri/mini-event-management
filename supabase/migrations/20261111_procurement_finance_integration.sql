@@ -80,11 +80,12 @@ begin
       using errcode = '23514';
   end if;
 
-  expense_amount := round(new.actual_unit_price * new.quantity)::bigint;
-  if expense_amount <= 0 or expense_amount > 9007199254740991 then
+  if round(new.actual_unit_price * new.quantity) <= 0
+     or round(new.actual_unit_price * new.quantity) > 9007199254740991 then
     raise exception 'Total pembelian tidak valid atau melebihi batas nominal yang didukung.'
       using errcode = '23514';
   end if;
+  expense_amount := round(new.actual_unit_price * new.quantity)::bigint;
 
   expense_date := coalesce(
     new.purchased_date,
