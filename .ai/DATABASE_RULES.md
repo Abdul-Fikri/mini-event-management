@@ -11,6 +11,7 @@
   - `20261109_member_invitations.sql`
   - `20261110_group_logos.sql`
   - `20261111_group_logo_bucket.sql`
+  - `20261111_procurement_finance_integration.sql`
   - `20261112_event_lifecycle_automation.sql`
 - Verify actual remote migration history and schema before assuming a migration was applied.
 - Owner prefers reviewing and manually applying SQL in Supabase SQL Editor unless another workflow is agreed.
@@ -22,3 +23,4 @@
 - A migration file existing in Git is not evidence it has been applied to the production database.
 - After a migration, record the environment, migration name, and verification result without recording secrets.
 - Event lifecycle migration: `20261112_event_lifecycle_automation.sql`. Existing events are backfilled to manual mode; future inserts default to automatic. The migration adds timeline date constraints and extends the event status check. The migration file is not evidence that it has been applied.
+- Procurement–Finance migration: `20261111_procurement_finance_integration.sql`. It uses `ADD COLUMN IF NOT EXISTS` for integration columns and validates their expected types so a compatible pre-existing `procurement_items.category_id` does not stop the migration. `supabase/schema.sql` mirrors the Procurement–Finance fields and trigger behavior for fresh databases. Production application remains unconfirmed until checked in the target Supabase project.
