@@ -75,7 +75,7 @@ See `docs/IMPLEMENTASI-RUBRIK-UAS.md` for the public evidence mapping. Treat imp
 
 ## Event lifecycle automation — implementation branch
 
-- Working branch: `feat/event-lifecycle-automation`, based on current `main` head `741ef267d36bc69aa13fdd84840de766f8af644b`.
+- Working branch: `feat/event-lifecycle-automation`, PR #21: https://github.com/Abdul-Fikri/mini-event-management/pull/21, based on `main` head `741ef267d36bc69aa13fdd84840de766f8af644b`. PR #21 is open and has not been merged.
 - PR #20 remains open and is not part of this branch.
 - Implemented in this branch: automatic/manual status mode, lifecycle dates and validation, shared Asia/Jakarta status resolver, dashboard/event list/Owner workspace/Panitia status display updates, SQL migration, initial schema update, and requirements/UAT documentation.
 - New events default to automatic mode. Existing rows become manual when the migration adds `status_mode`, preserving their existing status values.
