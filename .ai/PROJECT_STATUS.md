@@ -37,45 +37,13 @@ Last updated: 11 November 2026 — procurement/finance integration in progress
 - It fixed the double-escaped integer regex for budget category and transaction amount validation, added reusable MoneyField rupiah formatting, and preserves the originating event subpage after panitia/rundown/task/procurement/finance CRUD.
 - Direct regex/formatting and return-path source checks passed. The owner handles Vercel deployment; the assistant did not independently verify a production deployment or run local lint/build/browser E2E for PR #19.
 
-## Procurement and finance integration — implementation branch
+## Procurement and finance integration — PR #20
 
-- Branch: `feat/procurement-finance-integration`, based on `main` after PR #19.
-- Status `requested` is only requested; `ordered` contributes estimated costs to commitments; `purchased`/`ready` automatically create or update one linked expense through a database trigger.
-- Procurement category, purchase date, actual unit price, quantity, name, and supplier synchronize to the linked finance transaction. The unique transaction link prevents duplicates. Linked expenses are managed from Procurement; manual finance transactions remain editable.
+- PR #20: https://github.com/Abdul-Fikri/mini-event-management/pull/20 — open, not merged; branch `feat/procurement-finance-integration`.
+- Vercel Preview status on the current PR head `8390510d294ddaacffef2748997b4f562051a76e` is `success`; mergeability is clean. This does not mean Production was deployed.
+- `requested` is only requested; `ordered` contributes estimated costs to commitments; new items created as `purchased`/`ready`, or existing items transitioned into those states, automatically create one linked expense through a database trigger.
+- Procurement category, purchase date, actual unit price, quantity, name, and supplier synchronize to the linked finance transaction. The unique transaction link prevents duplicates. Linked expenses are managed from Procurement; manual Finance transactions remain editable.
+- Existing purchased items are not backfilled automatically. Their edit operations do not silently create a second expense; use the per-item legacy sync action only after checking manual Finance records. If their purchase date is unknown, enter the actual date before syncing.
 - Deleting a purchased procurement item preserves its expense as a historical finance transaction.
-- Migration `20261111_procurement_finance_integration.sql` is committed to this branch but has NOT been applied to Supabase. Do not claim runtime behavior until the owner applies it and tests the flow.
+- Migration `20261111_procurement_finance_integration.sql` is committed to PR #20 but has NOT been applied to Supabase. The owner must review/apply it before runtime testing.
 - The assistant has not run `npm run lint`, `npm run build`, browser E2E, or applied the database migration.
-
-## Group logo upload
-
-- Final implementation is in PR #16, merged to `main`.
-- `src/actions/group-logo.js` calls `requireGroup()` before using the privileged Storage client.
-- `src/lib/supabase/admin.js` is guarded by `server-only` and reads `SUPABASE_SECRET_KEY` or legacy `SUPABASE_SERVICE_ROLE_KEY`.
-- Storage upload/removal uses the privileged client; `groups.logo_url` is updated with the authenticated Owner session client and Owner/group filters.
-- The bucket is public for image delivery; it is not configured for anonymous writes. Existing Storage RLS policies were not removed by PR #16.
-- Upload validation: maximum 2 MB, JPG/PNG/WebP MIME and file signature.
-- Owner confirms upload works after PR #16. Confirm removal and old-object cleanup separately.
-- Do not expose the privileged key through `NEXT_PUBLIC_` or import the admin client into client code.
-
-## Loading behavior
-- Root `src/app/loading.js` provides a route-level Lottie fallback.
-- Global loading provider tracks internal link navigation and submissions through shared Button/ConfirmDeleteButton patterns.
-- Custom controls and programmatic router navigation that bypass shared patterns may not be tracked.
-- Timeout fallback prevents the overlay from remaining indefinitely.
-
-## UAS evidence
-1. Architecture: App Router, nested layouts, dynamic `[id]`, Server/Client Components.
-2. Rendering: static public `/contoh-event`, dynamic private `/dashboard`.
-3. CRUD/state/auth: Supabase CRUD, Context API, Supabase Auth, Next.js 16 `src/proxy.js`.
-4. Performance/SEO/deployment: `next/image`, `next/font`, Metadata, owner-reported successful build, and owner-reported Vercel deployment. Latest Lighthouse report was 82; no minimum score is stated in the rubric.
-
-See `docs/IMPLEMENTASI-RUBRIK-UAS.md` for the public evidence mapping. Treat implementation notes as source observations, not as proof of end-to-end behavior.
-
-
-## Next recommended work
-
-1. Run focused manual UAT with one Owner and one Panitia account.
-2. Test invitation happy path plus wrong-email, expired, reused, and already-claimed cases.
-3. Test event membership boundaries, direct URL access to an unassigned event, and cross-group ID tampering.
-4. Confirm logo removal/replacement cleanup after PR #16.
-5. Record actual lint/build and Vercel production verification after the next code change.
