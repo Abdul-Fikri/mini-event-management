@@ -23,6 +23,8 @@ alter table public.transactions
   add column procurement_item_id uuid,
   add constraint transactions_procurement_item_id_key
     unique (procurement_item_id),
+  add constraint transactions_procurement_item_expense_check
+    check (procurement_item_id is null or type = 'expense'),
   add constraint transactions_procurement_item_id_event_id_group_id_fkey
     foreign key (procurement_item_id, event_id, group_id)
     references public.procurement_items (id, event_id, group_id)
@@ -121,6 +123,7 @@ begin
   )
   on conflict (procurement_item_id)
   do update set
+    type = 'expense',
     category_id = excluded.category_id,
     trx_date = excluded.trx_date,
     description = excluded.description,
