@@ -249,3 +249,16 @@ Jangan deploy, mengubah env production, atau mengubah domain tanpa instruksi eks
 - [Role Owner dan Panitia](ROLE-OWNER-PANITIA.md)
 - [Undangan Panitia](UNDANGAN-PANITIA.md)
 - [Implementasi Rubrik UAS](IMPLEMENTASI-RUBRIK-UAS.md)
+
+## 13. Siklus hidup dan mode status event
+
+Status event memiliki dua mode yang dapat dipilih Owner:
+
+- **Otomatis**: status efektif dihitung dari tanggal timeline dalam zona waktu Asia/Jakarta. Event baru menggunakan mode ini secara default.
+- **Manual**: status yang dipilih Owner tetap digunakan dan tidak berubah hanya karena tanggal berganti. Event yang sudah ada sebelum migration tetap berada pada mode ini agar status historisnya tidak berubah.
+
+Timeline mendukung tanggal mulai perencanaan (opsional), mulai persiapan (opsional), mulai event (wajib), selesai event (opsional), dan akhir evaluasi (opsional). Tanggal perencanaan dan persiapan harus diisi bersama dan berurutan sebelum event dimulai. Jika tanggal selesai event kosong, event dianggap berlangsung satu hari. Jika akhir evaluasi diisi, status Evaluasi berlaku sampai tanggal tersebut; setelahnya status menjadi Selesai.
+
+Urutan status otomatis: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (jika digunakan) → Selesai. Status Dibatalkan dipilih secara manual dengan mengubah mode ke Manual. Mengubah kembali ke Otomatis akan melanjutkan perhitungan berdasarkan timeline.
+
+Status otomatis dihitung saat data dibaca oleh resolver bersama; tidak memerlukan cron atau perubahan status berkala di database. Dashboard, daftar event, ruang kerja Owner, dan tampilan event Panitia harus memakai resolver yang sama. Rincian aturan dan acceptance criteria ada di `docs/EVENT_LIFECYCLE_REQUIREMENTS.md`.
