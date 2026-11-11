@@ -32,6 +32,7 @@ export async function saveBudgetCategory(eventId, categoryId, _prev, formData) {
     return { ...empty, message, values };
   }
   revalidatePath(`/events/${eventId}`);
+  revalidatePath(`/events/${eventId}/pengadaan`);
   revalidatePath(returnPath);
   redirect(returnPath);
 }
@@ -49,6 +50,7 @@ export async function deleteBudgetCategory(formData) {
     throw new Error("Kategori anggaran gagal dihapus.");
   }
   revalidatePath(`/events/${eventId}`);
+  revalidatePath(`/events/${eventId}/pengadaan`);
   revalidatePath(returnPath);
   redirect(returnPath);
 }
