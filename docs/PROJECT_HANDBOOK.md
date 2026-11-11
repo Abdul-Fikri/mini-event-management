@@ -219,7 +219,7 @@ Tabel utama yang ada di schema awal:
 | \`budget_categories\` | Kategori anggaran |
 | \`transactions\` | Pemasukan/pengeluaran |
 
-Migration menambahkan relasi akun Panitia dan invitation, serta dukungan logo grup/Storage policy. Detail dan prosedur operasional ada di [Database & Migrations](DATABASE_AND_MIGRATIONS.md).
+Migration menambahkan relasi akun Panitia dan invitation, dukungan logo grup/Storage policy, serta integrasi Pengadaan–Keuangan: kategori/tanggal pembelian pada item pengadaan, relasi transaksi ke item, dan trigger sinkronisasi otomatis. Detail dan prosedur operasional ada di [Database & Migrations](DATABASE_AND_MIGRATIONS.md).
 
 **Status penerapan migration ke Supabase production harus diverifikasi melalui migration history/database aktual.** Keberadaan file SQL di GitHub tidak membuktikan bahwa SQL tersebut sudah diterapkan.
 
