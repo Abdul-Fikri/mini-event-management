@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { rupiahInteger } from "@/lib/validators/money";
 
-const date = z.string().regex(/^\\d{4}-\\d{2}-\\d{2}$/, "Tanggal tidak valid.");
+const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal tidak valid.");
 const optionalDate = z.union([date, z.literal("")]).transform((value) => value || null);
 const optionalText = (max, label) =>
   z.string().trim().max(max, `${label} maksimal ${max} karakter.`).transform((value) => value || null);
