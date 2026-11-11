@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGroup } from "@/lib/auth";
+import { EVENT_STATUS_LABELS, getEffectiveEventStatus } from "@/lib/events/status";
 
 // Dashboard privat: selalu dirender dinamis agar data Supabase per pengguna tidak di-cache lintas sesi.
 export const dynamic = "force-dynamic";
@@ -8,7 +9,6 @@ export const metadata = { title: "Dashboard" };
 
 const dateFormatter = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" });
 const currency = value => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value ?? 0);
-const statusLabel = { draft: "Draf", planned: "Direncanakan", ongoing: "Berlangsung", completed: "Selesai", cancelled: "Dibatalkan" };
 
 function StatCard({ label, value, detail, href, tone = "default" }) {
   return <Link prefetch={false} href={href} className="rounded-lg border border-zinc-200 bg-white p-4 transition hover:border-indigo-300 hover:shadow-sm">
@@ -35,7 +35,7 @@ export default async function DashboardPage() {
     { data: categories, error: categoriesError },
     { data: procurement, error: procurementError },
   ] = await Promise.all([
-    supabase.from("events").select("id,name,start_date,end_date,status,location").eq("group_id", group.id).order("start_date", { ascending: true }),
+    supabase.from("events").select("id,name,start_date,end_date,status,status_mode,planning_start_date,preparation_start_date,evaluation_end_date,location").eq("group_id", group.id).order("start_date", { ascending: true }),
     supabase.from("members").select("id", { count: "exact", head: true }).eq("group_id", group.id),
     supabase.from("tasks").select("id,event_id,title,due_date,status").eq("group_id", group.id).neq("status", "done"),
     supabase.from("transactions").select("type,amount").eq("group_id", group.id),
@@ -49,15 +49,15 @@ export default async function DashboardPage() {
     throw new Error("Gagal memuat ringkasan dashboard. Coba muat ulang halaman.");
   }
 
-  const eventRows = events ?? [];
+  const eventRows = (events ?? []).map(event => ({ ...event, effectiveStatus: getEffectiveEventStatus(event, today) }));
   const taskRows = tasks ?? [];
   const transactionRows = transactions ?? [];
   const categoryRows = categories ?? [];
   const procurementRows = procurement ?? [];
   const eventCount = eventRows.length;
-  const ongoingCount = eventRows.filter(event => event.status === "ongoing").length;
-  const plannedCount = eventRows.filter(event => event.status === "planned" || event.status === "draft").length;
-  const upcoming = eventRows.filter(event => event.start_date >= today && !["completed", "cancelled"].includes(event.status)).slice(0, 5);
+  const ongoingCount = eventRows.filter(event => event.effectiveStatus === "ongoing").length;
+  const plannedCount = eventRows.filter(event => ["draft", "planned", "planning", "preparation"].includes(event.effectiveStatus)).length;
+  const upcoming = eventRows.filter(event => event.start_date >= today && !["completed", "cancelled"].includes(event.effectiveStatus)).slice(0, 5);
   const overdueTasks = taskRows.filter(task => task.due_date && task.due_date < today && task.status !== "done");
   const openTasks = taskRows.filter(task => task.status !== "done");
   const income = transactionRows.filter(item => item.type === "income").reduce((sum, item) => sum + Number(item.amount), 0);
@@ -95,7 +95,7 @@ export default async function DashboardPage() {
 
     <section className="rounded-lg border border-zinc-200 bg-white p-5">
       <SectionHeading title="Event mendatang" href="/events" linkLabel="Semua event"/>
-      {upcoming.length ? <div className="mt-3 divide-y divide-zinc-100">{upcoming.map(event => <Link prefetch={false} key={event.id} href={"/events/" + event.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-1 last:pb-1 hover:text-indigo-800"><div className="min-w-0"><p className="font-medium">{event.name}</p><p className="mt-1 text-xs text-zinc-500">{event.location || "Lokasi belum ditentukan"} · {statusLabel[event.status]}</p></div><div className="shrink-0 text-right"><p className="text-sm font-medium">{dateFormatter.format(new Date(event.start_date + "T00:00:00"))}</p>{event.end_date && event.end_date !== event.start_date ? <p className="text-xs text-zinc-500">s.d. {dateFormatter.format(new Date(event.end_date + "T00:00:00"))}</p> : null}</div></Link>)}</div> : <div className="mt-3 rounded-md border border-dashed border-zinc-300 p-5 text-center"><p className="text-sm text-zinc-600">{eventCount ? "Tidak ada event mendatang yang aktif." : "Belum ada event di grup ini."}</p><Link prefetch={false} href="/events/new" className="mt-2 inline-block text-sm font-medium text-indigo-700">Buat event →</Link></div>}
+      {upcoming.length ? <div className="mt-3 divide-y divide-zinc-100">{upcoming.map(event => <Link prefetch={false} key={event.id} href={"/events/" + event.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-1 last:pb-1 hover:text-indigo-800"><div className="min-w-0"><p className="font-medium">{event.name}</p><p className="mt-1 text-xs text-zinc-500">{event.location || "Lokasi belum ditentukan"} · {EVENT_STATUS_LABELS[event.effectiveStatus]}</p></div><div className="shrink-0 text-right"><p className="text-sm font-medium">{dateFormatter.format(new Date(event.start_date + "T00:00:00"))}</p>{event.end_date && event.end_date !== event.start_date ? <p className="text-xs text-zinc-500">s.d. {dateFormatter.format(new Date(event.end_date + "T00:00:00"))}</p> : null}</div></Link>)}</div> : <div className="mt-3 rounded-md border border-dashed border-zinc-300 p-5 text-center"><p className="text-sm text-zinc-600">{eventCount ? "Tidak ada event mendatang yang aktif." : "Belum ada event di grup ini."}</p><Link prefetch={false} href="/events/new" className="mt-2 inline-block text-sm font-medium text-indigo-700">Buat event →</Link></div>}
     </section>
 
     <section className="grid gap-4 lg:grid-cols-2">
@@ -106,7 +106,7 @@ export default async function DashboardPage() {
       </div>
       <div className="rounded-lg border border-zinc-200 bg-white p-5">
         <SectionHeading title="Status event" href="/events" linkLabel="Lihat daftar"/>
-        <div className="mt-4 space-y-3">{Object.entries(statusLabel).map(([status, label]) => { const count = eventRows.filter(event => event.status === status).length; const percent = eventCount ? (count / eventCount) * 100 : 0; return <div key={status}><div className="mb-1 flex justify-between text-sm"><span className="text-zinc-600">{label}</span><strong className="tabular-nums">{count}</strong></div><div className="h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-indigo-500" style={{ width: percent + "%" }}/></div></div>; })}</div>
+        <div className="mt-4 space-y-3">{Object.entries(EVENT_STATUS_LABELS).map(([status, label]) => { const count = eventRows.filter(event => event.effectiveStatus === status).length; const percent = eventCount ? (count / eventCount) * 100 : 0; return <div key={status}><div className="mb-1 flex justify-between text-sm"><span className="text-zinc-600">{label}</span><strong className="tabular-nums">{count}</strong></div><div className="h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-indigo-500" style={{ width: percent + "%" }}/></div></div>; })}</div>
       </div>
     </section>
   </div>;

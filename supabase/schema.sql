@@ -104,14 +104,30 @@ create table public.events (
   category       text check (char_length(category) <= 60),
   start_date     date not null,
   end_date       date,
+  planning_start_date date,
+  preparation_start_date date,
+  evaluation_end_date date,
   location       text check (char_length(location) <= 200),
+  status_mode    text not null default 'automatic'
+                 check (status_mode in ('automatic','manual')),
   status         text not null default 'draft'
-                 check (status in ('draft','planned','ongoing','completed','cancelled')),
+                 check (status in ('draft','planned','planning','preparation','ongoing','evaluation','completed','cancelled')),
   coordinator_id uuid,
   target_budget  bigint check (target_budget >= 0 and target_budget <= 9007199254740991),
   created_at     timestamptz not null default now(),
   updated_at     timestamptz not null default now(),
   check (end_date is null or end_date >= start_date),
+  constraint events_planning_dates_check check (
+    (planning_start_date is null and preparation_start_date is null)
+    or (
+      planning_start_date is not null
+      and preparation_start_date is not null
+      and planning_start_date < preparation_start_date
+      and preparation_start_date < start_date
+    )
+  ),
+  constraint events_evaluation_end_date_check
+    check (evaluation_end_date is null or evaluation_end_date > coalesce(end_date, start_date)),
   unique (id, group_id),                      -- target FK komposit
   foreign key (coordinator_id, group_id)
     references public.members (id, group_id)

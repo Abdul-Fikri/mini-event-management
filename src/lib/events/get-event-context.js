@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireGroup } from "@/lib/auth";
+import { getEffectiveEventStatus } from "@/lib/events/status";
 import { createClient } from "@/lib/supabase/server";
 
 export async function getEventContext(eventId) {
@@ -15,5 +16,12 @@ export async function getEventContext(eventId) {
   if (error) throw new Error("Gagal memuat data event.");
   if (!event) notFound();
 
-  return { event, group, supabase };
+  return {
+    event: {
+      ...event,
+      effective_status: getEffectiveEventStatus(event),
+    },
+    group,
+    supabase,
+  };
 }

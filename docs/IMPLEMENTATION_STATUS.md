@@ -1,8 +1,8 @@
 # Implementation Status — Mini Event Management System
 
-Last reviewed: 9 November 2026  
+Last reviewed: 11 November 2026  
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source branch reviewed: main at merge commit a95187e7fea0e3f6cba6808e0783d3295e666254 (PR #17)
+Source branch reviewed: `main` at merge commit `a71611b1cdc78ea3030040c6559979858ddca1d4` (PR #20)
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -96,7 +96,7 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
 ## 7. Validation status
 
-PR #18 and PR #19 are merged to `main`. PR #19 corrected rupiah validation/formatting and preserves the originating event subpage after panitia, rundown, task, procurement, and finance CRUD. PR #20 is open on `feat/procurement-finance-integration`; it adds ordered procurement commitments plus database-triggered finance expenses for purchased/ready items. Vercel Preview has succeeded on PR #20; check the live status of the latest head before merge. GitHub reports no merge conflict. The SQL migration has not been applied to Supabase, and the assistant has not run local `npm run lint`, `npm run build`, or browser E2E; do not treat Preview status as proof of end-to-end database behavior.
+PR #18, PR #19, and PR #20 are merged to `main`. PR #20 adds ordered procurement commitments plus database-triggered finance expenses for purchased/ready items. Its migration has not been applied to Supabase. Vercel Preview succeeded before the merge, but this is not proof of Production deployment or runtime database behavior. The assistant has not run local `npm run lint`, `npm run build`, or browser E2E for PR #20.
 
 Use this checklist for future UAT:
 
@@ -147,3 +147,17 @@ Use this checklist for future UAT:
 3. Fix only UX/functional issues found during those real workflows.
 4. Decide how to handle removing an event committee member who still owns rundown/task/procurement records.
 5. Avoid broad rewrites or additional performance tuning without evidence.
+
+## 9. Event lifecycle automation
+
+- Branch implementasi: `feat/event-lifecycle-automation`; PR #21 terbuka: https://github.com/Abdul-Fikri/mini-event-management/pull/21. Branch diperbarui dengan `main` setelah PR #20 di-merge; PR #21 belum di-merge.
+- Event baru menggunakan `status_mode=automatic`; migration mengisi event lama sebagai `manual` agar status yang sudah dipilih tidak berubah.
+- Timeline: tanggal perencanaan dan persiapan opsional (wajib berpasangan), tanggal mulai wajib, tanggal selesai opsional, dan akhir evaluasi opsional.
+- Status otomatis: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (opsional) → Selesai. Dibatalkan tetap dipilih manual.
+- Resolver menggunakan tanggal kalender Asia/Jakarta dan dipakai pada dashboard, daftar event, header ruang kerja Owner, serta daftar/detail event Panitia.
+- Tidak ada cron/background job. Status otomatis dihitung saat data dibaca; Server Action menghitung ulang status saat event disimpan dan tidak mempercayai nilai status tersembunyi dari browser.
+- Migration: `supabase/migrations/20261112_event_lifecycle_automation.sql`. File belum diterapkan ke Supabase; jangan menganggap runtime sudah aktif sebelum migration diterapkan.
+- RLS tidak diubah. Validasi tanggal tetap dijalankan di Server Action dan diperkuat constraint database.
+- Acceptance criteria dan daftar UAT: `docs/EVENT_LIFECYCLE_REQUIREMENTS.md`.
+- Pada head PR #21 sebelum sinkronisasi `main`, Vercel pernah success lalu check berikutnya gagal dengan `build-rate-limit` (kuota Preview), bukan hasil kompilasi aplikasi. Check Vercel pada head hasil sinkronisasi gagal dengan `build-rate-limit` (kuota deployment Preview), bukan kegagalan kompilasi aplikasi. Commit dokumentasi sesudahnya akan memicu check baru.
+- Verifikasi lokal `npm run lint`, `npm run build`, dan browser E2E belum dijalankan oleh assistant karena checkout repository tidak tersedia di environment ini. Runtime UAT menunggu migration diterapkan.
