@@ -140,3 +140,16 @@ Use this checklist for future UAT:
 3. Fix only UX/functional issues found during those real workflows.
 4. Decide how to handle removing an event committee member who still owns rundown/task/procurement records.
 5. Avoid broad rewrites or additional performance tuning without evidence.
+
+## 9. Event lifecycle automation
+
+- Branch implementasi: `feat/event-lifecycle-automation` (PR dibuat setelah review source dan dokumentasi).
+- Event baru menggunakan `status_mode=automatic`; migration mengisi event lama sebagai `manual` agar status yang sudah dipilih tidak berubah.
+- Timeline: tanggal perencanaan dan persiapan opsional (wajib berpasangan), tanggal mulai wajib, tanggal selesai opsional, dan akhir evaluasi opsional.
+- Status otomatis: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (opsional) → Selesai. Dibatalkan tetap dipilih manual.
+- Resolver menggunakan tanggal kalender Asia/Jakarta dan dipakai pada dashboard, daftar event, header ruang kerja Owner, serta daftar/detail event Panitia.
+- Tidak ada cron/background job. Status otomatis dihitung saat data dibaca; Server Action menghitung ulang status saat event disimpan dan tidak mempercayai nilai status tersembunyi dari browser.
+- Migration: `supabase/migrations/20261112_event_lifecycle_automation.sql`. File belum diterapkan ke Supabase; jangan menganggap runtime sudah aktif sebelum migration diterapkan.
+- RLS tidak diubah. Validasi tanggal tetap dijalankan di Server Action dan diperkuat constraint database.
+- Acceptance criteria dan daftar UAT: `docs/EVENT_LIFECYCLE_REQUIREMENTS.md`.
+- Verifikasi lokal `npm run lint`, `npm run build`, dan browser E2E belum dijalankan oleh assistant karena checkout repository tidak tersedia di environment ini. Runtime UAT menunggu migration diterapkan.
