@@ -117,7 +117,7 @@ create table public.events (
   created_at     timestamptz not null default now(),
   updated_at     timestamptz not null default now(),
   check (end_date is null or end_date >= start_date),
-  check (
+  constraint events_planning_dates_check check (
     (planning_start_date is null and preparation_start_date is null)
     or (
       planning_start_date is not null
@@ -126,7 +126,8 @@ create table public.events (
       and preparation_start_date < start_date
     )
   ),
-  check (evaluation_end_date is null or evaluation_end_date > coalesce(end_date, start_date)),
+  constraint events_evaluation_end_date_check
+    check (evaluation_end_date is null or evaluation_end_date > coalesce(end_date, start_date)),
   unique (id, group_id),                      -- target FK komposit
   foreign key (coordinator_id, group_id)
     references public.members (id, group_id)
