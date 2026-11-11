@@ -75,3 +75,14 @@ Authentication/onboarding, dashboard, group member CRUD, event CRUD, committee a
 - The current UI and code observations are not a substitute for end-to-end testing.
 
 Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEMENTATION_STATUS.md`, and `docs/IMPLEMENTASI-RUBRIK-UAS.md` for the public project documentation.
+
+## Event lifecycle and status behavior
+
+- Event status supports `automatic` and `manual` modes through `events.status_mode`.
+- New events default to automatic mode. Existing rows are backfilled as manual by migration so their current status is preserved.
+- Optional `planning_start_date` and `preparation_start_date` must be supplied together and satisfy planning < preparation < event start.
+- `start_date` is required; `end_date` is optional and defaults conceptually to the start date for a one-day event. Optional `evaluation_end_date` must be after the effective event end.
+- Automatic status is derived in Asia/Jakarta: planned, planning, preparation, ongoing, optional evaluation, then completed. Cancellation is a manual status.
+- Use `src/lib/events/status.js` as the single resolver and labels source. Dashboard, Owner event list/workspace, and Panitia event views must use it instead of displaying the raw stored `status` in automatic mode.
+- No cron or background job is needed; the effective status is computed when data is read. Server Actions must independently derive automatic status and must not trust a hidden browser field.
+- Read `docs/EVENT_LIFECYCLE_REQUIREMENTS.md` for detailed boundaries and acceptance criteria. Migration `20261112_event_lifecycle_automation.sql` must be applied before the new schema fields can be used at runtime.
