@@ -40,7 +40,7 @@ Last updated: 11 November 2026 — procurement/finance integration in progress
 ## Procurement and finance integration — PR #20
 
 - PR #20: https://github.com/Abdul-Fikri/mini-event-management/pull/20 — open, not merged; branch `feat/procurement-finance-integration`.
-- Vercel Preview status on the current PR head `8390510d294ddaacffef2748997b4f562051a76e` is `success`; mergeability is clean. This does not mean Production was deployed.
+- A Vercel Preview check succeeded on an earlier PR #20 head. The latest follow-up commit is awaiting its own Preview check; recheck live GitHub status before merge. Preview success is not Production deployment.
 - `requested` is only requested; `ordered` contributes estimated costs to commitments; new items created as `purchased`/`ready`, or existing items transitioned into those states, automatically create one linked expense through a database trigger.
 - Procurement category, purchase date, actual unit price, quantity, name, and supplier synchronize to the linked finance transaction. The unique transaction link prevents duplicates. Linked expenses are managed from Procurement; manual Finance transactions remain editable.
 - Existing purchased items are not backfilled automatically. Their edit operations do not silently create a second expense; use the per-item legacy sync action only after checking manual Finance records. If their purchase date is unknown, enter the actual date before syncing.
