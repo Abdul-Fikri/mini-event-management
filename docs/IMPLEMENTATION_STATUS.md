@@ -287,3 +287,12 @@ PR #23 was merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`. The O
 - Both lines contained a literal backslash-n sequence between two `revalidatePath` calls. The hotfix replaces each sequence with a real source line break; behavior is otherwise unchanged.
 - Branch: `hotfix/fix-events-revalidate-syntax`. No database schema, migration, RLS, production data, environment, or direct `main` change.
 - Source-level verification confirms both occurrences were corrected and no matching escaped sequence remains. Local lint/build/browser E2E have not been run; Vercel Preview result is pending.
+
+
+## 15. Follow-up production build syntax hotfix — members actions
+
+- After PR #24 merged, the Owner-provided Vercel build log showed a failing build with an import trace through `src/actions/members.js`, `MemberList.js`, and `members/page.js`.
+- Current `main` contained two malformed literal backslash-n sequences in `src/actions/members.js`, between the member-list `revalidatePath` calls in save and delete actions.
+- Both occurrences were replaced with real source line breaks on `hotfix/fix-members-revalidate-syntax`. Source check: two occurrences fixed, zero matching malformed sequences remain in the file.
+- The 12 Server Action JavaScript files under `src/actions/` were scanned; the only matching literal backslash-n sequences were the two in `members.js`, now fixed. The prior `events.js` correction is present on `main`.
+- PR #25 is pending. No database, migration, RLS, production data, environment, direct `main` change, or Production deployment. Local lint/build/browser E2E were not run; Vercel Preview must be verified against the final PR head.

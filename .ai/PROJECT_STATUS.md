@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 13 November 2026 — PR #23 merged; PR #24 hotfix open; source-editing guardrails documented
+Last updated: 13 November 2026 — PR #23 and PR #24 merged; PR #25 members syntax hotfix open
 
 ## Owner-reported verification
 
@@ -48,16 +48,16 @@ Last updated: 13 November 2026 — PR #23 merged; PR #24 hotfix open; source-edi
 - Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
 - PR #23 source review covers Panitia search/filter, five-record pagination for Event, Member, Rundown, Procurement, Finance categories/transactions/commitments, dedicated list routes, query-state transfer, validated return paths, and the Tasks Kanban board with scoped status mutation and CRUD.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
-- Owner-provided Vercel Production screenshot for the merged PR #23 commit shows `npm run build` failed with `Expected unicode escape` at `src/actions/events.js` lines 96 and 116. The two literal `\\n` sequences have been corrected on `hotfix/fix-events-revalidate-syntax`; the hotfix PR and its Preview build are pending.
+- Owner-provided Vercel Production build first failed with `Expected unicode escape` in `src/actions/events.js`; PR #24 corrected that file and was subsequently merged. The next Owner-provided build log showed a module import trace through `src/actions/members.js`. Inspection found the same malformed literal `\\n` sequences twice in that file; both are corrected on `hotfix/fix-members-revalidate-syntax`, tracked by PR #25.
 - No Supabase SQL, production data, RLS, environment, or deployment changes were performed.
 
 ## Next steps
 
-1. Review the syntax hotfix PR and its Vercel Preview build.
-2. After the hotfix is merged with explicit Owner approval, verify the Production build and application behavior.
-3. Owner completes UAT for Panitia, Rundown, Task Kanban/full task list, Pengadaan, Keuangan, Event, and Member views.
-4. Confirm any required Supabase migrations separately; PR #23 and this hotfix add no database migration.
-5. Owner handles Vercel deployment and confirms production behavior.
+1. Review PR #25 diff and verify the latest Vercel Preview build/log for its exact head SHA.
+2. Confirm no other malformed escaped-newline sequences remain across the source files changed by the management-list feature.
+3. After PR #25 is reviewed and merged with Owner approval, verify the Production build and application behavior.
+4. Owner completes UAT for Panitia, Rundown, Task Kanban/full task list, Pengadaan, Keuangan, Event, and Member views.
+5. Owner handles Vercel Production deployment and confirms production behavior.
 
 
 ## Production build hotfix
@@ -75,3 +75,12 @@ Last updated: 13 November 2026 — PR #23 merged; PR #24 hotfix open; source-edi
 - Diagnose deployment failures from the actual compiler/build log. Do not confuse parser/syntax errors with quota/rate-limit failures.
 - Keep fixes on a branch/PR; no direct `main` changes or Production redeploy without Owner authorization.
 - Current syntax fix is tracked by PR #24: https://github.com/Abdul-Fikri/mini-event-management/pull/24. Its Vercel Preview result is not yet verified.
+
+
+## Follow-up Production build failure — members action
+
+- PR #24 is now merged. The subsequent Owner-provided Vercel log shows a failing build with an import trace through `src/actions/members.js` → `MemberList.js` → `members/page.js`.
+- Inspection of current `main` found two literal backslash-n sequences in `src/actions/members.js`, between `revalidatePath("/members")` and `revalidatePath("/members/all")` in save and delete actions. This is the same source syntax issue, not a Vercel quota diagnosis.
+- Both occurrences corrected on `hotfix/fix-members-revalidate-syntax`; PR #25 is pending. Source check: exactly two malformed occurrences found and zero remain in the file.
+- Repository-wide follow-up guardrail added to `.ai/PROJECT_CONTEXT.md`: scan all modified source and related Server Action files for suspicious escaped newlines, not just the first compiler-reported file.
+- Local lint/build/browser E2E not run in this session. Verify Vercel Preview against the latest PR #25 head before merge.

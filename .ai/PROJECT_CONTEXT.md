@@ -1,6 +1,6 @@
 # Project Context — Mini Event Management System
 
-Last reviewed: 12 November 2026
+Last reviewed: 13 November 2026
 
 Repository: https://github.com/Abdul-Fikri/mini-event-management
 Production URL reported by owner: https://mini-event-management-gules.vercel.app
@@ -142,3 +142,21 @@ Prevent recurrence on every future source change:
 7. **Keep production protected.** Fix through a branch and PR; do not push directly to `main`, merge, or redeploy Production without the Owner's explicit authorization.
 
 Incident reference: PR #23 merge commit `5a2c2824623f5e2f12d4c668642511898d945c80`; source file `src/actions/events.js`; corrected on `hotfix/fix-events-revalidate-syntax` and tracked by PR #24.
+
+
+## Follow-up guardrail: repository-wide escaped-newline scan
+
+The follow-up Vercel build after the `events.js` hotfix exposed the same malformed source pattern in `src/actions/members.js`. The first hotfix corrected only the first affected action file, so a successful source check on that file was not sufficient to establish that the repository was clean.
+
+Mandatory additions to the source-editing checklist:
+
+1. After any API-generated or automated source edit, scan **all modified source files and the complete related feature surface**, not just the first compiler-reported file. For shared helpers or generated patterns, search the entire `src/` tree.
+2. Search for literal backslash-n sequences (`\\n`) appearing between JavaScript statements. Review every match: valid escape sequences inside strings are not automatically errors, but a backslash-n outside a string where a line break is intended is invalid source.
+3. Inspect every Server Action file touched by the feature, including save, delete, and secondary CRUD actions. Build failures may surface through a Client Component import trace even when the actual parser error is inside an imported Server Action module.
+4. Verify the complete diff and the saved source after all edits and documentation commits. Re-run the repository-wide suspicious-sequence scan after the final source change.
+5. Do not merge based only on fixing the first reported file. Require lint/build validation where available and a successful Vercel Preview for the exact latest PR head.
+
+Incident chain:
+- PR #23 merge introduced malformed escaped newlines in `src/actions/events.js` and `src/actions/members.js`.
+- PR #24 corrected `events.js` but did not catch the remaining issue in `members.js`.
+- PR #25 hotfix corrects both malformed sequences in `members.js` on a separate branch.
