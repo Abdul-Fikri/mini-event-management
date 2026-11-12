@@ -260,6 +260,12 @@ Use this checklist for future UAT:
 - Source-level checks cover all six additional list views and their five-record pagination. Vercel status check for the latest PR #23 head (`7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf`) reported success. Local lint/build/browser E2E have not been run by the assistant; Owner Preview UAT remains required.
 
 
+## Task Kanban extension — PR #23 in progress
+
+- The main `/events/[id]/tugas` page is a four-column Kanban board using the existing `todo`, `in_progress`, `done`, and `blocked` statuses.
+- Cards support native drag-and-drop status changes, plus a status selector as an accessible touch/keyboard alternative. The Server Action validates the status and scopes the update to the authenticated Owner group and event/task.
+- Kanban supports task creation, editing, and deletion. `/events/[id]/tugas/all` now holds the complete task-management list, status counts, descriptions/notes, CRUD, and five-record pagination.
+- No database schema, migration, RLS, or production data changes are required. Owner Preview UAT, local lint/build, and browser E2E remain pending.
 ## 9. PR #23 — management list pagination (open)
 
 PR #23 adds five-record pagination and dedicated **Lihat semua** views to Panitia, group Event and Member lists, Rundown, Tugas, Pengadaan, and Finance categories/transactions/commitments. The dedicated pages display only the selected data type and link back to the parent page. Member edits/deletes preserve the `/members/all` return destination through server-side allowlisting. No database migration, schema, RLS, production data, or deployment configuration changes are included.
