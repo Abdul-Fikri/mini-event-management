@@ -159,6 +159,7 @@ export default function FinanceSection({
           <h2 className="mt-2 text-xl font-semibold">Semua kategori anggaran</h2>
           <p className="text-sm text-zinc-600">Kelola kategori dan pantau anggaran, pengeluaran aktual, serta komitmen per kategori.</p>
         </div>
+        {financeError === "category_in_use" ? <Alert>Kategori tidak dapat dihapus karena masih digunakan oleh transaksi. Ubah atau hapus transaksi terkait terlebih dahulu.</Alert> : null}
         {categories.length ? <><PageSummary startIndex={categoryStart} visibleCount={visibleCategories.length} total={categories.length} label="kategori" /><div className="space-y-3">{categoryCards(visibleCategories)}</div><ListPagination currentPage={currentCategoryPage} totalPages={categoryTotalPages} onPageChange={setCategoryPage} /></> : <p className="rounded-md border border-dashed border-zinc-300 p-4 text-center text-sm text-zinc-600">Belum ada kategori anggaran.</p>}
       </section>
     );
