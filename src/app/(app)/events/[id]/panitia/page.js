@@ -1,5 +1,5 @@
 import { getEventContext } from "@/lib/events/get-event-context";
-import { saveEventMember, deleteEventMember } from "@/actions/event-members";
+import { deleteEventMember } from "@/actions/event-members";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import EventDivisionManager from "@/components/events/EventDivisionManager";
 import EventMemberForm from "@/components/events/EventMemberForm";
