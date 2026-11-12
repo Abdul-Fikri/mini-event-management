@@ -316,3 +316,14 @@ Agar halaman pengelolaan tetap ringkas saat jumlah data bertambah, daftar operas
 - Halaman khusus menyediakan tautan kembali ke halaman pengelolaan induk. Form edit dan aksi hapus/sinkronisasi mempertahankan halaman asal melalui `return_to` yang divalidasi di Server Action.
 - Form tambah tetap berada di halaman pengelolaan utama; halaman khusus berfokus pada penelusuran dan pengelolaan data yang sudah ada.
 - Pagination ini hanya mengubah tampilan data yang telah dimuat dan diotorisasi di server. Tidak ada perubahan schema, migration, RLS, atau aturan otorisasi.
+
+
+## 16. Pagination daftar manajemen Owner
+
+Agar daftar tetap mudah dipindai, halaman daftar Event dan Anggota grup juga menggunakan pola pagination yang sama dengan modul operasional event.
+
+- Halaman `/events` menampilkan maksimal lima event per halaman. Tombol **Lihat semua event** membuka `/events/all`, yang hanya menampilkan daftar event dan tetap memakai lima data per halaman.
+- Halaman `/members` menampilkan maksimal lima anggota grup per halaman. Tombol **Lihat semua anggota** membuka `/members/all`, yang hanya menampilkan direktori anggota dan tetap memakai lima data per halaman.
+- Halaman khusus menyediakan tautan kembali ke daftar induk. Jika anggota diedit atau dihapus dari `/members/all`, pengguna dikembalikan ke daftar khusus tersebut; halaman daftar biasa tetap kembali ke `/members`.
+- Label status pada daftar Event tetap dihitung menggunakan resolver status efektif yang sama dengan halaman Event lainnya.
+- Pagination adalah perilaku tampilan di atas data yang telah dimuat dan dibatasi berdasarkan grup Owner di server. Ini tidak mengubah otorisasi, RLS, schema, atau data.
