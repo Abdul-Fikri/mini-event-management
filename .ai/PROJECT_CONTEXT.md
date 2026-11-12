@@ -36,6 +36,7 @@ Do not recreate the deleted nested legacy `event-management/` directory.
 - `members`: group-wide member directory.
 - `events`: events belonging to a group.
 - `event_members`: members assigned to one specific event.
+- `event_divisions`: Owner-managed division master list scoped to one event. `event_members.division_id` references it; the legacy `event_members.division` text remains a synchronized display/export snapshot.
 
 Being in `members` does not automatically make someone a committee member for every event. Rundown PIC, task assignee, and procurement PIC must be restricted to the current event's `event_members`, in both UI and server-side validation.
 
@@ -73,7 +74,7 @@ Being in `members` does not automatically make someone a committee member for ev
 - Migration 20261111_procurement_finance_integration.sql must be applied to the target Supabase database before using this integration. Repository presence does not prove production application.
 
 ## Features found in source
-Authentication/onboarding, dashboard, group member CRUD, event CRUD, committee assignments, rundown CRUD, task CRUD, procurement CRUD with finance-linked expenses and commitments, finance categories/manual transactions, CSV exports, invitation token flow, Panitia read-only workspace, group logo upload/removal, and public example-event catalog.
+Authentication/onboarding, dashboard, group member CRUD, event CRUD, event-scoped division CRUD and committee assignments, rundown CRUD, task CRUD, procurement CRUD with finance-linked expenses and commitments, finance categories/manual transactions, CSV exports, invitation token flow, Panitia read-only workspace, group logo upload/removal, and public example-event catalog.
 
 ## Known caveats
 - CSV `members` export is group-wide, not limited to event-assigned members; confirm product intent before changing.
@@ -97,3 +98,14 @@ Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEM
 - Use `src/lib/events/status.js` as the single resolver and labels source. Dashboard, Owner event list/workspace, and Panitia event views must use it instead of displaying the raw stored `status` in automatic mode.
 - No cron or background job is needed; the effective status is computed when data is read. Server Actions must independently derive automatic status and must not trust a hidden browser field.
 - Read `docs/EVENT_LIFECYCLE_REQUIREMENTS.md` for detailed boundaries and acceptance criteria. Migration `20261112_event_lifecycle_automation.sql` must be applied before the new schema fields can be used at runtime.
+
+
+## Event division behavior
+
+- Divisions are master data scoped to one event, not global to the Owner's group.
+- Owner CRUD is available in the event's Panitia tab. Assignment forms select a division ID from that event's master list.
+- Server Actions validate that the selected division belongs to the same event and group.
+- Migration `20261112_event_divisions.sql` backfills existing free-text division labels into `event_divisions` and adds the composite `event_members.division_id` reference.
+- Keep `event_members.division` as a synchronized text snapshot for existing Panitia pages and CSV exports. Renaming a master updates the snapshot; deleting a master clears only `division_id`, preserving the old label as history.
+- Owner has CRUD; Panitia remains read-only and may read division metadata only for assigned events.
+- The migration file is not evidence that the target Supabase database has been updated.
