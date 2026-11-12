@@ -70,3 +70,12 @@ Update this file after substantial work. Keep public product/engineering documen
 - Local lint/build/browser E2E remain unrun in this session; Vercel Preview and Owner UAT must be checked against the final PR head.
 
 - Final reviewed PR #23 head after extending pagination to Event and Member lists: `4ca86fb1123f22c231f0ecbf0c8f60464f9404e1`. Vercel status on this head reports `build-rate-limit`; no local lint/build/browser E2E was run.
+
+
+### PR #23 extension — Task Kanban and full task detail
+
+- Replaced the main event Tugas list with a four-column Kanban board using the existing `todo`, `in_progress`, `done`, and `blocked` statuses, each with distinct color and icon.
+- Added native drag-and-drop status changes and a status selector fallback for touch/keyboard use. New Server Action validates the status allowlist and scopes the update to the authenticated Owner group and event/task.
+- Added task create/edit/delete controls to the Kanban. Moved the complete list, status summary, full details, CRUD, and five-record pagination to `/events/[id]/tugas/all`.
+- Updated requirements, handbook, implementation/UAT notes, and shared AI context. No schema, migration, RLS, production data, or deployment configuration changes.
+- Local lint/build/browser E2E and Owner Preview UAT have not been run; verify against the final PR head.
