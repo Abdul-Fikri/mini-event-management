@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 12 November 2026 — PR #23 extends pagination to group Event and Member lists
+Last updated: 13 November 2026 — PR #23 adds Task Kanban and full task detail
 
 ## Owner-reported verification
 
@@ -48,7 +48,7 @@ Last updated: 12 November 2026 — PR #23 extends pagination to group Event and 
 - Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
 - PR #23 source review covers Panitia search/filter, five-record pagination for Event, Member, Rundown, Procurement, Finance categories/transactions/commitments, dedicated list routes, query-state transfer, validated return paths, and the Tasks Kanban board with scoped status mutation and CRUD.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
-- Latest Vercel status for the current PR #23 head reports `failure` with target URL `upgradeToPro=build-rate-limit`; this is a Preview quota/rate-limit outcome, not evidence of an application compile failure or success. Owner Preview UAT for Panitia, Rundown, Task Kanban/drag-and-drop and dedicated all-tasks CRUD, Pengadaan, Keuangan, Event, and Member views is pending.
+- An earlier Vercel Preview attempt reported `build-rate-limit` (quota/rate limit, not an application compile result). The latest inspected status for Task Kanban head `778b095bd88663a41c1e11ff4ba84fc2da1b6053` was `pending` (deployment in progress); verify the final PR head before merge. Owner Preview UAT for Panitia, Rundown, Task Kanban/drag-and-drop and dedicated all-tasks CRUD, Pengadaan, Keuangan, Event, and Member views is pending.
 - No Supabase SQL, production data, RLS, environment, or deployment changes were performed.
 
 ## Next steps
