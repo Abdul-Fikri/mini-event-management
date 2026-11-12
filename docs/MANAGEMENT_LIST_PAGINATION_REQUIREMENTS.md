@@ -10,7 +10,7 @@ Keep event management pages compact when lists grow while still allowing the Own
 - Lists with more than five records provide Previous/Next controls and a visible current-page/total-page indicator.
 - Each parent management page provides a **Lihat semua** link for each supported list.
 - The dedicated view displays only the selected data type, retains five-record pagination, and provides a link back to its parent page.
-- Create forms remain on the parent management page. Edit/delete/sync actions initiated from a dedicated view return to that same view.
+- Create forms normally remain on the parent management page. The Tugas module is an exception: the Kanban board and its dedicated all-tasks view both provide create/edit/delete controls. Edit/delete/sync actions initiated from a dedicated view return to that same view.
 - Return destinations are validated server-side through the event return-path allowlist. UI pagination is not an authorization boundary; existing authenticated group/event queries and Server Action validation remain authoritative.
 
 ## Supported lists and routes
@@ -27,6 +27,16 @@ Keep event management pages compact when lists grow while still allowing the Own
 | `/events/[id]/keuangan` | Ordered procurement commitments | `/events/[id]/keuangan/commitments` |
 
 The Panitia tab has its own search/filter/pagination requirements in [Event Divisions Requirements](EVENT_DIVISIONS_REQUIREMENTS.md).
+
+## Task Kanban behavior
+
+- The main route `/events/[id]/tugas` is a Kanban board with the existing task statuses: `todo` (Belum dikerjakan), `in_progress` (Sedang dikerjakan), `done` (Selesai), and `blocked` (Terhambat).
+- Each status column has its own visual color and icon. Task cards can be dragged between columns; dropping a card persists the selected status through a Server Action.
+- A status selector on each card provides a keyboard/touch-friendly alternative to drag-and-drop.
+- The Kanban board provides a create-task button and edit/delete controls on every task card.
+- **Detail seluruh tugas** opens `/events/[id]/tugas/all`, which contains the full task list, status counts, descriptions/notes, create/edit/delete forms, and five-record pagination.
+- Status updates validate the allowed status and scope the mutation to the authenticated Owner group and the selected event/task. Existing event-roster PIC validation on task create/edit remains unchanged.
+
 
 ## Top-level Owner management lists
 
