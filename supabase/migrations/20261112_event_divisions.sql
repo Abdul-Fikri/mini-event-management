@@ -86,6 +86,19 @@ begin
   if not exists (
     select 1
       from pg_constraint
+     where conrelid = 'public.event_divisions'::regclass
+       and conname = 'event_divisions_event_group_fkey'
+  ) then
+    alter table public.event_divisions
+      add constraint event_divisions_event_group_fkey
+      foreign key (event_id, group_id)
+      references public.events (id, group_id)
+      on delete cascade;
+  end if;
+
+  if not exists (
+    select 1
+      from pg_constraint
      where conrelid = 'public.event_members'::regclass
        and conname = 'event_members_division_id_event_group_fkey'
   ) then
