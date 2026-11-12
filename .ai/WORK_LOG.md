@@ -97,3 +97,14 @@ Update this file after substantial work. Keep public product/engineering documen
 - Added evidence-based Vercel diagnosis guidance: parser/compiler syntax errors are not quota errors; only classify a failure as rate limiting when Vercel explicitly says so.
 - Reaffirmed branch/PR-only hotfixes and Owner-controlled merge/Production deployment.
 - These are preventative process rules; PR #24 Preview build remains unverified.
+
+
+## 13 November 2026 — Follow-up members syntax hotfix
+
+- Owner shared a second Vercel build log after PR #24 merge. The visible import trace listed `src/actions/members.js`, `src/components/members/MemberList.js`, and `src/app/(app)/members/page.js`.
+- Inspected current `main` and found the actual malformed source pattern in `src/actions/members.js`: two literal backslash-n sequences between `revalidatePath` statements in `saveMember` and `deleteMember`.
+- Created `hotfix/fix-members-revalidate-syntax` from current main `f637f5006af3c5be2a895199ee662588160be095`; corrected both occurrences to actual source line breaks. Source check found exactly two matches before correction and zero remaining matching sequences in the file.
+- Scanned all 12 `src/actions/*.js` Server Action files on main for literal backslash-n sequences. The only matches were the two corrected in `members.js`; the earlier `events.js` file is already corrected on main.
+- Added a repository-wide suspicious escaped-newline scan rule to `.ai/PROJECT_CONTEXT.md`, explicitly covering all changed source files and related Server Action modules.
+- PR #24 was confirmed merged. PR #25 will carry the members fix and documentation. No direct main update, database, migration, RLS, production data, environment, or deployment change.
+- Local lint/build/browser E2E were not run; require Vercel Preview for the exact latest PR #25 head before merge.
