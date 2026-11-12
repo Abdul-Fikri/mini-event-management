@@ -6,7 +6,7 @@ Keep event management pages compact when lists grow while still allowing the Own
 
 ## Shared behavior
 
-- Every list shows no more than five records at a time.
+- Every paginated list shows no more than five records at a time. The Tugas Kanban board instead shows all loaded tasks grouped into their status columns.
 - Lists with more than five records provide Previous/Next controls and a visible current-page/total-page indicator.
 - Each parent management page provides a **Lihat semua** link for each supported list.
 - The dedicated view displays only the selected data type, retains five-record pagination, and provides a link back to its parent page.
