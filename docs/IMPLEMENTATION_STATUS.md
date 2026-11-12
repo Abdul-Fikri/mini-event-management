@@ -1,8 +1,8 @@
 # Implementation Status — Mini Event Management System
 
-Last reviewed: 11 November 2026  
+Last reviewed: 12 November 2026
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source branch reviewed: `main` at merge commit `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80` (PR #21)
+Source reviewed: current main plus the unmerged implementation changes in PR #22.
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -15,7 +15,7 @@ Source branch reviewed: `main` at merge commit `a87556aa24480cd8e0e9d83f22409a7f
 | Dashboard | Dynamic server-rendered dashboard and summary queries | User-reported Lighthouse Performance 96 |
 | Group members | Create/read/update/delete member directory | Group-level directory |
 | Events | Create/read/update/delete events | Dynamic route `/events/[id]`; new or changed dates must be today or later (Asia/Jakarta), while unchanged historical dates remain editable |
-| Event committee | Add/remove member assignment; division, position, responsibility | Uses \`event_members\` |
+| Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown, position, responsibility | `event_divisions` master data + `event_members` assignment |
 | Rundown | Create/update/delete schedule items | PIC restricted to current event roster |
 | Tasks | Create/update/delete tasks | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
 | Procurement | Create/update/delete procurement items; assign budget category; separate requested/ordered/purchased/ready states | PIC restricted to current event roster; ordered items become budget commitments; purchased/ready items automatically create or update one linked finance expense |
@@ -38,6 +38,14 @@ Source branch reviewed: `main` at merge commit `a87556aa24480cd8e0e9d83f22409a7f
 - Server Actions \`saveScheduleItem\`, \`saveTask\`, and \`saveProcurementItem\` validate the selected member against the same event and group.
 - This behavior was introduced/fixed in PR #5, merged to \`main\` (merge commit \`71d7c95ad0ab8f822faaec5170a5022730c71ca8\`).
 
+
+### Event-specific division master data
+
+- Divisions are managed by the Owner per event from the Panitia tab; they are not a group-global list.
+- Owner can create, list, edit, and delete division master records. Committee assignment forms select from that event's division dropdown instead of accepting free text.
+- `event_members.division_id` is validated against the same event and group. Existing `event_members.division` text is backfilled and retained as a synchronized snapshot for Panitia pages and CSV exports.
+- Renaming a master updates assignment snapshots. Deleting a master clears the reference but preserves the old label as historical text.
+- Migration: `20261112_event_divisions.sql`. Authored in PR #22; not confirmed applied to Supabase.
 
 ### Event dates vs operational history
 
@@ -126,6 +134,13 @@ Use this checklist for future UAT:
 - [ ] Forged hidden/browser status values cannot override server-side lifecycle resolution.
 - [ ] Invalid timeline values are rejected by Server Action validation and database constraints after the migration is applied.
 - [ ] Add/remove event committee assignment.
+- [ ] Create, list, edit, and delete event-specific division master records as Owner.
+- [ ] Confirm duplicate division names are rejected case-insensitively within one event but allowed in another event.
+- [ ] Confirm committee assignment uses the division dropdown and rejects a forged division ID from another event/group.
+- [ ] Rename a division and confirm Owner committee list, Panitia home/detail labels, and committee CSV reflect the new name.
+- [ ] Delete a division and confirm the old assignment label remains as historical text while its master reference is cleared.
+- [ ] Confirm legacy free-text division values are backfilled by migration without losing labels.
+- [ ] Confirm Panitia cannot mutate division master records and RLS limits read access to assigned events.
 - [ ] Confirm non-assigned group member is absent from Rundown PIC dropdown.
 - [ ] Add member to event and confirm they appear in Rundown PIC dropdown.
 - [ ] Repeat assignment test for Task and Procurement.
@@ -184,3 +199,15 @@ Use this checklist for future UAT:
 3. Jalankan UAT Owner dan Panitia, terutama invitation flow, direct URL authorization, Procurement → Finance linked transaction, dan automatic/manual event lifecycle.
 4. Uji upload, replace, delete, dan cleanup logo; uji CSV exports serta loading/error/empty states.
 5. Perbaiki masalah konkret yang ditemukan. Hindari penambahan fitur besar sebelum stabilisasi.
+
+
+## 10. Event division management — PR #22 in progress
+
+- PR #22 remains open and is expanded from its original documentation-only scope; no new PR was created.
+- Owner manages event-specific division master data from the Panitia tab. Create/list/edit/delete are supported at source level.
+- Committee assignment uses a dropdown and validates `division_id` on the server against the same event and group.
+- Existing free-text labels are backfilled into `event_divisions`; the legacy `event_members.division` text remains as a synchronized display/export snapshot.
+- Migration: `supabase/migrations/20261112_event_divisions.sql`; authored, not applied/confirmed in Supabase.
+- `supabase/schema.sql` includes the same structure for fresh database setup.
+- Owner has CRUD; Panitia remains read-only and receives only assigned-event read access.
+- Local lint/build and browser E2E were not run by the assistant. Runtime UAT is pending migration review/application and Owner testing.
