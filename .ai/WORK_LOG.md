@@ -79,3 +79,12 @@ Update this file after substantial work. Keep public product/engineering documen
 - Added task create/edit/delete controls to the Kanban. Moved the complete list, status summary, full details, CRUD, and five-record pagination to `/events/[id]/tugas/all`.
 - Updated requirements, handbook, implementation/UAT notes, and shared AI context. No schema, migration, RLS, production data, or deployment configuration changes.
 - Local lint/build/browser E2E and Owner Preview UAT have not been run; verify against the final PR head.
+
+
+## 13 November 2026 — Production build syntax hotfix
+
+- Investigated Owner-provided Vercel Production build failure after PR #23 merged. Log reported Turbopack `Expected unicode escape` at `src/actions/events.js:96:29`; the same literal escaped newline also appeared at line 116.
+- Created branch `hotfix/fix-events-revalidate-syntax` from current `main` commit `5a2c2824623f5e2f12d4c668642511898d945c80`.
+- Replaced both literal `\\n` sequences between `revalidatePath` calls with real source line breaks. Source-level verification found exactly two original occurrences and zero remaining matches.
+- Updated implementation status and shared AI project status. No application logic, database schema, migration, RLS, production data, environment, or direct `main` change.
+- Local lint/build/browser E2E not run because there is no local repository checkout in this session. Awaiting hotfix PR Preview build; merge and production deployment remain Owner-controlled.
