@@ -4,9 +4,15 @@ const EVENT_SECTIONS = new Set([
   "/panitia/divisions",
   "/panitia/committee",
   "/rundown",
+  "/rundown/all",
   "/tugas",
+  "/tugas/all",
   "/pengadaan",
+  "/pengadaan/all",
   "/keuangan",
+  "/keuangan/categories",
+  "/keuangan/transactions",
+  "/keuangan/commitments",
   "/ekspor",
 ]);
 
