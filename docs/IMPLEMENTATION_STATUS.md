@@ -247,7 +247,7 @@ Use this checklist for future UAT:
 - The committee view carries the current search and division filter into its dedicated route. Both dedicated views link back to the main Panitia tab.
 - Save/delete actions on dedicated views preserve the current view through a server-validated `return_to` path.
 - This is a UI/routing change only: no database schema, migration, RLS, or server authorization behavior is changed.
-- Source-level checks cover five-record slicing, both dedicated routes, query-state transfer, and return-path validation. Local lint/build and browser E2E have not been run by the assistant; check the latest Vercel status and complete Owner Preview UAT before merge.
+- Source-level checks cover five-record slicing, Panitia search/filter, all dedicated management routes, query-state transfer, and validated return paths. Vercel status check for the latest PR #23 head (`7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf`) reported success. Local lint/build and browser E2E have not been run by the assistant; Owner Preview UAT remains required.
 
 
 ## 13. Event management list pagination and dedicated views — PR #23 in progress
@@ -257,4 +257,4 @@ Use this checklist for future UAT:
 - Dedicated views provide a back link and preserve their route after supported edit/delete/sync actions using the server-validated event `return_to` allowlist.
 - Add forms remain on the parent management pages. Existing server-side event/group authorization, event-roster PIC validation, and Procurement–Finance linked-transaction rules remain unchanged.
 - Pagination is client-side over data loaded by the existing server-scoped queries. No database migration, schema, RLS, or production data changes are included.
-- Source-level checks and the latest Vercel Preview status must be checked after the latest PR commit. Local lint/build/browser E2E have not been run by the assistant; Owner Preview UAT remains required.
+- Source-level checks cover all six additional list views and their five-record pagination. Vercel status check for the latest PR #23 head (`7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf`) reported success. Local lint/build/browser E2E have not been run by the assistant; Owner Preview UAT remains required.
