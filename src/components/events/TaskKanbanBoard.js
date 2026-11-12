@@ -153,7 +153,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
         </div>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {STATUSES.map((status) => {
           const Icon = status.icon;
           const statusTasks = tasks.filter((task) => task.status === status.key);
