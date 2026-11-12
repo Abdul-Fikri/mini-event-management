@@ -5,11 +5,11 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 const initial={message:"",errors:{},values:{}};
-export default function TaskForm({eventId,members,task=null}){
+export default function TaskForm({eventId,members,task=null,returnTo=`/events/${eventId}/tugas`}){
  const [state,action,pending]=useActionState(saveTask.bind(null,eventId,task?.id??null),initial);
  const value=key=>state.values?.[key]??task?.[key]??"";
  return <form action={action} className="space-y-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-  <input type="hidden" name="return_to" value={`/events/${eventId}/tugas`}/>
+  <input type="hidden" name="return_to" value={returnTo}/>
   {state.message?<Alert>{state.message}</Alert>:null}
   <TextField id={"task-title-"+(task?.id??"new")} name="title" label="Nama tugas" defaultValue={value("title")} error={state.errors?.title} required/>
   <TextField id={"task-description-"+(task?.id??"new")} name="description" label="Deskripsi tugas" multiline defaultValue={value("description")} error={state.errors?.description}/>
