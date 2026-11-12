@@ -17,6 +17,7 @@ Prinsip domain terpenting:
 - \`members\` adalah direktori orang/anggota dalam grup.
 - \`events\` adalah event milik grup.
 - \`event_members\` adalah daftar anggota yang benar-benar ditugaskan pada event tertentu.
+- \`event_divisions\` adalah master divisi khusus per event; penugasan panitia memilih divisi dari daftar tersebut, bukan mengetik nama divisi bebas.
 - Hanya anggota dengan relasi \`event_members\` pada event yang sama yang boleh dipilih sebagai PIC/petugas rundown, tugas, dan pengadaan.
 
 
@@ -87,7 +88,7 @@ Supabase Client adalah client/query builder untuk Supabase Data API, bukan ORM d
 - Login melalui Supabase Auth.
 - Memiliki satu grup melalui relasi \`groups.owner_id\`.
 - Mengelola anggota grup dan event.
-- Menambahkan anggota grup ke event melalui tab Panitia.
+- Mengelola master divisi khusus per event pada tab Panitia, lalu menambahkan anggota grup dan memilih divisinya dari dropdown.
 - Mengelola rundown, tugas, pengadaan, dan keuangan event.
 - Membuat undangan agar anggota dapat menghubungkan akun Supabase Auth dengan data anggota.
 
@@ -120,7 +121,7 @@ Status rinci dan checklist pengujian berada di [Implementation Status](IMPLEMENT
 | Dashboard | Ringkasan event, anggota, tugas, keuangan, dan pengadaan |
 | Anggota Panitia | CRUD direktori anggota grup |
 | Event | CRUD event |
-| Susunan Panitia | Menugaskan anggota grup ke event, mengatur divisi/jabatan/tanggung jawab |
+| Susunan Panitia | CRUD master divisi per event; menugaskan anggota grup ke event dan memilih divisi dari dropdown, lalu mengatur jabatan/tanggung jawab |
 | Rundown | CRUD agenda/timeline kegiatan dan PIC |
 | Tugas | CRUD pekerjaan, PIC, deadline, prioritas, status |
 | Pengadaan | CRUD kebutuhan, kuantitas, estimasi/aktual, supplier, PIC, kategori, tanggal dan status; Dipesan menjadi komitmen dan Sudah dibeli otomatis membuat pengeluaran |
@@ -169,6 +170,7 @@ Proxy bukan satu-satunya lapisan keamanan. Server Component, Server Actions, Rou
 - \`src/actions/group-logo.js\`: Server Actions upload dan penghapusan logo grup.
 - \`src/lib/validators/\`: schema Zod.
 - \`src/actions/\`: Server Actions untuk mutasi data.
+- \`src/actions/event-divisions.js\`: CRUD master divisi event dengan validasi Owner dan scope grup/event.
 
 Gunakan server client dari \`src/lib/supabase/server.js\` di server. Jangan membuat Supabase client global yang menyimpan cookie/session lintas request.
 
@@ -213,7 +215,8 @@ Tabel utama yang ada di schema awal:
 | \`groups\` | Organisasi/grup Owner |
 | \`members\` | Direktori anggota grup |
 | \`events\` | Event milik grup |
-| \`event_members\` | Assignment anggota ke event |
+| \`event_members\` | Assignment anggota ke event, termasuk referensi divisi yang dipilih |
+| \`event_divisions\` | Master divisi yang dikelola Owner untuk masing-masing event |
 | \`schedule_items\` | Rundown |
 | \`tasks\` | Daftar tugas |
 | \`procurement_items\` | Pengadaan |
@@ -262,6 +265,7 @@ Jangan deploy, mengubah env production, atau mengubah domain tanpa instruksi eks
 - [Database & Migrations](DATABASE_AND_MIGRATIONS.md)
 - [Implementation Status](IMPLEMENTATION_STATUS.md)
 - [Event Lifecycle Requirements](EVENT_LIFECYCLE_REQUIREMENTS.md)
+- [Event Divisions Requirements](EVENT_DIVISIONS_REQUIREMENTS.md)
 - [Resources](RESOURCES.md)
 - [Role Owner dan Panitia](ROLE-OWNER-PANITIA.md)
 - [Undangan Panitia](UNDANGAN-PANITIA.md)
@@ -279,3 +283,16 @@ Timeline mendukung tanggal mulai perencanaan (opsional), mulai persiapan (opsion
 Urutan status otomatis: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (jika digunakan) → Selesai. Status Dibatalkan dipilih secara manual dengan mengubah mode ke Manual. Mengubah kembali ke Otomatis akan melanjutkan perhitungan berdasarkan timeline.
 
 Status otomatis dihitung saat data dibaca oleh resolver bersama; tidak memerlukan cron atau perubahan status berkala di database. Dashboard, daftar event, ruang kerja Owner, dan tampilan event Panitia harus memakai resolver yang sama. Rincian aturan dan acceptance criteria ada di `docs/EVENT_LIFECYCLE_REQUIREMENTS.md`.
+
+
+## 14. Master divisi per event
+
+Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global grup. Dengan begitu, satu grup dapat memakai susunan divisi yang berbeda pada event yang berbeda.
+
+- Owner mengelola divisi dari bagian Kelola divisi pada tab Panitia event: tambah, lihat, ubah nama/deskripsi, dan hapus.
+- Form penugasan anggota memilih divisi dari dropdown master data. Nama divisi tidak lagi diketik bebas pada form penugasan.
+- Nama divisi harus unik tanpa membedakan huruf besar/kecil dalam event yang sama.
+- Saat divisi diubah namanya, label pada penugasan, workspace Panitia, dan ekspor CSV ikut diperbarui.
+- Saat divisi dihapus, referensi master pada penugasan dilepas, tetapi teks nama lama tetap disimpan sebagai label historis agar tampilan Panitia dan CSV tidak kehilangan informasi.
+- Migration 20261112_event_divisions.sql membuat tabel event_divisions, menambahkan event_members.division_id, dan mengonversi nilai divisi lama menjadi master data tanpa menghilangkan labelnya.
+- CRUD divisi hanya tersedia bagi Owner. Panitia tetap hanya dapat membaca informasi divisi yang melekat pada penugasannya.
