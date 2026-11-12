@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 12 November 2026 — PR #22 merged; PR #23 extends Panitia and event-management pagination
+Last updated: 12 November 2026 — PR #23 extends pagination to group Event and Member lists
 
 ## Owner-reported verification
 
@@ -29,7 +29,7 @@ Last updated: 12 November 2026 — PR #22 merged; PR #23 extends Panitia and eve
 - Add dedicated Lihat semua routes for divisions and committee assignments, each showing only its selected data type with five-record pagination and the relevant search/filter controls.
 - Preserve committee search/filter values when opening its dedicated view; preserve the current view after save/delete using server-validated return paths.
 - Apply five-record pagination and dedicated Lihat semua views to Rundown, Tugas, and Pengadaan.
-- Apply independent five-record pagination and dedicated views to Keuangan categories, transactions, and procurement commitments.
+- Apply independent five-record pagination and dedicated views to Keuangan categories, transactions, and procurement commitments.\n- Apply five-record pagination and dedicated `/events/all` and `/members/all` views to the group-level Event and Member management lists. Preserve the member list's dedicated return destination after edit/delete.
 - Keep add forms on parent pages; dedicated views focus on the selected existing list and preserve their route after edit/delete/sync.
 - Keep this change UI/routing-only: no database migration, schema, RLS, or server authorization change.
 
@@ -46,7 +46,7 @@ Last updated: 12 November 2026 — PR #22 merged; PR #23 extends Panitia and eve
 - Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
 - PR #23 source-level checks cover Panitia search/filter, five-record pagination across management lists, dedicated list routes, query-state transfer, and validated return paths.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
-- Latest Vercel status for PR head `db308b7bdae6f4cea52b09dcc5b884f2a4973eea` reports `failure` with target URL `upgradeToPro=build-rate-limit`; this is a Preview quota/rate-limit outcome, not evidence of an application compile failure or success. Owner Preview UAT for Panitia, Rundown, Tugas, Pengadaan, and Keuangan pagination/dedicated views is pending.
+- Latest Vercel status for PR head `db308b7bdae6f4cea52b09dcc5b884f2a4973eea` reports `failure` with target URL `upgradeToPro=build-rate-limit`; this is a Preview quota/rate-limit outcome, not evidence of an application compile failure or success. Owner Preview UAT for Panitia, Rundown, Tugas, Pengadaan, Keuangan, Event, and Member pagination/dedicated views is pending.
 - No Supabase SQL, production data, RLS, environment, or deployment changes were performed.
 
 ## Next steps
