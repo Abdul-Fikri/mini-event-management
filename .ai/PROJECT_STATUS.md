@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search/filter controls
+Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search, filters, pagination, and dedicated views
 
 ## Owner-reported verification
 
@@ -25,7 +25,10 @@ Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search/fil
 - Add Susunan panitia filter for all divisions, each event master division, and assignments without an active division.
 - Add committee search across member name, contact, division label, position, and responsibility.
 - Combine search and division filter, show result count and empty state, and provide reset control.
-- Keep this change UI-only: no database migration, schema, RLS, or server authorization change.
+- Paginate both embedded lists at five records per page; reset to page one when search/filter changes.
+- Add dedicated Lihat semua routes for divisions and committee assignments, each showing only its selected data type with five-record pagination and the relevant search/filter controls.
+- Preserve committee search/filter values when opening its dedicated view; preserve the current view after save/delete using server-validated return paths.
+- Keep this change UI/routing-only: no database migration, schema, RLS, or server authorization change.
 
 ## Database and deployment state
 
@@ -38,9 +41,9 @@ Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search/fil
 ## Verification status
 
 - Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
-- PR #23 source-level changes have been reviewed for filter/search behavior and existing authorization boundaries.
+- PR #23 source-level checks cover search/filter behavior, five-record pagination, dedicated list routes, query-state transfer, and validated return paths.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
-- Vercel status check for PR #23 is pending; Owner Preview UAT is also pending.
+- The Vercel status check for the latest PR #23 commit must be rechecked; Owner Preview UAT for pagination and dedicated views is pending.
 - No Supabase SQL, production data, RLS, environment, or deployment changes were performed.
 
 ## Next steps
