@@ -1,6 +1,6 @@
 # Project Context — Mini Event Management System
 
-Last reviewed: 11 November 2026
+Last reviewed: 12 November 2026
 
 Repository: https://github.com/Abdul-Fikri/mini-event-management
 Production URL reported by owner: https://mini-event-management-gules.vercel.app
@@ -108,4 +108,7 @@ Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEM
 - Migration `20261112_event_divisions.sql` backfills existing free-text division labels into `event_divisions` and adds the composite `event_members.division_id` reference.
 - Keep `event_members.division` as a synchronized text snapshot for existing Panitia pages and CSV exports. Renaming a master updates the snapshot; deleting a master clears only `division_id`, preserving the old label as history.
 - Owner has CRUD; Panitia remains read-only and may read division metadata only for assigned events.
+- Owner's Kelola divisi list can be searched by division name or description.
+- Susunan panitia supports a division filter (all, one master division, or no active division) and text search across member name, contact, division label, position, and responsibility. Search and filter combine, with result count, empty state, and reset control.
+- These are client-side display filters over the event data already loaded and authorized by the server; they do not replace authorization or RLS.
 - The migration file is not evidence that the target Supabase database has been updated.
