@@ -28,6 +28,35 @@ export async function saveTask(eventId,taskId,_prev,formData){
  if(error||!data){console.error("[saveTask]",error?.code,error?.message);return {...empty,message:"Tugas gagal disimpan. Periksa kembali datanya.",values};}
  revalidatePath("/events/"+eventId);revalidatePath(returnPath);redirect(returnPath);
 }
+const TASK_STATUSES = new Set(["todo", "in_progress", "done", "blocked"]);
+
+export async function updateTaskStatus(eventId, taskId, status) {
+  const { group } = await requireGroup();
+  if (!TASK_STATUSES.has(status)) {
+    return { success: false, message: "Status tugas tidak valid." };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("tasks")
+    .update({ status })
+    .eq("id", taskId)
+    .eq("event_id", eventId)
+    .eq("group_id", group.id)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) {
+    console.error("[updateTaskStatus]", error?.code, error?.message);
+    return { success: false, message: "Status tugas gagal diperbarui." };
+  }
+
+  revalidatePath(`/events/${eventId}`);
+  revalidatePath(`/events/${eventId}/tugas`);
+  revalidatePath(`/events/${eventId}/tugas/all`);
+  return { success: true, message: "Status tugas diperbarui." };
+}
+
 export async function deleteTask(formData){
  const {group}=await requireGroup();
  const eventId=String(formData.get("event_id")||"");

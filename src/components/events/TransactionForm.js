@@ -8,11 +8,11 @@ import { MoneyField } from "@/components/ui/MoneyField";
 
 const initial = { message: "", errors: {}, values: {} };
 const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
-export default function TransactionForm({ eventId, categories, members, transaction = null }) {
+export default function TransactionForm({ eventId, categories, members, transaction = null, returnTo = `/events/${eventId}/keuangan` }) {
   const [state, action, pending] = useActionState(saveTransaction.bind(null, eventId, transaction?.id ?? null), initial);
   const value = key => state.values?.[key] ?? (transaction?.[key] ?? "");
   return <form action={action} className="space-y-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-    <input type="hidden" name="return_to" value={`/events/${eventId}/keuangan`}/>
+    <input type="hidden" name="return_to" value={returnTo}/>
     {state.message ? <Alert>{state.message}</Alert> : null}
     <div className="grid gap-3 sm:grid-cols-2">
       <div><label htmlFor={"trx-type-" + (transaction?.id ?? "new")} className="mb-1 block text-sm font-medium">Jenis transaksi</label><select id={"trx-type-" + (transaction?.id ?? "new")} name="type" defaultValue={value("type") || "expense"} className="block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm"><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select></div>

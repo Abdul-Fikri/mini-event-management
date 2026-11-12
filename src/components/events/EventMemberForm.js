@@ -13,6 +13,7 @@ export default function EventMemberForm({
   members,
   divisions = [],
   assignment = null,
+  returnTo = `/events/${eventId}/panitia`,
 }) {
   const [state, action, pending] = useActionState(
     saveEventMember.bind(null, eventId, assignment?.id ?? null),
@@ -24,7 +25,7 @@ export default function EventMemberForm({
 
   return (
     <form action={action} className="space-y-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-      <input type="hidden" name="return_to" value={`/events/${eventId}/panitia`} />
+      <input type="hidden" name="return_to" value={returnTo} />
       {state.message ? <Alert>{state.message}</Alert> : null}
 
       <div>

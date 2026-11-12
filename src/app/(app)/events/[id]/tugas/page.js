@@ -1,5 +1,5 @@
 import { getEventContext } from "@/lib/events/get-event-context";
-import TaskSection from "@/components/events/TaskSection";
+import TaskKanbanBoard from "@/components/events/TaskKanbanBoard";
 export const metadata = { title: "Tugas Event" };
 export default async function EventTasksPage({ params }) {
   const { id } = await params;
@@ -12,5 +12,5 @@ export default async function EventTasksPage({ params }) {
   const { data: members } = memberIds.length
     ? await supabase.from("members").select("id,full_name").eq("group_id", group.id).in("id", memberIds).order("full_name")
     : { data: [] };
-  return <TaskSection eventId={id} tasks={tasks ?? []} members={members ?? []}/>;
+  return <TaskKanbanBoard eventId={id} tasks={tasks ?? []} members={members ?? []}/>;
 }

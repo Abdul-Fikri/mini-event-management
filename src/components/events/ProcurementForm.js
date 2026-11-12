@@ -8,13 +8,13 @@ import { MoneyField } from "@/components/ui/MoneyField";
 
 const initial={message:"",errors:{},values:{}};
 
-export default function ProcurementForm({eventId,members,categories,item=null}){
+export default function ProcurementForm({eventId,members,categories,item=null,returnTo=`/events/${eventId}/pengadaan`}){
  const [state,action,pending]=useActionState(saveProcurementItem.bind(null,eventId,item?.id??null),initial);
  const value=key=>state.values?.[key]??(item?.[key]??"");
  const selectedStatus = value("status") || "not_started";
  const defaultPurchaseDate = value("purchased_date") || "";
  return <form action={action} className="space-y-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-  <input type="hidden" name="return_to" value={`/events/${eventId}/pengadaan`}/>
+  <input type="hidden" name="return_to" value={returnTo}/>
   {state.message?<Alert>{state.message}</Alert>:null}
   <TextField id={"proc-name-"+(item?.id??"new")} name="name" label="Nama barang / kebutuhan" defaultValue={value("name")} error={state.errors?.name} required/>
   <TextField id={"proc-spec-"+(item?.id??"new")} name="specification" label="Spesifikasi" defaultValue={value("specification")} error={state.errors?.specification}/>

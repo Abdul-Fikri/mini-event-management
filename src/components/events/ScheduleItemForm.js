@@ -5,11 +5,11 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 const initial={message:"",errors:{},values:{}};
-export default function ScheduleItemForm({eventId,members,item=null,eventStartDate}){
+export default function ScheduleItemForm({eventId,members,item=null,eventStartDate,returnTo=`/events/${eventId}/rundown`}){
  const [state,action,pending]=useActionState(saveScheduleItem.bind(null,eventId,item?.id??null),initial);
  const value=key=>state.values?.[key]??item?.[key]??(key==="item_date"?eventStartDate:"");
  return <form action={action} className="space-y-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-  <input type="hidden" name="return_to" value={`/events/${eventId}/rundown`}/>
+  <input type="hidden" name="return_to" value={returnTo}/>
   {state.message?<Alert>{state.message}</Alert>:null}
   <TextField id={"schedule-title-"+(item?.id??"new")} name="title" label="Nama kegiatan" defaultValue={value("title")} error={state.errors?.title} required/>
   <div className="grid gap-3 sm:grid-cols-3">

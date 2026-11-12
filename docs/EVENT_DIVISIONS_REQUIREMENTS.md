@@ -27,6 +27,25 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 3. Edit a division to change its name/description.
 4. Delete a division when it is no longer needed; already assigned members retain the old label as historical text.
 5. Add or edit a committee assignment and select a division from the dropdown. A division is optional.
+6. Search the division list by name or description when it becomes long.
+7. Search committee assignments by member name, contact, division, position, or responsibility; optionally combine the search with a division filter.
+
+## Search and filtering
+
+- Kelola divisi provides an in-page search over division name and description.
+- Susunan panitia provides a division filter with Semua divisi, each event master division, and Tanpa divisi aktif.
+- Committee search matches member name, contact, division label, position title, and responsibility.
+- Search and division filter are combined, and the UI displays the number of matching assignments plus a clear empty state.
+- A reset control clears both the search query and division filter.
+- These controls only filter data already authorized and loaded for the current Owner event page; they do not replace server-side authorization or RLS.
+
+## Pagination and dedicated list views
+
+- The embedded Kelola divisi and Susunan panitia lists show at most five records per page.
+- Each list has previous/next pagination controls and resets to page one when its search or filter changes.
+- Each list provides a Lihat semua link that opens a dedicated route for only that data type: `/events/[id]/panitia/divisions` or `/events/[id]/panitia/committee`.
+- Dedicated views retain the relevant search/filter controls and five-record pagination. Committee view carries the current search query and division filter from the embedded list.
+- Dedicated views provide a return link to the main Panitia page. Save/delete actions return to the view where the action was initiated; return paths are validated server-side.
 
 ## Validation and security
 
@@ -46,6 +65,18 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 - [ ] Owner can delete a division; existing assignments retain the old label as historical text and lose only the master reference.
 - [ ] Division names are unique case-insensitively within an event.
 - [ ] The committee assignment form uses a dropdown and no longer accepts arbitrary free-text division names.
+- [ ] Owner can search the Kelola divisi list by division name or description.
+- [ ] Owner can filter Susunan panitia by every event division, all divisions, and assignments without an active division.
+- [ ] Owner can search committee assignments by member name, contact, division label, position, and responsibility.
+- [ ] Search and division filter work together, update the visible result count, and show a useful empty state when no rows match.
+- [ ] Reset control clears both the committee search and selected division filter.
+- [ ] Kelola divisi displays no more than five records per page and pagination navigates through the filtered result set.
+- [ ] Susunan panitia displays no more than five records per page and pagination navigates through the filtered result set.
+- [ ] Changing search or division filter resets pagination to the first page.
+- [ ] Lihat semua divisi opens a dedicated view containing only the division list, with search and pagination.
+- [ ] Lihat semua susunan panitia opens a dedicated view containing only committee assignments, with search, division filter, and pagination.
+- [ ] Current committee search and division filter are preserved when opening the dedicated committee view.
+- [ ] Dedicated views provide a return link to the main Panitia page; create/edit/delete actions return to the same dedicated view.
 - [ ] A division from another event or group is rejected by Server Action validation and the composite foreign key.
 - [ ] Existing free-text division values are backfilled without losing their labels.
 - [ ] Existing Panitia home/detail pages and committee CSV export continue showing division labels.
@@ -55,4 +86,4 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 
 ## Verification notes
 
-The feature is implemented in PR #22 but is not merged. The migration is authored but not applied by the assistant. Local lint/build and browser E2E were not run in this environment; record their actual results before describing the feature as verified.
+Event-specific division CRUD and its database migration were merged in PR #22 (merge commit `20ca806309629eace877536f245409e546824fac`). Division/committee search and filters, five-record pagination, and dedicated list views are being added in PR #23. The migration's application to the target Supabase database is not confirmed. Local lint/build and browser E2E were not run in this environment; record their actual results before describing the features as runtime-verified.

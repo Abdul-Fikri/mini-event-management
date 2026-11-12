@@ -123,7 +123,7 @@ Status rinci dan checklist pengujian berada di [Implementation Status](IMPLEMENT
 | Event | CRUD event |
 | Susunan Panitia | CRUD master divisi per event; menugaskan anggota grup ke event dan memilih divisi dari dropdown, lalu mengatur jabatan/tanggung jawab |
 | Rundown | CRUD agenda/timeline kegiatan dan PIC |
-| Tugas | CRUD pekerjaan, PIC, deadline, prioritas, status |
+| Tugas | Kanban pekerjaan dengan empat kolom status, drag-and-drop, pilihan status alternatif, serta CRUD pekerjaan, PIC, deadline, dan prioritas |
 | Pengadaan | CRUD kebutuhan, kuantitas, estimasi/aktual, supplier, PIC, kategori, tanggal dan status; Dipesan menjadi komitmen dan Sudah dibeli otomatis membuat pengeluaran |
 | Keuangan | Kategori anggaran, seluruh transaksi pemasukan/pengeluaran, komitmen pembelian dari Pengadaan, dan saldo kas |
 | Ekspor | CSV susunan panitia, rundown, tugas, pengadaan, keuangan, anggota |
@@ -296,3 +296,36 @@ Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global
 - Saat divisi dihapus, referensi master pada penugasan dilepas, tetapi teks nama lama tetap disimpan sebagai label historis agar tampilan Panitia dan CSV tidak kehilangan informasi.
 - Migration 20261112_event_divisions.sql membuat tabel event_divisions, menambahkan event_members.division_id, dan mengonversi nilai divisi lama menjadi master data tanpa menghilangkan labelnya.
 - CRUD divisi hanya tersedia bagi Owner. Panitia tetap read-only dan hanya dapat membaca metadata divisi untuk event yang memang ditugaskan.
+- Daftar Kelola divisi menyediakan pencarian berdasarkan nama dan deskripsi divisi.
+- Susunan panitia menyediakan filter berdasarkan divisi (semua divisi, divisi tertentu, atau tanpa divisi aktif) dan pencarian berdasarkan nama anggota, kontak, divisi, jabatan, serta tanggung jawab.
+- Pencarian dan filter dapat digunakan bersamaan; jumlah hasil ditampilkan dan tersedia pesan ketika tidak ada data yang cocok.
+- Daftar divisi dan susunan panitia menampilkan maksimal lima data per halaman dengan navigasi Sebelumnya/Berikutnya. Perubahan pencarian/filter mengembalikan daftar ke halaman pertama.
+- Tombol Lihat semua membuka halaman khusus sesuai daftar yang dipilih: hanya divisi atau hanya susunan panitia. Halaman khusus tetap memiliki pencarian/filter dan pagination lima data per halaman.
+- Filter dan kata kunci susunan panitia dibawa ke halaman khusus saat Lihat semua dipilih. Tersedia tautan kembali ke tab Panitia, dan aksi simpan/hapus kembali ke halaman tempat aksi dilakukan.
+
+
+## 15. Pagination daftar pengelolaan event
+
+Agar halaman pengelolaan tetap ringkas saat jumlah data bertambah, daftar operasional event menggunakan batas tampilan lima data per halaman. Pengecualian untuk Tugas: halaman utamanya menampilkan seluruh tugas yang dimuat dalam kolom Kanban sesuai status.
+
+- Rundown menampilkan maksimal lima kegiatan per halaman. Tombol **Lihat semua rundown** membuka `/events/[id]/rundown/all`.
+- Halaman Tugas utama (`/events/[id]/tugas`) menampilkan Kanban dengan empat kolom status: Belum dikerjakan, Sedang dikerjakan, Selesai, dan Terhambat. Setiap kolom memiliki warna dan ikon pembeda; kartu dapat dipindahkan dengan drag-and-drop untuk memperbarui status.
+- Setiap kartu Kanban menyediakan aksi edit dan hapus, serta tombol **Tambah tugas** tersedia di bagian atas papan. Pilihan status pada kartu juga tersedia sebagai alternatif drag-and-drop untuk perangkat sentuh atau navigasi keyboard.
+- Tombol **Detail seluruh tugas** membuka `/events/[id]/tugas/all`, yaitu halaman daftar lengkap dengan ringkasan jumlah per status, deskripsi/catatan, CRUD tugas, dan pagination maksimal lima data per halaman.
+- Pengadaan menampilkan maksimal lima kebutuhan per halaman. Tombol **Lihat semua pengadaan** membuka `/events/[id]/pengadaan/all`.
+- Keuangan menerapkan pagination secara terpisah untuk kategori anggaran, riwayat transaksi, dan rincian komitmen pengadaan. Masing-masing memiliki halaman khusus: `/events/[id]/keuangan/categories`, `/events/[id]/keuangan/transactions`, dan `/events/[id]/keuangan/commitments`.
+- Setiap halaman khusus hanya menampilkan jenis data yang dipilih dan tetap membatasi tampilan lima data per halaman.
+- Halaman khusus menyediakan tautan kembali ke halaman pengelolaan induk. Form edit dan aksi hapus/sinkronisasi mempertahankan halaman asal melalui `return_to` yang divalidasi di Server Action.
+- Untuk Rundown, Pengadaan, dan Keuangan, form tambah tetap berada di halaman pengelolaan utama; halaman khusus berfokus pada daftar yang dipilih. Tugas menyediakan form tambah serta aksi edit/hapus baik pada Kanban maupun halaman Detail seluruh tugas.
+- Pagination ini hanya mengubah tampilan data yang telah dimuat dan diotorisasi di server. Tidak ada perubahan schema, migration, RLS, atau aturan otorisasi.
+
+
+## 16. Pagination daftar manajemen Owner
+
+Agar daftar tetap mudah dipindai, halaman daftar Event dan Anggota grup juga menggunakan pola pagination yang sama dengan modul operasional event.
+
+- Halaman `/events` menampilkan maksimal lima event per halaman. Tombol **Lihat semua event** membuka `/events/all`, yang hanya menampilkan daftar event dan tetap memakai lima data per halaman.
+- Halaman `/members` menampilkan maksimal lima anggota grup per halaman. Tombol **Lihat semua anggota** membuka `/members/all`, yang hanya menampilkan direktori anggota dan tetap memakai lima data per halaman.
+- Halaman khusus menyediakan tautan kembali ke daftar induk. Jika anggota diedit atau dihapus dari `/members/all`, pengguna dikembalikan ke daftar khusus tersebut; halaman daftar biasa tetap kembali ke `/members`.
+- Label status pada daftar Event tetap dihitung menggunakan resolver status efektif yang sama dengan halaman Event lainnya.
+- Pagination adalah perilaku tampilan di atas data yang telah dimuat dan dibatasi berdasarkan grup Owner di server. Ini tidak mengubah otorisasi, RLS, schema, atau data.

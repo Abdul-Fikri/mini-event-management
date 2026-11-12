@@ -1,6 +1,6 @@
 # Project Context — Mini Event Management System
 
-Last reviewed: 11 November 2026
+Last reviewed: 12 November 2026
 
 Repository: https://github.com/Abdul-Fikri/mini-event-management
 Production URL reported by owner: https://mini-event-management-gules.vercel.app
@@ -108,4 +108,20 @@ Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEM
 - Migration `20261112_event_divisions.sql` backfills existing free-text division labels into `event_divisions` and adds the composite `event_members.division_id` reference.
 - Keep `event_members.division` as a synchronized text snapshot for existing Panitia pages and CSV exports. Renaming a master updates the snapshot; deleting a master clears only `division_id`, preserving the old label as history.
 - Owner has CRUD; Panitia remains read-only and may read division metadata only for assigned events.
+- Owner's Kelola divisi list can be searched by division name or description.
+- Susunan panitia supports a division filter (all, one master division, or no active division) and text search across member name, contact, division label, position, and responsibility. Search and filter combine, with result count, empty state, and reset control.
+- These are client-side display filters over the event data already loaded and authorized by the server; they do not replace authorization or RLS.
+- Both embedded lists show a maximum of five records per page with previous/next pagination; changing search/filter resets to page one.
+- Lihat semua opens a dedicated view for only the selected data type (`/events/[id]/panitia/divisions` or `/events/[id]/panitia/committee`). Dedicated views retain five-record pagination and the corresponding search/filter controls; committee search/filter values are carried into the dedicated view.
+- Dedicated views link back to the main Panitia tab. Division and committee save/delete actions use a server-validated return path so the user stays on the view where the action started.
 - The migration file is not evidence that the target Supabase database has been updated.
+
+
+## Event management list pagination
+
+- Group-level `/events` and `/members` pages also show a maximum of five records per page and provide dedicated `/events/all` and `/members/all` routes. Each dedicated route contains only the selected list and links back to its parent.
+- Member edits/deletes initiated from `/members/all` return to that dedicated list using a server-validated return destination; normal member flows return to `/members`.
+- Rundown and Pengadaan each display at most five records per page and expose dedicated all-records routes. Tugas uses `/events/[id]/tugas` as a four-status Kanban board with drag-and-drop, an accessible status selector, and create/edit/delete controls; `/events/[id]/tugas/all` contains the complete task list, status counts, full CRUD, and five-record pagination.
+- Keuangan paginates categories, transactions, and ordered procurement commitments independently. Dedicated routes are `/events/[id]/keuangan/categories`, `/events/[id]/keuangan/transactions`, and `/events/[id]/keuangan/commitments`.
+- Every paginated list uses five records per page. The Tugas Kanban board displays all loaded tasks in their status columns; its dedicated detail view uses five-record pagination. Dedicated views contain only the selected data type, link back to their parent management page, and preserve their view after supported edit/delete/sync actions through the validated event return-path helper.
+- Add forms stay on the parent management pages for Rundown, Pengadaan, and Finance. Tugas supports create/edit/delete on both the Kanban board and its dedicated all-tasks view. No schema, migration, or RLS changes are introduced; the new task-status Server Action applies the existing Owner/group/event authorization scope and validates the status allowlist.
