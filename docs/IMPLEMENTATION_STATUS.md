@@ -59,7 +59,9 @@ Source reviewed: `main` after PR #22 merge plus the unmerged Panitia and event-m
 
 ## 3. Pagination and dedicated list views
 
-PR #23 applies five-record pagination and dedicated **Lihat semua** routes to group Event and Member lists, Panitia, Rundown, Pengadaan, and the three Keuangan lists. Tugas uses a four-status Kanban board on its main route and a five-record paginated full-list view at `/events/[id]/tugas/all`. Group-level routes are `/events/all` and `/members/all`. The member edit/delete flow validates and preserves `/members/all` as a return destination. These are UI/routing changes over group-scoped server queries; no database changes are introduced. Runtime verification remains pending until Preview is available and the Owner completes UAT.\n\n## 4. Architecture notes
+PR #23 applies five-record pagination and dedicated **Lihat semua** routes to group Event and Member lists, Panitia, Rundown, Pengadaan, and the three Keuangan lists. Tugas uses a four-status Kanban board on its main route and a five-record paginated full-list view at `/events/[id]/tugas/all`. Group-level routes are `/events/all` and `/members/all`. The member edit/delete flow validates and preserves `/members/all` as a return destination. These are UI/routing changes over group-scoped server queries; no database changes are introduced. Runtime verification remains pending until Preview is available and the Owner completes UAT.
+
+## 4. Architecture notes
 
 - Next.js 16.4.5 App Router, React 19.3.0, JavaScript, Tailwind CSS 4.
 - Root source is \`src/\`; do not recreate nested legacy \`event-management/\`.
