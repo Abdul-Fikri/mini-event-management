@@ -123,7 +123,7 @@ Status rinci dan checklist pengujian berada di [Implementation Status](IMPLEMENT
 | Event | CRUD event |
 | Susunan Panitia | CRUD master divisi per event; menugaskan anggota grup ke event dan memilih divisi dari dropdown, lalu mengatur jabatan/tanggung jawab |
 | Rundown | CRUD agenda/timeline kegiatan dan PIC |
-| Tugas | CRUD pekerjaan, PIC, deadline, prioritas, status |
+| Tugas | Kanban pekerjaan dengan empat kolom status, drag-and-drop, pilihan status alternatif, serta CRUD pekerjaan, PIC, deadline, dan prioritas |
 | Pengadaan | CRUD kebutuhan, kuantitas, estimasi/aktual, supplier, PIC, kategori, tanggal dan status; Dipesan menjadi komitmen dan Sudah dibeli otomatis membuat pengeluaran |
 | Keuangan | Kategori anggaran, seluruh transaksi pemasukan/pengeluaran, komitmen pembelian dari Pengadaan, dan saldo kas |
 | Ekspor | CSV susunan panitia, rundown, tugas, pengadaan, keuangan, anggota |
@@ -309,12 +309,14 @@ Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global
 Agar halaman pengelolaan tetap ringkas saat jumlah data bertambah, daftar operasional event menggunakan batas tampilan lima data per halaman.
 
 - Rundown menampilkan maksimal lima kegiatan per halaman. Tombol **Lihat semua rundown** membuka `/events/[id]/rundown/all`.
-- Tugas menampilkan maksimal lima tugas per halaman. Tombol **Lihat semua tugas** membuka `/events/[id]/tugas/all`.
+- Halaman Tugas utama (`/events/[id]/tugas`) menampilkan Kanban dengan empat kolom status: Belum dikerjakan, Sedang dikerjakan, Selesai, dan Terhambat. Setiap kolom memiliki warna dan ikon pembeda; kartu dapat dipindahkan dengan drag-and-drop untuk memperbarui status.
+- Setiap kartu Kanban menyediakan aksi edit dan hapus, serta tombol **Tambah tugas** tersedia di bagian atas papan. Pilihan status pada kartu juga tersedia sebagai alternatif drag-and-drop untuk perangkat sentuh atau navigasi keyboard.
+- Tombol **Detail seluruh tugas** membuka `/events/[id]/tugas/all`, yaitu halaman daftar lengkap dengan ringkasan jumlah per status, deskripsi/catatan, CRUD tugas, dan pagination maksimal lima data per halaman.
 - Pengadaan menampilkan maksimal lima kebutuhan per halaman. Tombol **Lihat semua pengadaan** membuka `/events/[id]/pengadaan/all`.
 - Keuangan menerapkan pagination secara terpisah untuk kategori anggaran, riwayat transaksi, dan rincian komitmen pengadaan. Masing-masing memiliki halaman khusus: `/events/[id]/keuangan/categories`, `/events/[id]/keuangan/transactions`, dan `/events/[id]/keuangan/commitments`.
 - Setiap halaman khusus hanya menampilkan jenis data yang dipilih dan tetap membatasi tampilan lima data per halaman.
 - Halaman khusus menyediakan tautan kembali ke halaman pengelolaan induk. Form edit dan aksi hapus/sinkronisasi mempertahankan halaman asal melalui `return_to` yang divalidasi di Server Action.
-- Form tambah tetap berada di halaman pengelolaan utama; halaman khusus berfokus pada penelusuran dan pengelolaan data yang sudah ada.
+- Untuk Rundown, Pengadaan, dan Keuangan, form tambah tetap berada di halaman pengelolaan utama; halaman khusus berfokus pada daftar yang dipilih. Tugas menyediakan form tambah serta aksi edit/hapus baik pada Kanban maupun halaman Detail seluruh tugas.
 - Pagination ini hanya mengubah tampilan data yang telah dimuat dan diotorisasi di server. Tidak ada perubahan schema, migration, RLS, atau aturan otorisasi.
 
 
