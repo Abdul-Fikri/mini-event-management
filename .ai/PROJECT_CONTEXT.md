@@ -111,4 +111,7 @@ Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEM
 - Owner's Kelola divisi list can be searched by division name or description.
 - Susunan panitia supports a division filter (all, one master division, or no active division) and text search across member name, contact, division label, position, and responsibility. Search and filter combine, with result count, empty state, and reset control.
 - These are client-side display filters over the event data already loaded and authorized by the server; they do not replace authorization or RLS.
+- Both embedded lists show a maximum of five records per page with previous/next pagination; changing search/filter resets to page one.
+- Lihat semua opens a dedicated view for only the selected data type (`/events/[id]/panitia/divisions` or `/events/[id]/panitia/committee`). Dedicated views retain five-record pagination and the corresponding search/filter controls; committee search/filter values are carried into the dedicated view.
+- Dedicated views link back to the main Panitia tab. Division and committee save/delete actions use a server-validated return path so the user stays on the view where the action started.
 - The migration file is not evidence that the target Supabase database has been updated.
