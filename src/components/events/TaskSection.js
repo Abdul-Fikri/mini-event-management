@@ -12,7 +12,7 @@ const dateFmt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone
 const statusLabel = { todo: "Belum dikerjakan", in_progress: "Sedang dikerjakan", done: "Selesai", blocked: "Terhambat" };
 const priorityLabel = { low: "Rendah", medium: "Sedang", high: "Tinggi" };
 
-export default function TaskSection({ eventId, tasks, members, standalone = false }) {
+export default function TaskSection({ eventId, tasks, members }) {
   const [page, setPage] = useState(1);
   const memberById = new Map(members.map((member) => [member.id, member]));
   const counts = { todo: 0, in_progress: 0, done: 0, blocked: 0 };
@@ -22,31 +22,24 @@ export default function TaskSection({ eventId, tasks, members, standalone = fals
   const startIndex = (currentPage - 1) * PAGE_SIZE;
   const visibleTasks = tasks.slice(startIndex, startIndex + PAGE_SIZE);
   const basePath = `/events/${eventId}/tugas`;
-  const returnTo = standalone ? `${basePath}/all` : basePath;
+  const returnTo = `${basePath}/all`;
 
   return (
     <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          {standalone ? <Link href={basePath} className="text-sm font-medium text-indigo-700 hover:underline">← Kembali ke Tugas</Link> : null}
-          <h2 className={standalone ? "mt-2 text-xl font-semibold" : "text-lg font-semibold"}>{standalone ? "Semua tugas event" : "Manajemen tugas"}</h2>
-          <p className="text-sm text-zinc-600">Bagikan pekerjaan kepada panitia, tentukan prioritas, dan pantau progresnya.</p>
-        </div>
-        {!standalone && tasks.length > 0 ? (
-          <Link href={`${basePath}/all`} className="shrink-0 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-800 hover:bg-indigo-100">Lihat semua tugas</Link>
-        ) : null}
+      <div>
+        <Link href={basePath} className="text-sm font-medium text-indigo-700 hover:underline">← Kembali ke Kanban Tugas</Link>
+        <h2 className="mt-2 text-xl font-semibold">Detail seluruh tugas</h2>
+        <p className="text-sm text-zinc-600">Daftar lengkap, detail, dan pengelolaan tugas event. Maksimal lima tugas ditampilkan pada setiap halaman.</p>
       </div>
 
-      {!standalone ? (
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {Object.entries(statusLabel).map(([key, label]) => (
-            <div key={key} className="rounded-md bg-zinc-50 p-3">
-              <p className="text-xs text-zinc-500">{label}</p>
-              <p className="mt-1 text-xl font-semibold tabular-nums">{counts[key]}</p>
-            </div>
-          ))}
-        </div>
-      ) : null}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {Object.entries(statusLabel).map(([key, label]) => (
+          <div key={key} className="rounded-md bg-zinc-50 p-3">
+            <p className="text-xs text-zinc-500">{label}</p>
+            <p className="mt-1 text-xl font-semibold tabular-nums">{counts[key]}</p>
+          </div>
+        ))}
+      </div>
 
       {tasks.length ? (
         <>
@@ -84,12 +77,10 @@ export default function TaskSection({ eventId, tasks, members, standalone = fals
         <p className="rounded-md border border-dashed border-zinc-300 p-4 text-center text-sm text-zinc-600">Belum ada tugas untuk event ini.</p>
       )}
 
-      {!standalone ? (
-        <div className="border-t border-zinc-100 pt-4">
-          <h3 className="mb-3 font-medium">Tambah tugas</h3>
-          <TaskForm eventId={eventId} members={members} returnTo={returnTo} />
-        </div>
-      ) : null}
+      <div className="border-t border-zinc-100 pt-4">
+        <h3 className="mb-3 font-medium">Tambah tugas</h3>
+        <TaskForm eventId={eventId} members={members} returnTo={returnTo} />
+      </div>
     </section>
   );
 }
