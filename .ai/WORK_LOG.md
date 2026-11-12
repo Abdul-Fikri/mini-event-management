@@ -59,3 +59,12 @@ Update this file after substantial work. Keep public product/engineering documen
 - Add forms remain on the parent management page. Existing group/event query scoping, event roster PIC validation, and Procurement–Finance linked transaction rules are unchanged.
 - Extended the event return-path allowlist. No database schema, migration, RLS, or production data changes.
 - Source-level checks passed for the new list slicing, dedicated routes, group/event-scoped queries, and validated return paths. Latest Vercel status for PR head `db308b7bdae6f4cea52b09dcc5b884f2a4973eea` reports `failure` with a `build-rate-limit` target (Preview quota/rate limit, not an application compile result). Local lint/build/browser E2E were not run by the assistant; Owner Preview UAT remains pending.
+
+
+### PR #23 extension — group Event and Member lists
+
+- Added five-record pagination and dedicated **Lihat semua** routes for the group Event list (`/events/all`) and Member directory (`/members/all`).
+- The dedicated routes show only the selected list and link back to their parent. Event status labels continue to use the shared effective-status resolver.
+- Member edit/delete actions initiated from `/members/all` preserve that view through a server-validated return path; normal member flows return to `/members`.
+- Existing group-scoped Supabase queries and Owner authorization remain unchanged. No database schema, migration, RLS, production data, or deployment changes.
+- Local lint/build/browser E2E remain unrun in this session; Vercel Preview and Owner UAT must be checked against the final PR head.
