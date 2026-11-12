@@ -179,7 +179,7 @@ Use this checklist for future UAT:
 ## 9. Event lifecycle automation — PR #21 merged
 
 - PR #21: https://github.com/Abdul-Fikri/mini-event-management/pull/21 — closed and merged to `main` on 11 November 2026.
-- Verified `main` HEAD and merge commit: `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80`.
+- PR #21 merge commit: `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80` (historical merge SHA; not the current `main` HEAD).
 - Event baru default ke `status_mode=automatic`; event lama menjadi `manual` saat migration agar status tersimpan tidak berubah.
 - Timeline: tanggal mulai perencanaan dan persiapan opsional tetapi harus berpasangan; tanggal mulai event wajib; tanggal selesai dan akhir evaluasi opsional.
 - Urutan status otomatis berbasis tanggal kalender Asia/Jakarta: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (opsional) → Selesai. Tanggal akhir event dan evaluasi bersifat inklusif. Event satu hari dianggap berlangsung pada tanggal mulai.
