@@ -54,8 +54,12 @@ The Panitia tab has its own search/filter/pagination requirements in [Event Divi
 - [ ] Dedicated member view contains only members, links back to `/members`, and edit/delete return to the dedicated view.
 - [ ] Rundown main page shows at most five activities; pagination and the dedicated all-rundown route work.
 - [ ] Dedicated rundown view contains only activities, links back to Rundown, and edit/delete return to the dedicated view.
-- [ ] Tugas main page shows at most five tasks; pagination and the dedicated all-tasks route work.
-- [ ] Dedicated tasks view contains only tasks, links back to Tugas, and edit/delete return to the dedicated view.
+- [ ] Tugas main page displays the four existing statuses as a colored/icon Kanban board with correct counts and empty states.
+- [ ] Drag a task between all four status columns and confirm the status persists after refresh; invalid status submissions are rejected server-side.
+- [ ] Change task status using the card selector as a keyboard/touch alternative to drag-and-drop.
+- [ ] Kanban cards provide create, edit, and delete actions; save/delete returns to the Kanban page.
+- [ ] **Detail seluruh tugas** opens the dedicated full-list view, displays status counts/details, and paginates at five records per page.
+- [ ] Dedicated tasks view links back to the Kanban board; create/edit/delete actions return to the dedicated view.
 - [ ] Pengadaan main page shows at most five items; pagination and the dedicated all-procurement route work.
 - [ ] Dedicated procurement view contains only procurement items, links back to Pengadaan, and edit/delete/finance-sync return to the dedicated view.
 - [ ] Finance categories, transactions, and commitments each paginate independently at five records per page on the parent page.
