@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 13 November 2026 — PR #23 merged; production build syntax hotfix in progress
+Last updated: 13 November 2026 — PR #23 merged; PR #24 hotfix open; source-editing guardrails documented
 
 ## Owner-reported verification
 
@@ -66,3 +66,12 @@ Last updated: 13 November 2026 — PR #23 merged; production build syntax hotfix
 - Corrected both literal backslash-n sequences to actual line breaks on branch `hotfix/fix-events-revalidate-syntax`.
 - Source-level check: exactly two occurrences fixed; zero matching escaped sequences remain. Local lint/build/browser E2E not run; Vercel Preview verification pending.
 - No direct `main` update, merge, production deployment, SQL, database, RLS, or environment change was performed.
+
+
+## Preventing source-generation syntax regressions
+
+- Added mandatory source-editing guardrails to `.ai/PROJECT_CONTEXT.md`: use real source line breaks, inspect the saved file after writes, search all occurrences of generated patterns, and inspect the complete affected function/file.
+- Before merge, run lint and production build when a local checkout is available; otherwise disclose that limitation and require a successful Vercel Preview for the exact latest PR head.
+- Diagnose deployment failures from the actual compiler/build log. Do not confuse parser/syntax errors with quota/rate-limit failures.
+- Keep fixes on a branch/PR; no direct `main` changes or Production redeploy without Owner authorization.
+- Current syntax fix is tracked by PR #24: https://github.com/Abdul-Fikri/mini-event-management/pull/24. Its Vercel Preview result is not yet verified.
