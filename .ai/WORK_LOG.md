@@ -39,6 +39,10 @@ Record significant project changes, decisions, pull requests, and verification. 
 - Added search by division name/description to Kelola divisi.
 - Added Susunan panitia division filter (all divisions, a selected master division, or no active division) and text search across member name, contact, division label, position, and responsibility.
 - Search and filter combine; result count, empty state, and reset control are included.
+- Both lists now paginate at five records per page and reset to page one when search/filter changes.
+- Added dedicated `/panitia/divisions` and `/panitia/committee` views so Lihat semua opens only the selected data type; each dedicated view retains five-record pagination and the relevant search/filter controls.
+- Committee search/filter values are carried into its dedicated view. Save/delete actions use the server-validated event return-path allowlist to remain on the dedicated view.
+- Added reusable `ListPagination`; no database migration, schema, RLS, or authorization change. Source-level checks passed; local lint/build/browser E2E have not been run. Latest Vercel status must be checked after the most recent commits.
 - Extracted the committee cards into a dedicated client component so the Server Component continues loading and authorizing event data.
 - This change is UI-only; no database migration, schema, RLS, or authorization behavior was changed.
 - Local lint/build/browser E2E have not been run because a local repository checkout is unavailable in this session. Vercel status checks and Owner Preview UAT are pending.
