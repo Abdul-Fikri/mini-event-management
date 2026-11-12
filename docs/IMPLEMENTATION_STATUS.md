@@ -247,7 +247,7 @@ Use this checklist for future UAT:
 - The committee view carries the current search and division filter into its dedicated route. Both dedicated views link back to the main Panitia tab.
 - Save/delete actions on dedicated views preserve the current view through a server-validated `return_to` path.
 - This is a UI/routing change only: no database schema, migration, RLS, or server authorization behavior is changed.
-- Source-level checks cover five-record slicing, Panitia search/filter, all dedicated management routes, query-state transfer, and validated return paths. Vercel status check for the latest PR #23 head (`7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf`) reported success. Local lint/build and browser E2E have not been run by the assistant; Owner Preview UAT remains required.
+- Source-level checks cover five-record slicing, Panitia search/filter, all dedicated management routes, query-state transfer, and validated return paths. Latest Vercel status for PR head `db308b7bdae6f4cea52b09dcc5b884f2a4973eea` reports `failure` with a `build-rate-limit` target URL (Preview quota/rate limit, not an application compile result). Local lint/build and browser E2E have not been run by the assistant; Owner Preview UAT remains required.
 
 
 ## 13. Event management list pagination and dedicated views — PR #23 in progress
