@@ -88,3 +88,12 @@ Update this file after substantial work. Keep public product/engineering documen
 - Replaced both literal `\\n` sequences between `revalidatePath` calls with real source line breaks. Source-level verification found exactly two original occurrences and zero remaining matches.
 - Updated implementation status and shared AI project status. No application logic, database schema, migration, RLS, production data, environment, or direct `main` change.
 - Local lint/build/browser E2E not run because there is no local repository checkout in this session. Awaiting hotfix PR Preview build; merge and production deployment remain Owner-controlled.
+
+
+### Follow-up documentation — prevent source-generation syntax errors
+
+- Added durable rules to `.ai/PROJECT_CONTEXT.md` after the PR #23 production build incident: always use actual newline characters in source, inspect the saved file after API-based edits, search all matching occurrences, and review the complete affected function/file.
+- Added a pre-merge verification rule: run lint/build where possible; otherwise disclose missing local validation and require a successful Vercel Preview for the exact latest PR head.
+- Added evidence-based Vercel diagnosis guidance: parser/compiler syntax errors are not quota errors; only classify a failure as rate limiting when Vercel explicitly says so.
+- Reaffirmed branch/PR-only hotfixes and Owner-controlled merge/Production deployment.
+- These are preventative process rules; PR #24 Preview build remains unverified.
