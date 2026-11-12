@@ -46,7 +46,7 @@ Last updated: 12 November 2026 — PR #22 merged; PR #23 extends Panitia and eve
 - Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
 - PR #23 source-level checks cover Panitia search/filter, five-record pagination across management lists, dedicated list routes, query-state transfer, and validated return paths.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
-- Vercel status check for latest PR #23 head `7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf` reported `success`; Owner Preview UAT for Panitia, Rundown, Tugas, Pengadaan, and Keuangan pagination/dedicated views is pending.
+- Latest Vercel status for PR head `db308b7bdae6f4cea52b09dcc5b884f2a4973eea` reports `failure` with target URL `upgradeToPro=build-rate-limit`; this is a Preview quota/rate-limit outcome, not evidence of an application compile failure or success. Owner Preview UAT for Panitia, Rundown, Tugas, Pengadaan, and Keuangan pagination/dedicated views is pending.
 - No Supabase SQL, production data, RLS, environment, or deployment changes were performed.
 
 ## Next steps
