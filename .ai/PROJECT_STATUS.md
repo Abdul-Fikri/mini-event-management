@@ -16,7 +16,7 @@ Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search/fil
 - PR #20 Procurement–Finance integration: merged.
 - PR #21 event lifecycle automation: merged.
 - PR #22 event-specific division CRUD: merged to `main` on 12 November 2026 at `20ca806309629eace877536f245409e546824fac`.
-- PR #23 is being prepared on branch `feat/panitia-division-filters-search`; it is not opened yet.
+- PR #23: https://github.com/Abdul-Fikri/mini-event-management/pull/23 — open on branch `feat/panitia-division-filters-search`.
 - Do not infer Production deployment from source commits or a successful Preview check.
 
 ## Current PR #23 scope
@@ -40,7 +40,7 @@ Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search/fil
 - Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
 - PR #23 source-level changes have been reviewed for filter/search behavior and existing authorization boundaries.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
-- Vercel checks for the PR #23 head and Owner Preview UAT are pending.
+- Vercel status check for PR #23 is pending; Owner Preview UAT is also pending.
 - No Supabase SQL, production data, RLS, environment, or deployment changes were performed.
 
 ## Next steps
