@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 12 November 2026 — PR #22 expanded with event-specific division CRUD
+Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search/filter controls
 
 ## Owner-reported verification
 
@@ -12,39 +12,41 @@ Last updated: 12 November 2026 — PR #22 expanded with event-specific division 
 
 ## GitHub state
 
-- Current `main` HEAD at the start of this work: `9dab0f219934b3782713a5c724f7458fa164b050`.
+- Current `main` HEAD: `20ca806309629eace877536f245409e546824fac`.
 - PR #20 Procurement–Finance integration: merged.
 - PR #21 event lifecycle automation: merged.
-- PR #22: open at `docs/sync-status-after-pr-21`; this existing PR is being expanded to include Owner-managed event divisions instead of opening another PR.
-- PR #22 remains unmerged. Do not infer Preview or Production deployment from source commits.
+- PR #22 event-specific division CRUD: merged to `main` on 12 November 2026 at `20ca806309629eace877536f245409e546824fac`.
+- PR #23 is being prepared on branch `feat/panitia-division-filters-search`; it is not opened yet.
+- Do not infer Production deployment from source commits or a successful Preview check.
 
-## Current PR #22 scope
+## Current PR #23 scope
 
-- Synchronize project status after PR #21.
-- Add an event-specific division master list in the event Panitia tab: create, list, edit, and delete.
-- Replace free-text division entry in committee assignment forms with a dropdown backed by `event_divisions`.
-- Backfill existing `event_members.division` labels and keep the text snapshot synchronized for Panitia views and CSV exports.
-- Add composite event/group validation, RLS policies, migration, initial schema alignment, requirements, UAT, and AI/public documentation.
+- Add search by name/description in the event's Kelola divisi list.
+- Add Susunan panitia filter for all divisions, each event master division, and assignments without an active division.
+- Add committee search across member name, contact, division label, position, and responsibility.
+- Combine search and division filter, show result count and empty state, and provide reset control.
+- Keep this change UI-only: no database migration, schema, RLS, or server authorization change.
 
 ## Database and deployment state
 
 - Migration `20261111_procurement_finance_integration.sql` and `20261112_event_lifecycle_automation.sql` are present in `main`; application to the target Supabase database is not confirmed.
-- The Owner attempted the Procurement–Finance migration in Supabase SQL Editor and received PostgreSQL `42701` because `procurement_items.category_id` already existed. A compatibility fix was committed to `main`; successful application of the corrected migration is not yet confirmed.
-- New migration `20261112_event_divisions.sql` is authored in PR #22 and has not been applied to Supabase.
-- No production SQL, RLS change, production data mutation, environment change, or deployment was performed by the assistant.
+- The Owner previously encountered PostgreSQL `42701` while attempting the Procurement–Finance migration because `procurement_items.category_id` already existed. A compatibility fix was committed to `main`; successful application of the corrected migration is not independently confirmed.
+- Division migration `20261112_event_divisions.sql` was merged through PR #22; application to the target Supabase database is not confirmed.
+- PR #23 does not add or modify SQL, schema, RLS, or production data.
 - Vercel deployment is managed by the Owner.
 
 ## Verification status
 
-- Reviewed current `main`, PR #22 state, repository instructions, relevant source files, schema, RLS patterns, and documentation.
-- Source-level consistency checks are being performed for the new division workflow and migration.
-- Assistant did not run `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
-- Do not claim runtime verification until the migration is applied to the intended Supabase environment and Owner/Panitia flows are tested.
+- Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
+- PR #23 source-level changes have been reviewed for filter/search behavior and existing authorization boundaries.
+- Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
+- Vercel checks for the PR #23 head and Owner Preview UAT are pending.
+- No Supabase SQL, production data, RLS, environment, or deployment changes were performed.
 
 ## Next steps
 
-1. Review the expanded PR #22 diff and CI/Preview result.
-2. Owner reviews and manually applies only the migrations confirmed pending in the correct Supabase project.
-3. Run division CRUD and legacy-label UAT, plus focused Owner/Panitia access tests.
+1. Review PR #23 diff and Vercel status checks.
+2. Owner tests division search, committee text search, division filters, combined filters, reset, and empty states in Preview.
+3. Confirm any required Supabase migrations separately; PR #23 itself has no database migration.
 4. Merge only after review and explicit Owner approval.
 5. Owner handles Vercel deployment and confirms production behavior.
