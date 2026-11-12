@@ -2,7 +2,7 @@
 
 Last reviewed: 12 November 2026
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source reviewed: `main` after PR #22 merge plus the unmerged search/filter implementation in PR #23.
+Source reviewed: `main` after PR #22 merge plus the unmerged Panitia and event-management pagination implementation in PR #23.
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -16,9 +16,9 @@ Source reviewed: `main` after PR #22 merge plus the unmerged search/filter imple
 | Group members | Create/read/update/delete member directory | Group-level directory |
 | Events | Create/read/update/delete events | Dynamic route `/events/[id]`; new or changed dates must be today or later (Asia/Jakarta), while unchanged historical dates remain editable |
 | Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown; search/filter committee by division and text; search division master list | `event_divisions` master data + `event_members` assignment |
-| Rundown | Create/update/delete schedule items | PIC restricted to current event roster |
-| Tasks | Create/update/delete tasks | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
-| Procurement | Create/update/delete procurement items; assign budget category; separate requested/ordered/purchased/ready states | PIC restricted to current event roster; ordered items become budget commitments; purchased/ready items automatically create or update one linked finance expense |
+| Rundown | Create/update/delete schedule items; five-record pagination and dedicated all-items view | PIC restricted to current event roster |
+| Tasks | Create/update/delete tasks; five-record pagination and dedicated all-items view | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
+| Procurement | Create/update/delete procurement items; five-record pagination and dedicated all-items view; assign budget category; separate requested/ordered/purchased/ready states | PIC restricted to current event roster; ordered items become budget commitments; purchased/ready items automatically create or update one linked finance expense |
 | Finance | Budget categories, manual income/expense transactions, procurement-linked expenses, and ordered-item commitments | Linked procurement expenses are managed from Procurement; manual finance transactions remain editable; historical transaction dates remain allowed |
 | CSV export | Committee, schedule, tasks, procurement, finance, members | \`members\` export is group-wide |
 | Invitations | Create email-bound token and claim through RPC | Requires migration and correct email |
@@ -155,6 +155,16 @@ Use this checklist for future UAT:
 - [ ] Confirm back navigation returns to the main Panitia tab.
 - [ ] Create/edit/delete a division from the dedicated division view and confirm redirect remains on that view.
 - [ ] Edit/remove a committee assignment from the dedicated committee view and confirm redirect remains on that view.
+- [ ] Rundown main page shows at most five schedule items; navigate pages and open the dedicated all-rundown view.
+- [ ] Dedicated rundown view contains only schedule items, links back to Rundown, and edit/delete actions return to that view.
+- [ ] Tasks main page shows at most five tasks; navigate pages and open the dedicated all-tasks view.
+- [ ] Dedicated tasks view contains only task records, links back to Tugas, and edit/delete actions return to that view.
+- [ ] Procurement main page shows at most five items; navigate pages and open the dedicated all-procurement view.
+- [ ] Dedicated procurement view contains only procurement items, links back to Pengadaan, and edit/delete/sync actions return to that view.
+- [ ] Finance categories, transactions, and commitments each show at most five records on the main page and have independent pagination.
+- [ ] Open each dedicated Finance view and confirm it contains only the selected list: categories, transactions, or commitments.
+- [ ] Edit/delete a category or manual transaction from its dedicated view and confirm the action returns to the same view; confirm linked Procurement transactions remain read-only.
+- [ ] Confirm all dedicated event-management views link back to the correct parent subpage and are restricted to the current Owner's event/group.
 - [ ] Confirm non-assigned group member is absent from Rundown PIC dropdown.
 - [ ] Add member to event and confirm they appear in Rundown PIC dropdown.
 - [ ] Repeat assignment test for Task and Procurement.
@@ -238,3 +248,13 @@ Use this checklist for future UAT:
 - Save/delete actions on dedicated views preserve the current view through a server-validated `return_to` path.
 - This is a UI/routing change only: no database schema, migration, RLS, or server authorization behavior is changed.
 - Source-level checks cover five-record slicing, both dedicated routes, query-state transfer, and return-path validation. Local lint/build and browser E2E have not been run by the assistant; check the latest Vercel status and complete Owner Preview UAT before merge.
+
+
+## 13. Event management list pagination and dedicated views — PR #23 in progress
+
+- Rundown, Tugas, and Pengadaan each show at most five records on their parent management page and provide a dedicated `/all` route for the selected list.
+- Keuangan paginates three independent lists: categories, transactions, and ordered procurement commitments. Each has a dedicated route that displays only that selected data type.
+- Dedicated views provide a back link and preserve their route after supported edit/delete/sync actions using the server-validated event `return_to` allowlist.
+- Add forms remain on the parent management pages. Existing server-side event/group authorization, event-roster PIC validation, and Procurement–Finance linked-transaction rules remain unchanged.
+- Pagination is client-side over data loaded by the existing server-scoped queries. No database migration, schema, RLS, or production data changes are included.
+- Source-level checks and the latest Vercel Preview status must be checked after the latest PR commit. Local lint/build/browser E2E have not been run by the assistant; Owner Preview UAT remains required.
