@@ -306,7 +306,7 @@ Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global
 
 ## 15. Pagination daftar pengelolaan event
 
-Agar halaman pengelolaan tetap ringkas saat jumlah data bertambah, daftar operasional event menggunakan batas tampilan lima data per halaman.
+Agar halaman pengelolaan tetap ringkas saat jumlah data bertambah, daftar operasional event menggunakan batas tampilan lima data per halaman. Pengecualian untuk Tugas: halaman utamanya menampilkan seluruh tugas yang dimuat dalam kolom Kanban sesuai status.
 
 - Rundown menampilkan maksimal lima kegiatan per halaman. Tombol **Lihat semua rundown** membuka `/events/[id]/rundown/all`.
 - Halaman Tugas utama (`/events/[id]/tugas`) menampilkan Kanban dengan empat kolom status: Belum dikerjakan, Sedang dikerjakan, Selesai, dan Terhambat. Setiap kolom memiliki warna dan ikon pembeda; kartu dapat dipindahkan dengan drag-and-drop untuk memperbarui status.
