@@ -125,3 +125,20 @@ Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEM
 - Keuangan paginates categories, transactions, and ordered procurement commitments independently. Dedicated routes are `/events/[id]/keuangan/categories`, `/events/[id]/keuangan/transactions`, and `/events/[id]/keuangan/commitments`.
 - Every paginated list uses five records per page. The Tugas Kanban board displays all loaded tasks in their status columns; its dedicated detail view uses five-record pagination. Dedicated views contain only the selected data type, link back to their parent management page, and preserve their view after supported edit/delete/sync actions through the validated event return-path helper.
 - Add forms stay on the parent management pages for Rundown, Pengadaan, and Finance. Tugas supports create/edit/delete on both the Kanban board and its dedicated all-tasks view. No schema, migration, or RLS changes are introduced; the new task-status Server Action applies the existing Owner/group/event authorization scope and validates the status allowlist.
+
+
+## Source-editing and build-verification guardrails
+
+The production build failure after PR #23 was caused by literal backslash-n characters being inserted into JavaScript source between statements in `src/actions/events.js`. Turbopack reported `Expected unicode escape`. The same mistake appeared in two functions, so correcting only the first reported line would have left the second failure.
+
+Prevent recurrence on every future source change:
+
+1. **Preserve real source line breaks.** When creating or patching source through an API, use actual newline characters between JavaScript statements. Do not insert the two literal characters `\\n` where a source line break is intended. Remember that an escaped newline inside a JavaScript string literal is different from a literal backslash-n accidentally placed between source statements.
+2. **Inspect the saved file, not only the patch request.** After each source write, fetch/read the resulting file at the new branch head and inspect the exact changed region. Search the changed file for suspicious escaped sequences (especially literal `\\n` between statements), stray backslashes, malformed quotes, and duplicated fragments.
+3. **Check the whole affected file/function.** Search for every occurrence of the same generated pattern; fix and verify all occurrences, not only the first line mentioned by the compiler.
+4. **Run validation before asking for merge.** Run the repository's lint and production build commands when a local checkout is available. If they cannot be run, state that clearly, inspect the resulting diff/source, and require the Vercel Preview build to succeed before merge. Do not claim build success from source inspection alone.
+5. **Verify the exact latest commit.** Check Vercel status for the current PR head SHA after the final code and documentation commits. An earlier green deployment does not validate a later commit.
+6. **Classify deployment failures from evidence.** Read the actual build log. Treat `Expected unicode escape`/compiler parser output as a source syntax failure; call it a quota/rate-limit issue only when the Vercel result explicitly reports a quota/rate limit. Do not guess based on a generic failed status.
+7. **Keep production protected.** Fix through a branch and PR; do not push directly to `main`, merge, or redeploy Production without the Owner's explicit authorization.
+
+Incident reference: PR #23 merge commit `5a2c2824623f5e2f12d4c668642511898d945c80`; source file `src/actions/events.js`; corrected on `hotfix/fix-events-revalidate-syntax` and tracked by PR #24.
