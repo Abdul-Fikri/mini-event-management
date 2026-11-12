@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireGroup } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { getEventReturnPath } from "@/lib/events/return-path";
 import { fieldErrors, readForm } from "@/lib/validators/helpers";
 
 const schema = z.object({
@@ -27,12 +28,15 @@ async function verifyEvent(supabase, eventId, groupId) {
 function refreshDivisionPaths(eventId) {
   revalidatePath(`/events/${eventId}`);
   revalidatePath(`/events/${eventId}/panitia`);
+  revalidatePath(`/events/${eventId}/panitia/divisions`);
+  revalidatePath(`/events/${eventId}/panitia/committee`);
   revalidatePath("/panitia");
   revalidatePath(`/panitia/events/${eventId}`);
 }
 
 export async function saveEventDivision(eventId, divisionId, _prev, formData) {
   const { group } = await requireGroup();
+  const returnPath = getEventReturnPath(eventId, formData);
   const values = readForm(formData, fields);
   const parsed = schema.safeParse(values);
 
@@ -81,11 +85,13 @@ export async function saveEventDivision(eventId, divisionId, _prev, formData) {
   }
 
   refreshDivisionPaths(eventId);
-  redirect(`/events/${eventId}/panitia`);
+  revalidatePath(returnPath);
+  redirect(returnPath);
 }
 
-export async function deleteEventDivision(eventId, divisionId, _prev, _formData) {
+export async function deleteEventDivision(eventId, divisionId, _prev, formData) {
   const { group } = await requireGroup();
+  const returnPath = getEventReturnPath(eventId, formData);
   const supabase = await createClient();
 
   if (!await verifyEvent(supabase, eventId, group.id)) {
@@ -108,5 +114,6 @@ export async function deleteEventDivision(eventId, divisionId, _prev, _formData)
   if (!data) return { ...empty, message: "Divisi tidak ditemukan." };
 
   refreshDivisionPaths(eventId);
-  redirect(`/events/${eventId}/panitia`);
+  revalidatePath(returnPath);
+  redirect(returnPath);
 }
