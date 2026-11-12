@@ -146,6 +146,15 @@ Use this checklist for future UAT:
 - [ ] Select Tanpa divisi aktif and confirm assignments without a current `division_id` are shown, including historical labels after a master division is deleted.
 - [ ] Search committee by member name, contact, division label, position, and responsibility.
 - [ ] Combine text search and division filter; verify result count, no-match state, and reset behavior.
+- [ ] Verify Kelola divisi and Susunan panitia each display at most five records per page.
+- [ ] Navigate previous/next pages and confirm page count and visible range are correct.
+- [ ] Change search/filter while on a later page and confirm pagination resets to page one.
+- [ ] Open Lihat semua divisi and confirm the dedicated view contains only the division list, with search and five-record pagination.
+- [ ] Open Lihat semua susunan panitia and confirm the dedicated view contains only committee assignments, with search, division filter, and five-record pagination.
+- [ ] Confirm committee search and division filter are preserved when navigating to its dedicated view.
+- [ ] Confirm back navigation returns to the main Panitia tab.
+- [ ] Create/edit/delete a division from the dedicated division view and confirm redirect remains on that view.
+- [ ] Edit/remove a committee assignment from the dedicated committee view and confirm redirect remains on that view.
 - [ ] Confirm non-assigned group member is absent from Rundown PIC dropdown.
 - [ ] Add member to event and confirm they appear in Rundown PIC dropdown.
 - [ ] Repeat assignment test for Task and Procurement.
@@ -217,11 +226,15 @@ Use this checklist for future UAT:
 - `supabase/schema.sql` includes the same structure for fresh database setup.
 - Owner has CRUD; Panitia remains read-only and receives only assigned-event read access.
 
-## 12. Panitia division search and committee filters — PR #23 in progress
+## 12. Panitia division search, filters, pagination, and dedicated views — PR #23 in progress
 
 - Branch: `feat/panitia-division-filters-search`, created from `main` after PR #22 merge.
 - Kelola divisi adds client-side search across division name and description.
 - Susunan panitia adds a division selector (all, a specific event division, or no active division) and text search across member name, contact, division label, position, and responsibility.
 - Search and division filter combine; visible result count, no-match feedback, and reset controls are included.
-- This is a UI-only change: no database schema, migration, RLS, or server authorization behavior is changed.
-- Local lint/build and browser E2E have not been run by the assistant. Vercel checks and Owner Preview UAT remain pending.
+- Both embedded lists display a maximum of five records per page, with previous/next controls. Search/filter changes reset pagination to page one.
+- Each Lihat semua link opens a dedicated route containing only the selected data type: `/events/[id]/panitia/divisions` or `/events/[id]/panitia/committee`. Dedicated views retain five-record pagination and the relevant search/filter controls.
+- The committee view carries the current search and division filter into its dedicated route. Both dedicated views link back to the main Panitia tab.
+- Save/delete actions on dedicated views preserve the current view through a server-validated `return_to` path.
+- This is a UI/routing change only: no database schema, migration, RLS, or server authorization behavior is changed.
+- Source-level checks cover five-record slicing, both dedicated routes, query-state transfer, and return-path validation. Local lint/build and browser E2E have not been run by the assistant; check the latest Vercel status and complete Owner Preview UAT before merge.
