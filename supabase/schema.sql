@@ -134,19 +134,41 @@ create table public.events (
     on delete set null (coordinator_id)
 );
 
--- 2.4 event_members: susunan panitia per event
+-- 2.4 event_divisions: master divisi khusus untuk satu event
+create table public.event_divisions (
+  id uuid primary key default gen_random_uuid(),
+  group_id uuid not null,
+  event_id uuid not null,
+  name text not null check (char_length(btrim(name)) between 1 and 80),
+  description text check (char_length(description) <= 250),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint event_divisions_id_event_group_key unique (id, event_id, group_id),
+  foreign key (event_id, group_id) references public.events (id, group_id) on delete cascade
+);
+
+create unique index event_divisions_event_name_uidx
+  on public.event_divisions (event_id, lower(btrim(name)));
+create index event_divisions_group_event_idx
+  on public.event_divisions (group_id, event_id);
+
+-- 2.5 event_members: susunan panitia per event
 create table public.event_members (
   id             uuid primary key default gen_random_uuid(),
   group_id       uuid not null,
   event_id       uuid not null,
   member_id      uuid not null,
+  division_id    uuid,
   division       text check (char_length(division) <= 80),
   position_title text check (char_length(position_title) <= 80),
   responsibility text check (char_length(responsibility) <= 500),
   created_at     timestamptz not null default now(),
   unique (event_id, member_id),
   foreign key (event_id, group_id)  references public.events  (id, group_id) on delete cascade,
-  foreign key (member_id, group_id) references public.members (id, group_id) on delete cascade
+  foreign key (member_id, group_id) references public.members (id, group_id) on delete cascade,
+  foreign key (division_id, event_id, group_id)
+    references public.event_divisions (id, event_id, group_id)
+    on delete set null (division_id)
 );
 
 -- 2.5 schedule_items: rundown
@@ -273,6 +295,7 @@ create index members_group_idx           on public.members (group_id);
 create index events_group_idx            on public.events (group_id, start_date);
 create index events_coordinator_idx      on public.events (coordinator_id) where coordinator_id is not null;
 create index event_members_member_idx    on public.event_members (member_id);
+create index event_members_division_id_idx on public.event_members (division_id) where division_id is not null;
 create index schedule_items_event_idx    on public.schedule_items (event_id, item_date, start_time, sort_order);
 create index schedule_items_pic_idx      on public.schedule_items (pic_member_id) where pic_member_id is not null;
 create index tasks_event_status_idx      on public.tasks (event_id, status);
@@ -288,7 +311,7 @@ create index transactions_recorded_by_idx on public.transactions (recorded_by) w
 do $$
 declare t text;
 begin
-  foreach t in array array['groups','members','events','schedule_items','tasks',
+  foreach t in array array['groups','members','events','event_divisions','schedule_items','tasks',
                            'procurement_items','budget_categories','transactions']
   loop
     execute format(
@@ -299,7 +322,32 @@ begin
 end $;
 
 
--- 4.1 Procurement → Finance synchronization --------------------------
+-- 4.1 Event division label synchronization --------------------------
+-- Keep the text snapshot used by existing Panitia views and CSV exports current.
+create function public.sync_event_member_division_label()
+returns trigger
+language plpgsql
+set search_path = ''
+as $
+begin
+  if new.name is distinct from old.name then
+    update public.event_members
+       set division = new.name
+     where division_id = new.id
+       and event_id = new.event_id
+       and group_id = new.group_id;
+  end if;
+
+  return new;
+end;
+$;
+
+create trigger event_divisions_sync_member_label
+  after update of name on public.event_divisions
+  for each row
+  execute function public.sync_event_member_division_label();
+
+-- 4.2 Procurement → Finance synchronization --------------------------
 -- Invoker functions preserve the authenticated Owner's existing RLS boundary.
 create function public.prepare_procurement_purchase_date()
 returns trigger
@@ -460,6 +508,9 @@ create trigger procurement_sync_finance_expense
   for each row
   execute function public.sync_procurement_expense();
 
+revoke all on function public.sync_event_member_division_label() from public, anon;
+grant execute on function public.sync_event_member_division_label() to authenticated;
+
 revoke all on function public.prepare_procurement_purchase_date() from public, anon;
 revoke all on function public.sync_procurement_expense() from public, anon;
 revoke all on function public.upsert_procurement_expense_for_item(uuid, uuid, uuid) from public, anon;
@@ -471,13 +522,13 @@ grant execute on function public.upsert_procurement_expense_for_item(uuid, uuid,
 -- Cabut semua hak bawaan dari anon dan authenticated (default Supabase bisa
 -- memberi hak berlebih yang tidak tunduk pada RLS), lalu beri authenticated
 -- hanya empat operasi dasar. anon tidak mendapat hak apa pun.
-revoke all on public.groups, public.members, public.events, public.event_members,
+revoke all on public.groups, public.members, public.events, public.event_divisions, public.event_members,
               public.schedule_items, public.tasks, public.procurement_items,
               public.budget_categories, public.transactions
   from anon, authenticated;
 
 grant select, insert, update, delete
-  on public.groups, public.members, public.events, public.event_members,
+  on public.groups, public.members, public.events, public.event_divisions, public.event_members,
      public.schedule_items, public.tasks, public.procurement_items,
      public.budget_categories, public.transactions
   to authenticated;
@@ -495,7 +546,7 @@ create policy groups_owner_all on public.groups
 do $$
 declare t text;
 begin
-  foreach t in array array['members','events','event_members','schedule_items',
+  foreach t in array array['members','events','event_divisions','event_members','schedule_items',
                            'tasks','procurement_items','budget_categories','transactions']
   loop
     execute format('alter table public.%I enable row level security', t);
