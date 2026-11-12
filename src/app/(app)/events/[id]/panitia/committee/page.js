@@ -43,6 +43,13 @@ export default async function EventCommitteeAllPage({ params, searchParams }) {
     division: divisionById.get(item.division_id) ?? item.division,
     member: memberById.get(item.member_id),
   }));
+  const requestedDivision = typeof query?.division === "string" ? query.division : "all";
+  const initialDivisionFilter =
+    requestedDivision === "all" ||
+    requestedDivision === "unassigned" ||
+    (divisions ?? []).some((division) => division.id === requestedDivision)
+      ? requestedDivision
+      : "all";
 
   return (
     <EventCommitteeList
@@ -52,7 +59,7 @@ export default async function EventCommitteeAllPage({ params, searchParams }) {
       divisions={divisions ?? []}
       standalone
       initialSearch={typeof query?.q === "string" ? query.q : ""}
-      initialDivisionFilter={typeof query?.division === "string" ? query.division : "all"}
+      initialDivisionFilter={initialDivisionFilter}
     />
   );
 }
