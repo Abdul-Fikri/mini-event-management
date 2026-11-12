@@ -30,7 +30,8 @@ Last updated: 12 November 2026 — PR #23 extends pagination to group Event and 
 - Preserve committee search/filter values when opening its dedicated view; preserve the current view after save/delete using server-validated return paths.
 - Apply five-record pagination and dedicated Lihat semua views to Rundown and Pengadaan.
 - Replace the main Tugas page with a four-status Kanban board (drag-and-drop plus status selector) and keep the complete CRUD/list experience in `/events/[id]/tugas/all`; retain create/edit/delete actions on the Kanban.
-- Apply independent five-record pagination and dedicated views to Keuangan categories, transactions, and procurement commitments.\n- Apply five-record pagination and dedicated `/events/all` and `/members/all` views to the group-level Event and Member management lists. Preserve the member list's dedicated return destination after edit/delete.
+- Apply independent five-record pagination and dedicated views to Keuangan categories, transactions, and procurement commitments.
+- Apply five-record pagination and dedicated `/events/all` and `/members/all` views to the group-level Event and Member management lists. Preserve the member list's dedicated return destination after edit/delete.
 - Keep add forms on parent pages except Tugas, which provides create/edit/delete on both Kanban and its dedicated all-tasks view; supported dedicated-view mutations preserve their route.
 - Keep this change UI/routing-only: no database migration, schema, RLS, or server authorization change.
 
