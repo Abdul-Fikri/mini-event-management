@@ -260,7 +260,7 @@ Use this checklist for future UAT:
 - Dedicated views provide a back link and preserve their route after supported edit/delete/sync actions using the server-validated event `return_to` allowlist.
 - Add forms remain on the parent pages for Rundown, Pengadaan, and Keuangan. Tugas supports create/edit/delete on both Kanban and the dedicated all-tasks page. Existing server-side event/group authorization, event-roster PIC validation, and Procurement–Finance linked-transaction rules remain unchanged.
 - Pagination is client-side over data loaded by the existing server-scoped queries. No database migration, schema, RLS, or production data changes are included.
-- Source-level checks cover all six additional list views and their five-record pagination. Vercel status check for the latest PR #23 head (`7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf`) reported success. Local lint/build/browser E2E have not been run by the assistant; Owner Preview UAT remains required.
+- Historical Vercel status check for an earlier PR #23 head (`7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf`) reported success. Later Preview attempts reported `build-rate-limit`; the final Task Kanban head must be checked separately. Local lint/build/browser E2E have not been run by the assistant; Owner Preview UAT remains required.
 
 
 ## Task Kanban extension — PR #23 in progress
