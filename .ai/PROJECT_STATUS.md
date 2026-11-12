@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 13 November 2026 — PR #23 adds Task Kanban and full task detail
+Last updated: 13 November 2026 — PR #23 merged; PR #24 hotfix open; source-editing guardrails documented
 
 ## Owner-reported verification
 
@@ -12,11 +12,11 @@ Last updated: 13 November 2026 — PR #23 adds Task Kanban and full task detail
 
 ## GitHub state
 
-- Current `main` HEAD: `20ca806309629eace877536f245409e546824fac`.
+- Current `main` HEAD: `5a2c2824623f5e2f12d4c668642511898d945c80`.
 - PR #20 Procurement–Finance integration: merged.
 - PR #21 event lifecycle automation: merged.
 - PR #22 event-specific division CRUD: merged to `main` on 12 November 2026 at `20ca806309629eace877536f245409e546824fac`.
-- PR #23: https://github.com/Abdul-Fikri/mini-event-management/pull/23 — open on branch `feat/panitia-division-filters-search`.
+- PR #23: https://github.com/Abdul-Fikri/mini-event-management/pull/23 — merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`.
 - Do not infer Production deployment from source commits or a successful Preview check.
 
 ## Current PR #23 scope
@@ -48,13 +48,30 @@ Last updated: 13 November 2026 — PR #23 adds Task Kanban and full task detail
 - Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
 - PR #23 source review covers Panitia search/filter, five-record pagination for Event, Member, Rundown, Procurement, Finance categories/transactions/commitments, dedicated list routes, query-state transfer, validated return paths, and the Tasks Kanban board with scoped status mutation and CRUD.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
-- An earlier Vercel Preview attempt reported `build-rate-limit` (quota/rate limit, not an application compile result). The latest inspected status for Task Kanban head `4ed7109528765c65306c379da878b5cfebd58cec` was `pending` (deployment in progress); verify the final PR head before merge. Owner Preview UAT for Panitia, Rundown, Task Kanban/drag-and-drop and dedicated all-tasks CRUD, Pengadaan, Keuangan, Event, and Member views is pending.
+- Owner-provided Vercel Production screenshot for the merged PR #23 commit shows `npm run build` failed with `Expected unicode escape` at `src/actions/events.js` lines 96 and 116. The two literal `\\n` sequences have been corrected on `hotfix/fix-events-revalidate-syntax`; the hotfix PR and its Preview build are pending.
 - No Supabase SQL, production data, RLS, environment, or deployment changes were performed.
 
 ## Next steps
 
-1. Review PR #23 diff and Vercel status checks.
-2. Owner tests division search, committee text search, division filters, combined filters, reset, and empty states in Preview.
-3. Confirm any required Supabase migrations separately; PR #23 itself has no database migration.
-4. Merge only after review and explicit Owner approval.
+1. Review the syntax hotfix PR and its Vercel Preview build.
+2. After the hotfix is merged with explicit Owner approval, verify the Production build and application behavior.
+3. Owner completes UAT for Panitia, Rundown, Task Kanban/full task list, Pengadaan, Keuangan, Event, and Member views.
+4. Confirm any required Supabase migrations separately; PR #23 and this hotfix add no database migration.
 5. Owner handles Vercel deployment and confirms production behavior.
+
+
+## Production build hotfix
+
+- Owner-provided Vercel Production log for main commit `5a2c2824623f5e2f12d4c668642511898d945c80` showed Turbopack `Expected unicode escape` in `src/actions/events.js` at lines 96 and 116. This is a JavaScript syntax error, not evidence of a Vercel quota limit.
+- Corrected both literal backslash-n sequences to actual line breaks on branch `hotfix/fix-events-revalidate-syntax`.
+- Source-level check: exactly two occurrences fixed; zero matching escaped sequences remain. Local lint/build/browser E2E not run; Vercel Preview verification pending.
+- No direct `main` update, merge, production deployment, SQL, database, RLS, or environment change was performed.
+
+
+## Preventing source-generation syntax regressions
+
+- Added mandatory source-editing guardrails to `.ai/PROJECT_CONTEXT.md`: use real source line breaks, inspect the saved file after writes, search all occurrences of generated patterns, and inspect the complete affected function/file.
+- Before merge, run lint and production build when a local checkout is available; otherwise disclose that limitation and require a successful Vercel Preview for the exact latest PR head.
+- Diagnose deployment failures from the actual compiler/build log. Do not confuse parser/syntax errors with quota/rate-limit failures.
+- Keep fixes on a branch/PR; no direct `main` changes or Production redeploy without Owner authorization.
+- Current syntax fix is tracked by PR #24: https://github.com/Abdul-Fikri/mini-event-management/pull/24. Its Vercel Preview result is not yet verified.
