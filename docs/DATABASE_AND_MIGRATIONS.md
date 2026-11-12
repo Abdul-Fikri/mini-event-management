@@ -33,13 +33,14 @@ Folder ini berisi perubahan bertahap setelah schema awal. File yang saat ini ada
 | \`20261110_group_logos.sql\` | Kolom \`groups.logo_url\` dan policy Storage untuk bucket logo |
 | \`20261111_group_logo_bucket.sql\` | Memastikan bucket publik \`group-logos\` tersedia dengan batas 2 MB dan MIME JPG/PNG/WebP; tidak mengubah policy akses |
 | `20261111_procurement_finance_integration.sql` | Menambah status Dipesan, kategori/tanggal pembelian, relasi transaksi ke item, dan trigger otomatis sinkronisasi pengeluaran; mempertahankan kolom kompatibel yang sudah ada dan memvalidasi tipenya |
+| `20261112_event_divisions.sql` | Membuat master divisi per event, menambahkan `event_members.division_id`, memigrasikan label divisi lama, dan menjaga snapshot label untuk Panitia/CSV |
 | `20261112_event_lifecycle_automation.sql` | Menambah mode status otomatis/manual, tanggal fase perencanaan/persiapan/evaluasi, dan constraint urutan tanggal |
 
-Migration tambahan yang sudah masuk `main`: `20261111_procurement_finance_integration.sql` menambah status Dipesan, kategori/tanggal pembelian, relasi item pengadaan ke transaksi, dan trigger otomatis pencatatan pengeluaran. Migration event lifecycle `20261112_event_lifecycle_automation.sql` menambah mode status otomatis/manual dan tanggal timeline. Urutan migration: foundation → invitations → group logo policies → group logo bucket → procurement-finance integration → event lifecycle automation. Periksa isi migration dan status remote sebelum menjalankan apa pun.
+Migration yang sudah masuk `main`: `20261111_procurement_finance_integration.sql` menambah status Dipesan, kategori/tanggal pembelian, relasi item pengadaan ke transaksi, dan trigger otomatis pencatatan pengeluaran; `20261112_event_lifecycle_automation.sql` menambah mode status otomatis/manual dan tanggal timeline. Migration `20261112_event_divisions.sql` sedang ditambahkan melalui PR #22 dan belum masuk `main`. Urutan migration yang direncanakan: foundation → invitations → group logo policies → group logo bucket → procurement-finance integration → event divisions → event lifecycle automation. Periksa isi migration dan status remote sebelum menjalankan apa pun.
 
 **Penting:** file SQL di GitHub tidak membuktikan migration sudah dijalankan. Status migration production belum dianggap terkonfirmasi sampai diperiksa pada Supabase project yang benar.
 
-`supabase/schema.sql` juga memuat struktur Procurement–Finance yang sama untuk instalasi database baru: kategori/tanggal pembelian, status `ordered`, relasi unik ke transaksi, dan trigger sinkronisasi. Jangan jalankan ulang `schema.sql` pada database yang sudah berisi tabel project.
+`supabase/schema.sql` juga memuat struktur Procurement–Finance dan master divisi event untuk instalasi database baru. Master divisi memakai tabel `event_divisions`; `event_members.division_id` menjadi referensi utama, sedangkan kolom teks `event_members.division` dipertahankan sebagai snapshot tampilan/ekspor. Jangan jalankan ulang `schema.sql` pada database yang sudah berisi tabel project.
 
 ## 3. Cara manual melalui Supabase SQL Editor
 
@@ -141,7 +142,8 @@ Contoh ini hanya ilustrasi. Jangan jalankan di production sebelum memeriksa apak
 - \`groups\`: grup Owner.
 - \`members\`: anggota grup; dapat ditautkan ke Auth lewat \`auth_user_id\`.
 - \`events\`: event milik grup.
-- \`event_members\`: assignment anggota ke event.
+- `event_members`: assignment anggota ke event; `division_id` mengarah ke master divisi event.
+- `event_divisions`: master divisi per event, unik berdasarkan nama tanpa membedakan kapitalisasi di dalam event yang sama.
 - \`schedule_items\`: rundown.
 - \`tasks\`: tugas.
 - `procurement_items`: kebutuhan/pengadaan; migration integrasi menambahkan `category_id`, `purchased_date`, dan status `ordered`.
@@ -216,3 +218,16 @@ Status otomatis dihitung oleh aplikasi pada saat membaca data berdasarkan tangga
 `supabase/schema.sql` juga diperbarui agar instalasi database baru memiliki struktur yang sama dengan skema setelah migration.
 
 **Status migration:** file SQL sudah dibuat di branch fitur, tetapi belum diterapkan ke Supabase. Owner harus meninjau dan menerapkannya ke database yang dituju sebelum runtime testing. Keberadaan file di Git bukan bukti migration sudah diterapkan.
+
+
+## 12. Master divisi per event
+
+Migration `20261112_event_divisions.sql` menambahkan pengelolaan divisi sebagai master data yang scope-nya satu event:
+
+- `event_divisions` menyimpan `group_id`, `event_id`, nama, dan deskripsi divisi.
+- Unique index pada `(event_id, lower(btrim(name)))` mencegah nama divisi duplikat dengan perbedaan kapitalisasi pada event yang sama.
+- `event_members.division_id` menghubungkan penugasan ke master divisi melalui foreign key komposit `(division_id, event_id, group_id)`, sehingga divisi dari event/grup lain tidak dapat dipakai.
+- Migration melakukan backfill dari teks `event_members.division` yang sudah ada. Kolom teks tersebut tetap dipertahankan sebagai snapshot agar workspace Panitia dan ekspor CSV lama tetap kompatibel.
+- Trigger menyinkronkan snapshot teks saat Owner mengubah nama divisi. Jika master divisi dihapus, referensi `division_id` menjadi NULL tetapi label lama tetap disimpan sebagai histori.
+- RLS tetap aktif. Owner dapat CRUD divisi dalam grup miliknya; Panitia hanya mendapat akses baca untuk event yang memang ditugaskan melalui helper `is_event_member`.
+- Migration harus ditinjau dan diterapkan pada database target sebelum fitur CRUD divisi dipakai. Keberadaan file di GitHub tidak membuktikan penerapannya.

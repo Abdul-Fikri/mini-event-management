@@ -1,8 +1,8 @@
 # Implementation Status — Mini Event Management System
 
-Last reviewed: 11 November 2026  
+Last reviewed: 12 November 2026
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source branch reviewed: `main` at merge commit `a71611b1cdc78ea3030040c6559979858ddca1d4` (PR #20)
+Source reviewed: current main plus the unmerged implementation changes in PR #22.
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -15,7 +15,7 @@ Source branch reviewed: `main` at merge commit `a71611b1cdc78ea3030040c655997985
 | Dashboard | Dynamic server-rendered dashboard and summary queries | User-reported Lighthouse Performance 96 |
 | Group members | Create/read/update/delete member directory | Group-level directory |
 | Events | Create/read/update/delete events | Dynamic route `/events/[id]`; new or changed dates must be today or later (Asia/Jakarta), while unchanged historical dates remain editable |
-| Event committee | Add/remove member assignment; division, position, responsibility | Uses \`event_members\` |
+| Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown, position, responsibility | `event_divisions` master data + `event_members` assignment |
 | Rundown | Create/update/delete schedule items | PIC restricted to current event roster |
 | Tasks | Create/update/delete tasks | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
 | Procurement | Create/update/delete procurement items; assign budget category; separate requested/ordered/purchased/ready states | PIC restricted to current event roster; ordered items become budget commitments; purchased/ready items automatically create or update one linked finance expense |
@@ -38,6 +38,14 @@ Source branch reviewed: `main` at merge commit `a71611b1cdc78ea3030040c655997985
 - Server Actions \`saveScheduleItem\`, \`saveTask\`, and \`saveProcurementItem\` validate the selected member against the same event and group.
 - This behavior was introduced/fixed in PR #5, merged to \`main\` (merge commit \`71d7c95ad0ab8f822faaec5170a5022730c71ca8\`).
 
+
+### Event-specific division master data
+
+- Divisions are managed by the Owner per event from the Panitia tab; they are not a group-global list.
+- Owner can create, list, edit, and delete division master records. Committee assignment forms select from that event's division dropdown instead of accepting free text.
+- `event_members.division_id` is validated against the same event and group. Existing `event_members.division` text is backfilled and retained as a synchronized snapshot for Panitia pages and CSV exports.
+- Renaming a master updates assignment snapshots. Deleting a master clears the reference but preserves the old label as historical text.
+- Migration: `20261112_event_divisions.sql`. Authored in PR #22; not confirmed applied to Supabase.
 
 ### Event dates vs operational history
 
@@ -74,6 +82,8 @@ Source branch reviewed: `main` at merge commit `a71611b1cdc78ea3030040c655997985
 | #10 | Public project documentation and UAS rubric mapping | Merged |
 | #11 | Shared AI project context and agent instructions | Merged |
 | #16 | Move group-logo Storage upload/removal to Owner-authorized server actions | Merged; final logo upload path; owner reports upload now succeeds |
+| #20 | Integrate Procurement with Finance: ordered commitments and linked purchase expenses | Merged 11 Nov 2026; migration application to Supabase is not confirmed |
+| #21 | Automate event lifecycle status with automatic/manual modes | Merged 11 Nov 2026 at `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80`; migration application to Supabase is not confirmed |
 
 Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
@@ -96,7 +106,7 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
 ## 7. Validation status
 
-PR #18, PR #19, and PR #20 are merged to `main`. PR #20 adds ordered procurement commitments plus database-triggered finance expenses for purchased/ready items. Its migration has not been applied to Supabase. Vercel Preview succeeded before the merge, but this is not proof of Production deployment or runtime database behavior. The assistant has not run local `npm run lint`, `npm run build`, or browser E2E for PR #20.
+PR #18, PR #19, PR #20, and PR #21 are merged to `main`. PR #20 adds ordered procurement commitments plus database-triggered finance expenses for purchased/ready items. PR #21 adds automatic/manual event lifecycle status. The SQL files for PR #20 (`20261111_procurement_finance_integration.sql`) and PR #21 (`20261112_event_lifecycle_automation.sql`) are present in `main`, but application to the target Supabase database is **not confirmed**. PR #20 Vercel Preview succeeded before merge; PR #21 Preview later reported `build-rate-limit`, a deployment quota/rate-limit result rather than an application compile result. Neither Preview result proves Production deployment or runtime database behavior. The assistant has not run local `npm run lint`, `npm run build`, or browser E2E for PR #20/#21.
 
 Use this checklist for future UAT:
 
@@ -112,7 +122,25 @@ Use this checklist for future UAT:
 - [ ] Rundown dates inside the event range are accepted even when historical; dates outside the event range are rejected.
 - [ ] Task deadline is optional and accepts past/current/future dates on both create and update.
 - [ ] Past finance transaction dates remain accepted.
+- [ ] New event defaults to `status_mode=automatic`.
+- [ ] Existing events remain in manual mode after migration and retain their saved status.
+- [ ] Planning and preparation dates are both optional but must be supplied together; their order must be planning < preparation < event start.
+- [ ] Automatic status transitions follow Asia/Jakarta calendar boundaries: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (if configured) → Selesai.
+- [ ] Event end date is inclusive; a one-day event is ongoing on its start date and completed the following day unless evaluation is configured.
+- [ ] Evaluation remains active through `evaluation_end_date` inclusive and becomes completed the next day.
+- [ ] Manual status does not change when dates pass; cancellation is available only in manual mode.
+- [ ] Switching automatic → manual preserves the currently effective status as the initial manual selection; switching back resumes timeline-derived status.
+- [ ] Dashboard, event list, Owner workspace, and Panitia views display the same effective status.
+- [ ] Forged hidden/browser status values cannot override server-side lifecycle resolution.
+- [ ] Invalid timeline values are rejected by Server Action validation and database constraints after the migration is applied.
 - [ ] Add/remove event committee assignment.
+- [ ] Create, list, edit, and delete event-specific division master records as Owner.
+- [ ] Confirm duplicate division names are rejected case-insensitively within one event but allowed in another event.
+- [ ] Confirm committee assignment uses the division dropdown and rejects a forged division ID from another event/group.
+- [ ] Rename a division and confirm Owner committee list, Panitia home/detail labels, and committee CSV reflect the new name.
+- [ ] Delete a division and confirm the old assignment label remains as historical text while its master reference is cleared.
+- [ ] Confirm legacy free-text division values are backfilled by migration without losing labels.
+- [ ] Confirm Panitia cannot mutate division master records and RLS limits read access to assigned events.
 - [ ] Confirm non-assigned group member is absent from Rundown PIC dropdown.
 - [ ] Add member to event and confirm they appear in Rundown PIC dropdown.
 - [ ] Repeat assignment test for Task and Procurement.
@@ -148,16 +176,38 @@ Use this checklist for future UAT:
 4. Decide how to handle removing an event committee member who still owns rundown/task/procurement records.
 5. Avoid broad rewrites or additional performance tuning without evidence.
 
-## 9. Event lifecycle automation
+## 9. Event lifecycle automation — PR #21 merged
 
-- Branch implementasi: `feat/event-lifecycle-automation`; PR #21 terbuka: https://github.com/Abdul-Fikri/mini-event-management/pull/21. Branch diperbarui dengan `main` setelah PR #20 di-merge; PR #21 belum di-merge.
-- Event baru menggunakan `status_mode=automatic`; migration mengisi event lama sebagai `manual` agar status yang sudah dipilih tidak berubah.
-- Timeline: tanggal perencanaan dan persiapan opsional (wajib berpasangan), tanggal mulai wajib, tanggal selesai opsional, dan akhir evaluasi opsional.
-- Status otomatis: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (opsional) → Selesai. Dibatalkan tetap dipilih manual.
-- Resolver menggunakan tanggal kalender Asia/Jakarta dan dipakai pada dashboard, daftar event, header ruang kerja Owner, serta daftar/detail event Panitia.
-- Tidak ada cron/background job. Status otomatis dihitung saat data dibaca; Server Action menghitung ulang status saat event disimpan dan tidak mempercayai nilai status tersembunyi dari browser.
-- Migration: `supabase/migrations/20261112_event_lifecycle_automation.sql`. File belum diterapkan ke Supabase; jangan menganggap runtime sudah aktif sebelum migration diterapkan.
-- RLS tidak diubah. Validasi tanggal tetap dijalankan di Server Action dan diperkuat constraint database.
-- Acceptance criteria dan daftar UAT: `docs/EVENT_LIFECYCLE_REQUIREMENTS.md`.
-- Pada head PR #21 sebelum sinkronisasi `main`, Vercel pernah success lalu check berikutnya gagal dengan `build-rate-limit` (kuota Preview), bukan hasil kompilasi aplikasi. Check Vercel pada head hasil sinkronisasi gagal dengan `build-rate-limit` (kuota deployment Preview), bukan kegagalan kompilasi aplikasi. Commit dokumentasi sesudahnya akan memicu check baru.
-- Verifikasi lokal `npm run lint`, `npm run build`, dan browser E2E belum dijalankan oleh assistant karena checkout repository tidak tersedia di environment ini. Runtime UAT menunggu migration diterapkan.
+- PR #21: https://github.com/Abdul-Fikri/mini-event-management/pull/21 — closed and merged to `main` on 11 November 2026.
+- PR #21 merge commit: `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80` (historical merge SHA; not the current `main` HEAD).
+- Event baru default ke `status_mode=automatic`; event lama menjadi `manual` saat migration agar status tersimpan tidak berubah.
+- Timeline: tanggal mulai perencanaan dan persiapan opsional tetapi harus berpasangan; tanggal mulai event wajib; tanggal selesai dan akhir evaluasi opsional.
+- Urutan status otomatis berbasis tanggal kalender Asia/Jakarta: Direncanakan → Perencanaan → Persiapan → Berlangsung → Evaluasi (opsional) → Selesai. Tanggal akhir event dan evaluasi bersifat inklusif. Event satu hari dianggap berlangsung pada tanggal mulai.
+- Dibatalkan hanya dipilih dalam mode manual. Status otomatis dihitung saat data dibaca; tidak memerlukan cron/background job.
+- Resolver bersama: `src/lib/events/status.js`. Dashboard, daftar event, workspace Owner, dan tampilan event Panitia harus memakai resolver yang sama.
+- Server Action menghitung status otomatis di server dan tidak mempercayai hidden field dari browser. Migration tidak mengubah RLS.
+- Migration: `supabase/migrations/20261112_event_lifecycle_automation.sql`. Keberadaan file di `main` **tidak membuktikan migration diterapkan**. Penerapan pada Supabase target belum terkonfirmasi.
+- Migration PR #20 `20261111_procurement_finance_integration.sql` juga ada di `main`; status penerapannya pada Supabase target belum terkonfirmasi.
+- Vercel Preview PR #21 melaporkan `build-rate-limit` setelah sinkronisasi branch. Ini adalah hasil pembatasan kuota Preview, bukan bukti compile aplikasi gagal atau berhasil.
+- Assistant belum menjalankan lint, build, atau browser E2E untuk PR #20/#21. Runtime UAT harus menunggu verifikasi migration history dan penerapan migration yang memang masih pending.
+- Checklist acceptance criteria rinci tetap berada di [Event Lifecycle Requirements](EVENT_LIFECYCLE_REQUIREMENTS.md).
+
+## 10. Next priorities
+
+1. Verifikasi migration history aktual untuk kedua migration PR #20/#21 tanpa mengulang audit schema/RLS lama yang sudah dinyatakan lulus.
+2. Review dan terapkan hanya migration yang benar-benar pending melalui workflow manual Supabase SQL Editor yang disetujui Owner.
+3. Jalankan UAT Owner dan Panitia, terutama invitation flow, direct URL authorization, Procurement → Finance linked transaction, dan automatic/manual event lifecycle.
+4. Uji upload, replace, delete, dan cleanup logo; uji CSV exports serta loading/error/empty states.
+5. Perbaiki masalah konkret yang ditemukan. Hindari penambahan fitur besar sebelum stabilisasi.
+
+
+## 11. Event division management — PR #22 in progress
+
+- PR #22 remains open and is expanded from its original documentation-only scope; no new PR was created.
+- Owner manages event-specific division master data from the Panitia tab. Create/list/edit/delete are supported at source level.
+- Committee assignment uses a dropdown and validates `division_id` on the server against the same event and group.
+- Existing free-text labels are backfilled into `event_divisions`; the legacy `event_members.division` text remains as a synchronized display/export snapshot.
+- Migration: `supabase/migrations/20261112_event_divisions.sql`; authored, not applied/confirmed in Supabase.
+- `supabase/schema.sql` includes the same structure for fresh database setup.
+- Owner has CRUD; Panitia remains read-only and receives only assigned-event read access.
+- Local lint/build and browser E2E were not run by the assistant. Runtime UAT is pending migration review/application and Owner testing.

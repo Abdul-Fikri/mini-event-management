@@ -4,7 +4,7 @@ Record significant project changes, decisions, pull requests, and verification. 
 
 ## Recent history
 
-- 11 November 2026: fixed `20261111_procurement_finance_integration.sql` after the Owner's SQL Editor reported PostgreSQL `42701` because `procurement_items.category_id` already existed. The migration now preserves compatible pre-existing columns, validates expected types, guards named constraints/indexes, and recreates its trigger functions safely. `supabase/schema.sql` is aligned with the Procurement–Finance structure and triggers. No Supabase SQL was executed; production migration status remains unconfirmed. Local lint/build/E2E were not run.
+- 12 November 2026: expanded the existing open PR #22 with event-specific division CRUD. Added `event_divisions`, migrated legacy division labels to a master list, switched committee assignment to a validated dropdown, retained synchronized text snapshots for Panitia/CSV, and updated RLS/schema/docs/UAT. Migration is authored but not applied; local lint/build/E2E were not run.
 - PR #2: event subnavigation active state and docs — merged.
 - PR #3: dashboard query/payload improvements — merged.
 - PR #4: disable eager prefetch on Dashboard and primary Owner navigation links — merged.
@@ -21,9 +21,19 @@ Record significant project changes, decisions, pull requests, and verification. 
 - PR #18: add Asia/Jakarta-aware event date validation while preserving unchanged historical event dates; keep historical rundown dates in range; task deadlines are optional and fully flexible (past/current/future values accepted on create and update); preserve historical finance transactions — merged to `main` on 10 November 2026. Owner confirmed the flexible task-deadline policy on 9 November 2026. Local lint/build/E2E were not run by the assistant.
 - PR #19: fix rupiah integer validation, add reusable automatic rupiah formatting, and preserve originating event subpages after CRUD — merged to `main`.
 - PR #17: refresh README, Project Handbook, Database & Migrations, Implementation Status, and shared AI context after PR #16 — merged to `main`.
-- PR #20: integrate Procurement and Finance — merged to `main` on 11 November 2026 (merge commit `a71611b1cdc78ea3030040c6559979858ddca1d4`). `ordered` items count as estimated budget commitments; newly created/transitioned `purchased`/`ready` items create or update one linked expense through a database trigger. Migration remains unapplied; local lint/build/browser E2E were not run by the assistant.
+- PR #20: integrate Procurement and Finance — merged to `main` on 11 November 2026 (merge commit `a71611b1cdc78ea3030040c6559979858ddca1d4`). `ordered` items count as estimated budget commitments; newly created/transitioned `purchased`/`ready` items create or update one linked expense through a database trigger. Migration application to Supabase is not confirmed; local lint/build/browser E2E were not run by the assistant.
+- PR #21: event lifecycle automation — merged to `main` on 11 November 2026 at `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80`. Added automatic/manual status mode, optional planning/preparation/evaluation dates, the shared Asia/Jakarta resolver, Owner/Panitia status updates, migration `20261112_event_lifecycle_automation.sql`, schema alignment, and lifecycle requirements/UAT. New events default to automatic; existing events are migrated to manual to preserve their saved status. The PR's synchronized Preview check reported `build-rate-limit` (Preview quota), not an application compilation result. The migration's application to Supabase is not confirmed. Local lint/build/browser E2E were not run by the assistant.
+
+## PR #22 — project status and event division management (in progress)
+
+- Existing open PR #22 is retained to avoid creating another PR. Its branch is `docs/sync-status-after-pr-21`; it now includes current `main` plus the event-division feature.
+- Added event-scoped `event_divisions` master data and Owner CRUD in the event Panitia tab.
+- Replaced free-text division input in committee assignments with a dropdown. Server Actions validate the selected division against the current event and Owner group.
+- Migration `20261112_event_divisions.sql` backfills existing division labels, adds the composite `division_id` reference, preserves the text snapshot for Panitia/CSV, and adds Owner/Panitia RLS policies.
+- Updated `supabase/schema.sql`, public requirements/handbook/database/role documentation, implementation UAT, and shared AI context.
+- The migration is authored but not applied. No Supabase SQL, production data, RLS deployment, Vercel configuration, or Production deployment was changed by the assistant.
+- Local lint/build/browser E2E were not run because a local repository checkout is unavailable in this session.
 
 ## Maintenance
 Update this file after substantial work. Keep public product/engineering documentation in `docs/` and AI-specific working context in `.ai/`. Record verification accurately and distinguish owner-reported results from independently run checks.
 
-- Event lifecycle automation: created branch `feat/event-lifecycle-automation`; added automatic/manual mode, optional planning/preparation/evaluation dates, shared Asia/Jakarta resolver, Owner/Panitia status updates, migration `20261112_event_lifecycle_automation.sql`, schema alignment, and lifecycle requirements/UAT. PR #21 remains open. After PR #20 merged, branch was updated with `main` using merge commit `365f996641be0a6a30cc03dfe4ce274b4261fa9c`; the documentation and Panitia event page changes from both PRs were retained and conflicts are resolved. Vercel check on the synchronized head failed with `build-rate-limit` (Preview quota), not an application compilation result. Migration is not applied; local lint/build/E2E have not been run.

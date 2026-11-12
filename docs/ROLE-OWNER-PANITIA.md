@@ -30,7 +30,7 @@ Catatan: tabel akses menggambarkan alur aplikasi/UI yang ditemukan. Policy datab
 2. Owner membuat atau melengkapi grup.
 3. Owner mengelola direktori anggota pada menu Anggota Panitia.
 4. Owner membuat event.
-5. Owner membuka tab Panitia pada event dan menambahkan anggota grup ke susunan event.
+5. Owner membuka tab Panitia pada event, mengelola daftar divisi khusus event tersebut, lalu menambahkan anggota grup dan memilih divisi dari dropdown.
 6. Owner mengisi rundown, tugas, pengadaan, dan keuangan.
 7. Untuk memberikan akses workspace, Owner membuat undangan untuk data anggota dan email yang sesuai.
 
@@ -51,6 +51,8 @@ Keanggotaan grup dan keanggotaan event adalah dua hal berbeda.
 
 - Anggota yang ada pada tabel \`members\` belum otomatis menjadi panitia suatu event.
 - Owner harus menambahkan anggota melalui tab Panitia event.
+- Master divisi dikelola Owner per event melalui bagian Kelola divisi. Nama divisi pada form penugasan dipilih dari daftar, bukan diisi sebagai teks bebas.
+- Perubahan nama master memperbarui label divisi penugasan. Penghapusan master melepas referensi tetapi mempertahankan nama lama sebagai label historis.
 - Dropdown PIC rundown, assignee tugas, dan PIC pengadaan hanya menampilkan anggota yang sudah terdaftar di \`event_members\` untuk event itu.
 - Server Actions juga memvalidasi assignment tersebut, jadi filter dropdown bukan satu-satunya pengaman.
 - Jika anggota dikeluarkan dari susunan panitia, evaluasi assignment PIC/tugas/pengadaan yang sudah ada sebelum melakukan perubahan data terkait.
@@ -60,6 +62,8 @@ Keanggotaan grup dan keanggotaan event adalah dua hal berbeda.
 - Auth helpers: \`src/lib/auth.js\`.
 - Proxy/session: \`src/proxy.js\`, \`src/lib/supabase/proxy.js\`.
 - Event assignment: \`src/actions/event-members.js\`.
+- Event division CRUD: \`src/actions/event-divisions.js\` dan \`src/components/events/EventDivisionManager.js\`.
+- Division migration: \`supabase/migrations/20261112_event_divisions.sql\`.
 - Invitation: \`src/actions/invitations.js\`.
 - Panitia home: \`src/app/(panitia)/panitia/page.js\`.
 - Panitia event detail: \`src/app/(panitia)/panitia/events/[id]/page.js\`.
