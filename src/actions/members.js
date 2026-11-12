@@ -33,7 +33,7 @@ export async function saveMember(id, _prev, formData) {
   }
 
   revalidatePath("/dashboard");
-  revalidatePath("/members");
+  revalidatePath("/members");\n  revalidatePath("/members/all");
   revalidatePath("/events");
   redirect(returnTo);
 }
@@ -49,7 +49,7 @@ export async function deleteMember(formData) {
   if (error) throw new Error("Anggota gagal dihapus.");
 
   revalidatePath("/dashboard");
-  revalidatePath("/members");
+  revalidatePath("/members");\n  revalidatePath("/members/all");
   revalidatePath("/events");
   redirect(returnTo);
 }
