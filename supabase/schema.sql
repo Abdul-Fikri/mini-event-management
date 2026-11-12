@@ -330,7 +330,7 @@ create function public.sync_event_member_division_label()
 returns trigger
 language plpgsql
 set search_path = ''
-as $
+as $$
 begin
   if new.name is distinct from old.name then
     update public.event_members
@@ -342,7 +342,7 @@ begin
 
   return new;
 end;
-$;
+$$;
 
 create trigger event_divisions_sync_member_label
   after update of name on public.event_divisions
@@ -355,7 +355,7 @@ create function public.prepare_procurement_purchase_date()
 returns trigger
 language plpgsql
 set search_path = ''
-as $
+as $$
 begin
   if new.status in ('purchased', 'ready') and new.purchased_date is null then
     if tg_op = 'INSERT' then
@@ -367,7 +367,7 @@ begin
 
   return new;
 end;
-$;
+$$;
 
 create function public.upsert_procurement_expense_for_item(
   p_item_id uuid,
@@ -377,7 +377,7 @@ create function public.upsert_procurement_expense_for_item(
 returns uuid
 language plpgsql
 set search_path = ''
-as $
+as $$
 declare
   item public.procurement_items%rowtype;
   expense_amount bigint;
@@ -455,13 +455,13 @@ begin
 
   return transaction_id;
 end;
-$;
+$$;
 
 create function public.sync_procurement_expense()
 returns trigger
 language plpgsql
 set search_path = ''
-as $
+as $$
 declare
   linked_transaction_id uuid;
 begin
@@ -489,7 +489,7 @@ begin
 
   return new;
 end;
-$;
+$$;
 
 create trigger procurement_prepare_purchase_date
   before insert or update
