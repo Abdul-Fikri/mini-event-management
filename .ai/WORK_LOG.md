@@ -68,3 +68,5 @@ Update this file after substantial work. Keep public product/engineering documen
 - Member edit/delete actions initiated from `/members/all` preserve that view through a server-validated return path; normal member flows return to `/members`.
 - Existing group-scoped Supabase queries and Owner authorization remain unchanged. No database schema, migration, RLS, production data, or deployment changes.
 - Local lint/build/browser E2E remain unrun in this session; Vercel Preview and Owner UAT must be checked against the final PR head.
+
+- Final reviewed PR #23 head after extending pagination to Event and Member lists: `4ca86fb1123f22c231f0ecbf0c8f60464f9404e1`. Vercel status on this head reports `build-rate-limit`; no local lint/build/browser E2E was run.
