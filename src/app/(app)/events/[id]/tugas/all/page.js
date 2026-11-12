@@ -18,5 +18,5 @@ export default async function AllTasksPage({ params }) {
     : { data: [], error: null };
   if (memberError) throw new Error("Gagal memuat daftar penanggung jawab tugas.");
 
-  return <TaskSection eventId={id} tasks={tasks ?? []} members={members ?? []} standalone />;
+  return <TaskSection eventId={id} tasks={tasks ?? []} members={members ?? []} />;
 }
