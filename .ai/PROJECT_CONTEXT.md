@@ -119,6 +119,8 @@ Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEM
 
 ## Event management list pagination
 
+- Group-level `/events` and `/members` pages also show a maximum of five records per page and provide dedicated `/events/all` and `/members/all` routes. Each dedicated route contains only the selected list and links back to its parent.
+- Member edits/deletes initiated from `/members/all` return to that dedicated list using a server-validated return destination; normal member flows return to `/members`.
 - Rundown, Tugas, and Pengadaan each display at most five records on their main page and expose a dedicated all-records route: `/events/[id]/rundown/all`, `/events/[id]/tugas/all`, and `/events/[id]/pengadaan/all`.
 - Keuangan paginates categories, transactions, and ordered procurement commitments independently. Dedicated routes are `/events/[id]/keuangan/categories`, `/events/[id]/keuangan/transactions`, and `/events/[id]/keuangan/commitments`.
 - Every list uses five records per page. Dedicated views contain only the selected data type, link back to their parent management page, and preserve their view after supported edit/delete/sync actions through the validated event return-path helper.
