@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 11 November 2026 — PR #20 merged; PR #21 event lifecycle in review
+Last updated: 11 November 2026 — PR #21 merged; main HEAD `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80`
 
 ## Owner-reported verification
 - App is deployed on Vercel: https://mini-event-management-gules.vercel.app
@@ -11,7 +11,9 @@ Last updated: 11 November 2026 — PR #20 merged; PR #21 event lifecycle in revi
 - Earlier observations: Dashboard Performance 96; Event/Panitia route Performance 91. Do not compare scores without matching route and test conditions.
 
 ## GitHub state at this review
-- Current `main` head: `a71611b1cdc78ea3030040c6559979858ddca1d4` — merge commit for PR #20.
+- Current `main` head: `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80` — merge commit for PR #21.
+- PR #20 (Procurement–Finance integration): merged on 11 November 2026; merge commit `a71611b1cdc78ea3030040c6559979858ddca1d4`.
+- PR #21 (automatic/manual event lifecycle): merged on 11 November 2026; merge commit `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80`.
 - PR #8 (Lottie route-level loading animation): merged.
 - PR #9 (global loading feedback): merged.
 - PR #10 (public project documentation and UAS rubric mapping): merged.
@@ -48,13 +50,22 @@ Last updated: 11 November 2026 — PR #20 merged; PR #21 event lifecycle in revi
 - Migration `20261111_procurement_finance_integration.sql` is committed to PR #20 but has NOT been applied to Supabase. The owner must review/apply it before runtime testing.
 - The assistant has not run `npm run lint`, `npm run build`, browser E2E, or applied the database migration.
 
-## Event lifecycle automation — implementation branch
+## Event lifecycle automation — PR #21 merged
 
-- Working branch: `feat/event-lifecycle-automation`, PR #21: https://github.com/Abdul-Fikri/mini-event-management/pull/21, updated with `main` head `a71611b1cdc78ea3030040c6559979858ddca1d4` after PR #20 was merged. PR #21 is open and has not been merged.
-- PR #20 has been merged to `main`; its Procurement–Finance changes are included in the updated base.
-- Implemented in this branch: automatic/manual status mode, lifecycle dates and validation, shared Asia/Jakarta status resolver, dashboard/event list/Owner workspace/Panitia status display updates, SQL migration, initial schema update, and requirements/UAT documentation.
-- New events default to automatic mode. Existing rows become manual when the migration adds `status_mode`, preserving their existing status values.
-- Migration `20261112_event_lifecycle_automation.sql` has been authored but has not been applied to Supabase. Runtime behavior is therefore not yet verified.
-- Pada head PR #21 sebelum sinkronisasi `main`, Vercel pernah success lalu check berikutnya gagal dengan `build-rate-limit` (kuota Preview), bukan hasil kompilasi aplikasi. Check Vercel pada head hasil sinkronisasi saat ini gagal dengan `build-rate-limit` (kuota deployment Preview), bukan kegagalan kompilasi aplikasi. Perubahan dokumentasi pada commit sesudahnya akan memicu check baru; runtime tetap menunggu migration diterapkan ke database target.
-- Local `npm run lint`, `npm run build`, and browser E2E have not been run by the assistant because the repository could not be cloned in the execution environment. Do not claim these checks passed.
-- Recheck Preview after the branch update. Do not merge or apply the migration without the Owner's explicit approval.
+- PR #21: https://github.com/Abdul-Fikri/mini-event-management/pull/21 — closed and merged to `main` on 11 November 2026. Merge commit: `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80`.
+- Current `main` HEAD was independently checked against GitHub and matches that merge commit.
+- Implemented and merged: automatic/manual status mode, optional planning/preparation/evaluation dates, timeline validation, shared Asia/Jakarta resolver, and consistent effective-status display in Dashboard, Owner event views, and Panitia event views.
+- New events default to `status_mode=automatic`. Existing rows are made `manual` by the migration so their saved statuses are preserved.
+- Migration `20261112_event_lifecycle_automation.sql` is present in `main`, but its application to the target Supabase database is **not confirmed**. Do not infer migration history from repository files.
+- The earlier Procurement–Finance migration `20261111_procurement_finance_integration.sql` is also present in `main`; its application to Supabase is **not confirmed**.
+- PR #21's Vercel Preview check reported `build-rate-limit` after synchronization with `main`. This is a Preview deployment quota/rate-limit result, not evidence of application compilation failure or success.
+- The assistant has not run local `npm run lint`, `npm run build`, or browser E2E for PR #20/#21. Runtime UAT for the two migrations remains dependent on confirming and applying the relevant migration(s) to the intended database.
+- No Production deployment was independently verified. The Production URL remains owner-reported; deployment is managed by the Owner.
+
+## Next recommended work
+
+1. Confirm actual remote migration history for the Procurement–Finance and event lifecycle migrations without repeating the previously passed schema/RLS audits.
+2. Review and apply only genuinely pending SQL through the Owner's approved manual Supabase SQL Editor workflow.
+3. Run focused Owner and Panitia UAT, including Procurement → Finance linked transactions and automatic/manual event lifecycle boundaries.
+4. Record actual results for auth/session, group/event isolation, invitation claims, CRUD, logo upload/replace/delete cleanup, CSV exports, and loading/error/empty states.
+5. Fix only concrete issues found during UAT; avoid adding broad new features before stabilization.
