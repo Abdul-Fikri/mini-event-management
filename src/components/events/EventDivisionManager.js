@@ -1,15 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { saveEventDivision, deleteEventDivision } from "@/actions/event-divisions";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
+import ListPagination from "@/components/ui/ListPagination";
 import { TextField } from "@/components/ui/TextField";
 
+const PAGE_SIZE = 5;
 const initial = { message: "", errors: {}, values: {} };
 
-function DivisionForm({ eventId, division = null }) {
+function DivisionForm({ eventId, division = null, returnTo }) {
   const [state, action, pending] = useActionState(
     saveEventDivision.bind(null, eventId, division?.id ?? null),
     initial,
@@ -19,6 +22,7 @@ function DivisionForm({ eventId, division = null }) {
 
   return (
     <form action={action} className="space-y-3">
+      <input type="hidden" name="return_to" value={returnTo} />
       {state.message ? <Alert>{state.message}</Alert> : null}
       <TextField
         id={`division-name-${suffix}`}
@@ -44,7 +48,7 @@ function DivisionForm({ eventId, division = null }) {
   );
 }
 
-function DivisionDeleteForm({ eventId, division }) {
+function DivisionDeleteForm({ eventId, division, returnTo }) {
   const [state, action] = useActionState(
     deleteEventDivision.bind(null, eventId, division.id),
     initial,
@@ -52,6 +56,7 @@ function DivisionDeleteForm({ eventId, division }) {
 
   return (
     <form action={action} className="space-y-2">
+      <input type="hidden" name="return_to" value={returnTo} />
       <ConfirmDeleteButton
         message={`Hapus divisi “${division.name}”? Penugasan yang sudah memakai divisi ini tetap menyimpan nama lama sebagai label historis.`}
       >
@@ -62,8 +67,14 @@ function DivisionDeleteForm({ eventId, division }) {
   );
 }
 
-export default function EventDivisionManager({ eventId, divisions = [] }) {
-  const [search, setSearch] = useState("");
+export default function EventDivisionManager({
+  eventId,
+  divisions = [],
+  standalone = false,
+  initialSearch = "",
+}) {
+  const [search, setSearch] = useState(initialSearch);
+  const [page, setPage] = useState(1);
   const normalizedSearch = search.trim().toLowerCase();
   const filteredDivisions = divisions.filter((division) => {
     const searchableText = [division.name, division.description]
@@ -73,38 +84,68 @@ export default function EventDivisionManager({ eventId, divisions = [] }) {
     return searchableText.includes(normalizedSearch);
   });
 
+  const totalPages = Math.max(1, Math.ceil(filteredDivisions.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const visibleDivisions = filteredDivisions.slice(startIndex, startIndex + PAGE_SIZE);
+  const basePath = `/events/${eventId}/panitia`;
+  const returnTo = standalone ? `${basePath}/divisions` : basePath;
+  const viewAllHref = `${basePath}/divisions${search.trim() ? `?q=${encodeURIComponent(search.trim())}` : ""}`;
+
   return (
     <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
-      <div>
-        <h2 className="text-lg font-semibold">Kelola divisi</h2>
-        <p className="text-sm text-zinc-600">
-          Buat daftar divisi khusus untuk event ini. Saat menyusun panitia, pilih divisi dari daftar agar penamaannya konsisten.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          {standalone ? (
+            <Link href={basePath} className="text-sm font-medium text-indigo-700 hover:underline">
+              ← Kembali ke Panitia
+            </Link>
+          ) : null}
+          <h2 className={standalone ? "mt-2 text-xl font-semibold" : "text-lg font-semibold"}>
+            Kelola divisi
+          </h2>
+          <p className="mt-1 text-sm text-zinc-600">
+            Buat daftar divisi khusus untuk event ini. Saat menyusun panitia, pilih divisi dari daftar agar penamaannya konsisten.
+          </p>
+        </div>
+        {!standalone && divisions.length > 0 ? (
+          <Link
+            href={viewAllHref}
+            className="shrink-0 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-800 hover:bg-indigo-100"
+          >
+            Lihat semua divisi
+          </Link>
+        ) : null}
       </div>
 
       {divisions.length ? (
         <div className="space-y-3">
           <div>
-            <label htmlFor="search-event-divisions" className="mb-1 block text-sm font-medium">
+            <label htmlFor={standalone ? "search-all-event-divisions" : "search-event-divisions"} className="mb-1 block text-sm font-medium">
               Cari divisi
             </label>
             <input
-              id="search-event-divisions"
+              id={standalone ? "search-all-event-divisions" : "search-event-divisions"}
               type="search"
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setPage(1);
+              }}
               placeholder="Cari nama atau deskripsi divisi…"
               className="block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm shadow-xs placeholder:text-zinc-400 focus:border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-600/25"
             />
           </div>
 
           <p className="text-xs text-zinc-500" aria-live="polite">
-            Menampilkan {filteredDivisions.length} dari {divisions.length} divisi.
+            {filteredDivisions.length
+              ? `Menampilkan ${startIndex + 1}–${Math.min(startIndex + PAGE_SIZE, filteredDivisions.length)} dari ${filteredDivisions.length} divisi.`
+              : `Menampilkan 0 dari ${divisions.length} divisi.`}
           </p>
 
           {filteredDivisions.length ? (
             <div className="space-y-2">
-              {filteredDivisions.map((division) => (
+              {visibleDivisions.map((division) => (
                 <article key={division.id} className="rounded-lg border border-zinc-200 p-3">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -113,12 +154,12 @@ export default function EventDivisionManager({ eventId, divisions = [] }) {
                         <p className="mt-1 whitespace-pre-wrap text-sm text-zinc-600">{division.description}</p>
                       ) : null}
                     </div>
-                    <DivisionDeleteForm eventId={eventId} division={division} />
+                    <DivisionDeleteForm eventId={eventId} division={division} returnTo={returnTo} />
                   </div>
                   <details className="mt-3">
                     <summary className="cursor-pointer text-sm font-medium text-indigo-700">Edit divisi</summary>
                     <div className="mt-3 border-t border-zinc-100 pt-3">
-                      <DivisionForm eventId={eventId} division={division} />
+                      <DivisionForm eventId={eventId} division={division} returnTo={returnTo} />
                     </div>
                   </details>
                 </article>
@@ -129,6 +170,12 @@ export default function EventDivisionManager({ eventId, divisions = [] }) {
               Divisi tidak ditemukan. Coba kata kunci lain.
             </p>
           )}
+
+          <ListPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </div>
       ) : (
         <p className="rounded-md border border-dashed border-zinc-300 p-4 text-center text-sm text-zinc-600">
@@ -139,7 +186,7 @@ export default function EventDivisionManager({ eventId, divisions = [] }) {
       <details className="border-t border-zinc-100 pt-3" open={divisions.length === 0}>
         <summary className="cursor-pointer text-sm font-semibold text-indigo-700">Tambah divisi baru</summary>
         <div className="mt-3">
-          <DivisionForm eventId={eventId} />
+          <DivisionForm eventId={eventId} returnTo={returnTo} />
         </div>
       </details>
     </section>
