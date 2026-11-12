@@ -264,4 +264,4 @@ Use this checklist for future UAT:
 
 PR #23 adds five-record pagination and dedicated **Lihat semua** views to Panitia, group Event and Member lists, Rundown, Tugas, Pengadaan, and Finance categories/transactions/commitments. The dedicated pages display only the selected data type and link back to the parent page. Member edits/deletes preserve the `/members/all` return destination through server-side allowlisting. No database migration, schema, RLS, production data, or deployment configuration changes are included.
 
-The latest PR head reviewed is `4ca86fb1123f22c231f0ecbf0c8f60464f9404e1`. Vercel currently reports `build-rate-limit` (Preview quota/rate limit); the assistant has not run local lint/build/browser E2E. Owner Preview UAT is pending. The PR remains open and has not been merged.
+Vercel currently reports `build-rate-limit` (Preview quota/rate limit); the assistant has not run local lint/build/browser E2E. Owner Preview UAT is pending. The PR remains open and has not been merged.
