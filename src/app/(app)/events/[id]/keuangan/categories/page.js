@@ -3,8 +3,9 @@ import FinanceSection from "@/components/events/FinanceSection";
 
 export const metadata = { title: "Semua Kategori Anggaran" };
 
-export default async function AllBudgetCategoriesPage({ params }) {
+export default async function AllBudgetCategoriesPage({ params, searchParams }) {
   const { id } = await params;
+  const query = await searchParams;
   const { group, event, supabase } = await getEventContext(id);
   const [
     { data: categories, error: categoryError },
@@ -19,5 +20,5 @@ export default async function AllBudgetCategoriesPage({ params }) {
   ]);
   if (categoryError || transactionError || memberError || commitmentError) throw new Error("Gagal memuat kategori anggaran event.");
 
-  return <FinanceSection eventId={id} targetBudget={event.target_budget} categories={categories ?? []} transactions={transactions ?? []} members={members ?? []} commitments={commitments ?? []} standaloneView="categories" />;
+  return <FinanceSection eventId={id} targetBudget={event.target_budget} categories={categories ?? []} transactions={transactions ?? []} members={members ?? []} commitments={commitments ?? []} financeError={query?.finance_error ?? ""} standaloneView="categories" />;
 }
