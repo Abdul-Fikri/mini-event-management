@@ -49,3 +49,13 @@ Record significant project changes, decisions, pull requests, and verification. 
 
 ## Maintenance
 Update this file after substantial work. Keep public product/engineering documentation in `docs/` and AI-specific context in `.ai/`. Record verification accurately and distinguish owner-reported results from independently run checks.
+
+
+### PR #23 extension — pagination for remaining event management pages
+
+- Applied a five-record page size to Rundown, Tugas, and Pengadaan, with dedicated `/all` routes for each list.
+- Applied independent five-record pagination to Finance categories, transactions, and ordered procurement commitments, with dedicated category, transaction, and commitment routes.
+- Dedicated views show only the selected list, provide a return link, and pass a validated `return_to` path through edit/delete/procurement-sync actions.
+- Add forms remain on the parent management page. Existing group/event query scoping, event roster PIC validation, and Procurement–Finance linked transaction rules are unchanged.
+- Extended the event return-path allowlist. No database schema, migration, RLS, or production data changes.
+- Source-level verification and latest Vercel Preview status remain to be checked after these commits; local lint/build/browser E2E were not run by the assistant.
