@@ -2,7 +2,7 @@
 
 Last reviewed: 12 November 2026
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source reviewed: current main plus the unmerged implementation changes in PR #22.
+Source reviewed: `main` after PR #22 merge plus the unmerged search/filter implementation in PR #23.
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -15,7 +15,7 @@ Source reviewed: current main plus the unmerged implementation changes in PR #22
 | Dashboard | Dynamic server-rendered dashboard and summary queries | User-reported Lighthouse Performance 96 |
 | Group members | Create/read/update/delete member directory | Group-level directory |
 | Events | Create/read/update/delete events | Dynamic route `/events/[id]`; new or changed dates must be today or later (Asia/Jakarta), while unchanged historical dates remain editable |
-| Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown, position, responsibility | `event_divisions` master data + `event_members` assignment |
+| Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown; search/filter committee by division and text; search division master list | `event_divisions` master data + `event_members` assignment |
 | Rundown | Create/update/delete schedule items | PIC restricted to current event roster |
 | Tasks | Create/update/delete tasks | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
 | Procurement | Create/update/delete procurement items; assign budget category; separate requested/ordered/purchased/ready states | PIC restricted to current event roster; ordered items become budget commitments; purchased/ready items automatically create or update one linked finance expense |
@@ -141,6 +141,11 @@ Use this checklist for future UAT:
 - [ ] Delete a division and confirm the old assignment label remains as historical text while its master reference is cleared.
 - [ ] Confirm legacy free-text division values are backfilled by migration without losing labels.
 - [ ] Confirm Panitia cannot mutate division master records and RLS limits read access to assigned events.
+- [ ] Search Kelola divisi by name and description; confirm matching records remain and non-matching records are hidden.
+- [ ] Filter Susunan panitia by each master division and confirm only assignments for the selected division are shown.
+- [ ] Select Tanpa divisi aktif and confirm assignments without a current `division_id` are shown, including historical labels after a master division is deleted.
+- [ ] Search committee by member name, contact, division label, position, and responsibility.
+- [ ] Combine text search and division filter; verify result count, no-match state, and reset behavior.
 - [ ] Confirm non-assigned group member is absent from Rundown PIC dropdown.
 - [ ] Add member to event and confirm they appear in Rundown PIC dropdown.
 - [ ] Repeat assignment test for Task and Procurement.
@@ -201,13 +206,22 @@ Use this checklist for future UAT:
 5. Perbaiki masalah konkret yang ditemukan. Hindari penambahan fitur besar sebelum stabilisasi.
 
 
-## 11. Event division management — PR #22 in progress
+## 11. Event division management — PR #22 merged
 
-- PR #22 remains open and is expanded from its original documentation-only scope; no new PR was created.
-- Owner manages event-specific division master data from the Panitia tab. Create/list/edit/delete are supported at source level.
+- PR #22: https://github.com/Abdul-Fikri/mini-event-management/pull/22 — merged to `main` on 12 November 2026.
+- Merge commit: `20ca806309629eace877536f245409e546824fac`.
+- Owner manages event-specific division master data from the Panitia tab: create, list, edit, and delete.
 - Committee assignment uses a dropdown and validates `division_id` on the server against the same event and group.
 - Existing free-text labels are backfilled into `event_divisions`; the legacy `event_members.division` text remains as a synchronized display/export snapshot.
-- Migration: `supabase/migrations/20261112_event_divisions.sql`; authored, not applied/confirmed in Supabase.
+- Migration: `supabase/migrations/20261112_event_divisions.sql`; its application to the target Supabase database is not confirmed.
 - `supabase/schema.sql` includes the same structure for fresh database setup.
 - Owner has CRUD; Panitia remains read-only and receives only assigned-event read access.
-- Local lint/build and browser E2E were not run by the assistant. Runtime UAT is pending migration review/application and Owner testing.
+
+## 12. Panitia division search and committee filters — PR #23 in progress
+
+- Branch: `feat/panitia-division-filters-search`, created from `main` after PR #22 merge.
+- Kelola divisi adds client-side search across division name and description.
+- Susunan panitia adds a division selector (all, a specific event division, or no active division) and text search across member name, contact, division label, position, and responsibility.
+- Search and division filter combine; visible result count, no-match feedback, and reset controls are included.
+- This is a UI-only change: no database schema, migration, RLS, or server authorization behavior is changed.
+- Local lint/build and browser E2E have not been run by the assistant. Vercel checks and Owner Preview UAT remain pending.
