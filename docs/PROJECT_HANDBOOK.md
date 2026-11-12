@@ -295,4 +295,4 @@ Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global
 - Saat divisi diubah namanya, label pada penugasan, workspace Panitia, dan ekspor CSV ikut diperbarui.
 - Saat divisi dihapus, referensi master pada penugasan dilepas, tetapi teks nama lama tetap disimpan sebagai label historis agar tampilan Panitia dan CSV tidak kehilangan informasi.
 - Migration 20261112_event_divisions.sql membuat tabel event_divisions, menambahkan event_members.division_id, dan mengonversi nilai divisi lama menjadi master data tanpa menghilangkan labelnya.
-- CRUD divisi hanya tersedia bagi Owner. Panitia tetap hanya dapat membaca informasi divisi yang melekat pada penugasannya.
+- CRUD divisi hanya tersedia bagi Owner. Panitia tetap read-only dan hanya dapat membaca metadata divisi untuk event yang memang ditugaskan.
