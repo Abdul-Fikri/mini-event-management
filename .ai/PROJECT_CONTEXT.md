@@ -115,3 +115,11 @@ Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEM
 - Lihat semua opens a dedicated view for only the selected data type (`/events/[id]/panitia/divisions` or `/events/[id]/panitia/committee`). Dedicated views retain five-record pagination and the corresponding search/filter controls; committee search/filter values are carried into the dedicated view.
 - Dedicated views link back to the main Panitia tab. Division and committee save/delete actions use a server-validated return path so the user stays on the view where the action started.
 - The migration file is not evidence that the target Supabase database has been updated.
+
+
+## Event management list pagination
+
+- Rundown, Tugas, and Pengadaan each display at most five records on their main page and expose a dedicated all-records route: `/events/[id]/rundown/all`, `/events/[id]/tugas/all`, and `/events/[id]/pengadaan/all`.
+- Keuangan paginates categories, transactions, and ordered procurement commitments independently. Dedicated routes are `/events/[id]/keuangan/categories`, `/events/[id]/keuangan/transactions`, and `/events/[id]/keuangan/commitments`.
+- Every list uses five records per page. Dedicated views contain only the selected data type, link back to their parent management page, and preserve their view after supported edit/delete/sync actions through the validated event return-path helper.
+- Add forms stay on the parent management pages. These are client-side display changes over server-loaded, group/event-scoped data; no schema, migration, RLS, or authorization changes.
