@@ -296,3 +296,6 @@ Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global
 - Saat divisi dihapus, referensi master pada penugasan dilepas, tetapi teks nama lama tetap disimpan sebagai label historis agar tampilan Panitia dan CSV tidak kehilangan informasi.
 - Migration 20261112_event_divisions.sql membuat tabel event_divisions, menambahkan event_members.division_id, dan mengonversi nilai divisi lama menjadi master data tanpa menghilangkan labelnya.
 - CRUD divisi hanya tersedia bagi Owner. Panitia tetap read-only dan hanya dapat membaca metadata divisi untuk event yang memang ditugaskan.
+- Daftar Kelola divisi menyediakan pencarian berdasarkan nama dan deskripsi divisi.
+- Susunan panitia menyediakan filter berdasarkan divisi (semua divisi, divisi tertentu, atau tanpa divisi aktif) dan pencarian berdasarkan nama anggota, kontak, divisi, jabatan, serta tanggung jawab.
+- Pencarian dan filter dapat digunakan bersamaan; jumlah hasil ditampilkan dan tersedia pesan ketika tidak ada data yang cocok.
