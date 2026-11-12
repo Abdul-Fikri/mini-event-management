@@ -199,7 +199,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
                         setDraggedTaskId(null);
                         setDropTargetStatus(null);
                       }}
-                      className={`rounded-lg border border-l-4 border-zinc-200 bg-white p-3 shadow-sm transition hover:shadow-md ${status.accent} ${draggedTaskId === task.id ? "opacity-50" : ""} ${isPending ? "opacity-60" : ""}`}
+                      className={`cursor-grab rounded-lg border border-l-4 border-zinc-200 bg-white p-3 shadow-sm transition hover:shadow-md active:cursor-grabbing ${status.accent} ${draggedTaskId === task.id ? "opacity-50" : ""} ${isPending ? "opacity-60" : ""}`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex min-w-0 items-start gap-1.5">
