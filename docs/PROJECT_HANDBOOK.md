@@ -299,3 +299,6 @@ Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global
 - Daftar Kelola divisi menyediakan pencarian berdasarkan nama dan deskripsi divisi.
 - Susunan panitia menyediakan filter berdasarkan divisi (semua divisi, divisi tertentu, atau tanpa divisi aktif) dan pencarian berdasarkan nama anggota, kontak, divisi, jabatan, serta tanggung jawab.
 - Pencarian dan filter dapat digunakan bersamaan; jumlah hasil ditampilkan dan tersedia pesan ketika tidak ada data yang cocok.
+- Daftar divisi dan susunan panitia menampilkan maksimal lima data per halaman dengan navigasi Sebelumnya/Berikutnya. Perubahan pencarian/filter mengembalikan daftar ke halaman pertama.
+- Tombol Lihat semua membuka halaman khusus sesuai daftar yang dipilih: hanya divisi atau hanya susunan panitia. Halaman khusus tetap memiliki pencarian/filter dan pagination lima data per halaman.
+- Filter dan kata kunci susunan panitia dibawa ke halaman khusus saat Lihat semua dipilih. Tersedia tautan kembali ke tab Panitia, dan aksi simpan/hapus kembali ke halaman tempat aksi dilakukan.
