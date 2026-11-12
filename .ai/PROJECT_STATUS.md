@@ -33,7 +33,7 @@ Last updated: 13 November 2026 — PR #23 adds Task Kanban and full task detail
 - Apply independent five-record pagination and dedicated views to Keuangan categories, transactions, and procurement commitments.
 - Apply five-record pagination and dedicated `/events/all` and `/members/all` views to the group-level Event and Member management lists. Preserve the member list's dedicated return destination after edit/delete.
 - Keep add forms on parent pages except Tugas, which provides create/edit/delete on both Kanban and its dedicated all-tasks view; supported dedicated-view mutations preserve their route.
-- Keep this change UI/routing-only: no database migration, schema, RLS, or server authorization change.
+- No database migration, schema, or RLS changes. The new task-status Server Action uses the existing Owner/group/event authorization boundary and validates the allowed statuses.
 
 ## Database and deployment state
 
