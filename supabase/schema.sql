@@ -144,7 +144,8 @@ create table public.event_divisions (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint event_divisions_id_event_group_key unique (id, event_id, group_id),
-  foreign key (event_id, group_id) references public.events (id, group_id) on delete cascade
+  constraint event_divisions_event_group_fkey
+    foreign key (event_id, group_id) references public.events (id, group_id) on delete cascade
 );
 
 create unique index event_divisions_event_name_uidx
@@ -166,7 +167,8 @@ create table public.event_members (
   unique (event_id, member_id),
   foreign key (event_id, group_id)  references public.events  (id, group_id) on delete cascade,
   foreign key (member_id, group_id) references public.members (id, group_id) on delete cascade,
-  foreign key (division_id, event_id, group_id)
+  constraint event_members_division_id_event_group_fkey
+    foreign key (division_id, event_id, group_id)
     references public.event_divisions (id, event_id, group_id)
     on delete set null (division_id)
 );
