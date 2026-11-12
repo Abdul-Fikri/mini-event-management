@@ -17,6 +17,8 @@ Keep event management pages compact when lists grow while still allowing the Own
 
 | Parent page | List | Dedicated view |
 |---|---|---|
+| `/events` | Group events | `/events/all` |
+| `/members` | Group member directory | `/members/all` |
 | `/events/[id]/rundown` | Rundown activities | `/events/[id]/rundown/all` |
 | `/events/[id]/tugas` | Tasks | `/events/[id]/tugas/all` |
 | `/events/[id]/pengadaan` | Procurement items | `/events/[id]/pengadaan/all` |
@@ -26,8 +28,20 @@ Keep event management pages compact when lists grow while still allowing the Own
 
 The Panitia tab has its own search/filter/pagination requirements in [Event Divisions Requirements](EVENT_DIVISIONS_REQUIREMENTS.md).
 
+## Top-level Owner management lists
+
+- `/events` shows at most five group events at a time and provides **Lihat semua event** for `/events/all`.
+- `/members` shows at most five group members at a time and provides **Lihat semua anggota** for `/members/all`.
+- Both dedicated pages show only their selected data type, keep five-record pagination, and provide a link back to their parent page.
+- Editing or deleting a member from `/members/all` returns to `/members/all`; normal member creation and edits from `/members` return to `/members`.
+- Event status labels continue to use the shared effective-status resolver in both event-list views.
+
 ## Acceptance criteria
 
+- [ ] Group event list shows at most five events; pagination and `/events/all` work.
+- [ ] Dedicated event view contains only events, links back to `/events`, and keeps the effective status label.
+- [ ] Group member list shows at most five members; pagination and `/members/all` work.
+- [ ] Dedicated member view contains only members, links back to `/members`, and edit/delete return to the dedicated view.
 - [ ] Rundown main page shows at most five activities; pagination and the dedicated all-rundown route work.
 - [ ] Dedicated rundown view contains only activities, links back to Rundown, and edit/delete return to the dedicated view.
 - [ ] Tugas main page shows at most five tasks; pagination and the dedicated all-tasks route work.
