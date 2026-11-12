@@ -258,3 +258,10 @@ Use this checklist for future UAT:
 - Add forms remain on the parent management pages. Existing server-side event/group authorization, event-roster PIC validation, and Procurement–Finance linked-transaction rules remain unchanged.
 - Pagination is client-side over data loaded by the existing server-scoped queries. No database migration, schema, RLS, or production data changes are included.
 - Source-level checks cover all six additional list views and their five-record pagination. Vercel status check for the latest PR #23 head (`7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf`) reported success. Local lint/build/browser E2E have not been run by the assistant; Owner Preview UAT remains required.
+
+
+## 9. PR #23 — management list pagination (open)
+
+PR #23 adds five-record pagination and dedicated **Lihat semua** views to Panitia, group Event and Member lists, Rundown, Tugas, Pengadaan, and Finance categories/transactions/commitments. The dedicated pages display only the selected data type and link back to the parent page. Member edits/deletes preserve the `/members/all` return destination through server-side allowlisting. No database migration, schema, RLS, production data, or deployment configuration changes are included.
+
+The latest PR head reviewed is `4ca86fb1123f22c231f0ecbf0c8f60464f9404e1`. Vercel currently reports `build-rate-limit` (Preview quota/rate limit); the assistant has not run local lint/build/browser E2E. Owner Preview UAT is pending. The PR remains open and has not been merged.
