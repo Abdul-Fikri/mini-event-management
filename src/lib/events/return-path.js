@@ -1,6 +1,8 @@
 const EVENT_SECTIONS = new Set([
   "",
   "/panitia",
+  "/panitia/divisions",
+  "/panitia/committee",
   "/rundown",
   "/tugas",
   "/pengadaan",
