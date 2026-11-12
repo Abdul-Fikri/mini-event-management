@@ -201,7 +201,7 @@ Use this checklist for future UAT:
 5. Perbaiki masalah konkret yang ditemukan. Hindari penambahan fitur besar sebelum stabilisasi.
 
 
-## 10. Event division management — PR #22 in progress
+## 11. Event division management — PR #22 in progress
 
 - PR #22 remains open and is expanded from its original documentation-only scope; no new PR was created.
 - Owner manages event-specific division master data from the Panitia tab. Create/list/edit/delete are supported at source level.
