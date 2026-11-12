@@ -13,8 +13,8 @@ Source reviewed: `main` after PR #22 merge plus the unmerged Panitia and event-m
 | Authentication | Register/login, Supabase session, redirect | Verify with real Owner/Panitia accounts |
 | Onboarding/group | Group setup and group settings | Owner group context |
 | Dashboard | Dynamic server-rendered dashboard and summary queries | User-reported Lighthouse Performance 96 |
-| Group members | Create/read/update/delete member directory | Group-level directory |
-| Events | Create/read/update/delete events | Dynamic route `/events/[id]`; new or changed dates must be today or later (Asia/Jakarta), while unchanged historical dates remain editable |
+| Group members | Create/read/update/delete member directory; five-record pagination and dedicated all-members view | Group-level directory; edit/delete preserve the dedicated view when opened from `/members/all` |
+| Events | Create/read/update/delete events; five-record pagination and dedicated all-events view | Dynamic route `/events/[id]`; event status labels use the effective-status resolver |
 | Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown; search/filter committee by division and text; search division master list | `event_divisions` master data + `event_members` assignment |
 | Rundown | Create/update/delete schedule items; five-record pagination and dedicated all-items view | PIC restricted to current event roster |
 | Tasks | Create/update/delete tasks; five-record pagination and dedicated all-items view | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
@@ -57,7 +57,7 @@ Source reviewed: `main` after PR #22 merge plus the unmerged Panitia and event-m
 - Procurement currently has no user-entered date field affected by this rule.
 - The event form's HTML `min` attributes improve the input experience; Zod validation in the Server Action remains authoritative. No database migration or historical data rewrite is required.
 
-## 3. Architecture notes
+## 3. Pagination and dedicated list views\n\nPR #23 source now applies five-record pagination and dedicated **Lihat semua** routes to the group Event and Member lists, in addition to Panitia, Rundown, Tugas, Pengadaan, and the three Keuangan lists. Group-level routes are `/events/all` and `/members/all`. The member edit/delete flow validates and preserves `/members/all` as a return destination. These are UI/routing changes over group-scoped server queries; no database changes are introduced. Runtime verification remains pending until Preview is available and the Owner completes UAT.\n\n## 4. Architecture notes
 
 - Next.js 16.4.5 App Router, React 19.3.0, JavaScript, Tailwind CSS 4.
 - Root source is \`src/\`; do not recreate nested legacy \`event-management/\`.
@@ -69,7 +69,7 @@ Source reviewed: `main` after PR #22 merge plus the unmerged Panitia and event-m
 - Static route: \`/contoh-event\` uses \`dynamic = "force-static"\`.
 - Private Dashboard: \`/dashboard\` uses \`dynamic = "force-dynamic"\`.
 
-## 4. Merged improvements
+## 5. Merged improvements
 
 | PR | Summary | Status |
 |---|---|---|
@@ -87,7 +87,7 @@ Source reviewed: `main` after PR #22 merge plus the unmerged Panitia and event-m
 
 Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
-## 5. Lighthouse observations (user-reported)
+## 6. Lighthouse observations (user-reported)
 
 - Dashboard previously reached Performance 96 after PR #4 was merged/deployed.
 - A more recent Lighthouse run on the Vercel deployment was reported at Performance 82; the exact route and test conditions were not specified. Do not treat any one route's score as a global application score.
@@ -96,7 +96,7 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 - Panitia route bfcache diagnostic reported \`Cache-Control: no-store\` and a JavaScript resource with \`no-store\`. This is not actionable in Lighthouse; do not weaken private-page cache policy just to increase score.
 - Scores are environment-dependent. Repeat with extensions disabled/incognito if comparing application bundle performance.
 
-## 6. Known limitations / decisions
+## 7. Known limitations / decisions
 
 1. Panitia workspace is read-only in the current UI; no Panitia task-status mutation was found.
 2. CSV export type \`members\` queries all group members, not only event-assigned members. Product intent must be confirmed before changing.
@@ -104,7 +104,7 @@ Confirm PR state on GitHub before assuming any later work is merged/deployed.
 4. Migration production status must be checked in the target Supabase project's migration history/schema. Repository files alone are not proof.
 5. No Prisma/Drizzle ORM or Supabase CLI project configuration was found in \`package.json\`/repository tree reviewed.
 
-## 7. Validation status
+## 8. Validation status
 
 PR #18, PR #19, PR #20, and PR #21 are merged to `main`. PR #20 adds ordered procurement commitments plus database-triggered finance expenses for purchased/ready items. PR #21 adds automatic/manual event lifecycle status. The SQL files for PR #20 (`20261111_procurement_finance_integration.sql`) and PR #21 (`20261112_event_lifecycle_automation.sql`) are present in `main`, but application to the target Supabase database is **not confirmed**. PR #20 Vercel Preview succeeded before merge; PR #21 Preview later reported `build-rate-limit`, a deployment quota/rate-limit result rather than an application compile result. Neither Preview result proves Production deployment or runtime database behavior. The assistant has not run local `npm run lint`, `npm run build`, or browser E2E for PR #20/#21.
 
