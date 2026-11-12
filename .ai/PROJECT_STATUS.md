@@ -28,9 +28,10 @@ Last updated: 12 November 2026 — PR #23 extends pagination to group Event and 
 - Paginate both embedded lists at five records per page; reset to page one when search/filter changes.
 - Add dedicated Lihat semua routes for divisions and committee assignments, each showing only its selected data type with five-record pagination and the relevant search/filter controls.
 - Preserve committee search/filter values when opening its dedicated view; preserve the current view after save/delete using server-validated return paths.
-- Apply five-record pagination and dedicated Lihat semua views to Rundown, Tugas, and Pengadaan.
+- Apply five-record pagination and dedicated Lihat semua views to Rundown and Pengadaan.
+- Replace the main Tugas page with a four-status Kanban board (drag-and-drop plus status selector) and keep the complete CRUD/list experience in `/events/[id]/tugas/all`; retain create/edit/delete actions on the Kanban.
 - Apply independent five-record pagination and dedicated views to Keuangan categories, transactions, and procurement commitments.\n- Apply five-record pagination and dedicated `/events/all` and `/members/all` views to the group-level Event and Member management lists. Preserve the member list's dedicated return destination after edit/delete.
-- Keep add forms on parent pages; dedicated views focus on the selected existing list and preserve their route after edit/delete/sync.
+- Keep add forms on parent pages except Tugas, which provides create/edit/delete on both Kanban and its dedicated all-tasks view; supported dedicated-view mutations preserve their route.
 - Keep this change UI/routing-only: no database migration, schema, RLS, or server authorization change.
 
 ## Database and deployment state
@@ -44,9 +45,9 @@ Last updated: 12 November 2026 — PR #23 extends pagination to group Event and 
 ## Verification status
 
 - Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
-- PR #23 source review covers Panitia search/filter, five-record pagination for Event, Member, Rundown, Tasks, Procurement, Finance categories/transactions/commitments, dedicated list routes, query-state transfer, and validated return paths.
+- PR #23 source review covers Panitia search/filter, five-record pagination for Event, Member, Rundown, Procurement, Finance categories/transactions/commitments, dedicated list routes, query-state transfer, validated return paths, and the Tasks Kanban board with scoped status mutation and CRUD.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
-- Latest Vercel status for the current PR #23 head reports `failure` with target URL `upgradeToPro=build-rate-limit`; this is a Preview quota/rate-limit outcome, not evidence of an application compile failure or success. Owner Preview UAT for Panitia, Rundown, Tugas, Pengadaan, Keuangan, Event, and Member pagination/dedicated views is pending.
+- Latest Vercel status for the current PR #23 head reports `failure` with target URL `upgradeToPro=build-rate-limit`; this is a Preview quota/rate-limit outcome, not evidence of an application compile failure or success. Owner Preview UAT for Panitia, Rundown, Task Kanban/drag-and-drop and dedicated all-tasks CRUD, Pengadaan, Keuangan, Event, and Member views is pending.
 - No Supabase SQL, production data, RLS, environment, or deployment changes were performed.
 
 ## Next steps
