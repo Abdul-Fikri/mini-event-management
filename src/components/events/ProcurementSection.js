@@ -90,8 +90,8 @@ export default function ProcurementSection({ eventId, items, members, categories
                         <div><dt className="text-zinc-500">Tanggal pembelian</dt><dd>{dateFmt(item.purchased_date)}</dd></div>
                       </dl>
                       {item.notes ? <p className="mt-2 whitespace-pre-wrap text-xs text-zinc-500">Catatan: {item.notes}</p> : null}
-                      {item.status === "ordered" ? <Link className="mt-2 inline-block text-xs font-medium text-indigo-700 hover:underline" href={`${basePath}/keuangan`}>Lihat komitmen di Keuangan →</Link> : null}
-                      {isPurchased && isLinked ? <Link className="mt-2 inline-block text-xs font-medium text-indigo-700 hover:underline" href={`${basePath}/keuangan`}>Lihat transaksi di Keuangan →</Link> : null}
+                      {item.status === "ordered" ? <Link className="mt-2 inline-block text-xs font-medium text-indigo-700 hover:underline" href={`/events/${eventId}/keuangan`}>Lihat komitmen di Keuangan →</Link> : null}
+                      {isPurchased && isLinked ? <Link className="mt-2 inline-block text-xs font-medium text-indigo-700 hover:underline" href={`/events/${eventId}/keuangan`}>Lihat transaksi di Keuangan →</Link> : null}
                       {isPurchased && !isLinked ? (
                         <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3">
                           <p className="text-sm text-amber-900">Item pembelian ini belum terhubung ke transaksi Keuangan. Jika ini data lama, pastikan pembeliannya belum pernah dicatat manual agar tidak terjadi pencatatan ganda.</p>
