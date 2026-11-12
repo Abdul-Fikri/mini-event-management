@@ -17,7 +17,7 @@ Source reviewed: `main` after PR #22 merge plus the unmerged Panitia and event-m
 | Events | Create/read/update/delete events; five-record pagination and dedicated all-events view | Dynamic route `/events/[id]`; event status labels use the effective-status resolver |
 | Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown; search/filter committee by division and text; search division master list | `event_divisions` master data + `event_members` assignment |
 | Rundown | Create/update/delete schedule items; five-record pagination and dedicated all-items view | PIC restricted to current event roster |
-| Tasks | Create/update/delete tasks; five-record pagination and dedicated all-items view | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
+| Tasks | Four-status Kanban with drag-and-drop, alternative status selector, and create/update/delete; full list and five-record pagination at dedicated all-tasks view | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
 | Procurement | Create/update/delete procurement items; five-record pagination and dedicated all-items view; assign budget category; separate requested/ordered/purchased/ready states | PIC restricted to current event roster; ordered items become budget commitments; purchased/ready items automatically create or update one linked finance expense |
 | Finance | Budget categories, manual income/expense transactions, procurement-linked expenses, and ordered-item commitments | Linked procurement expenses are managed from Procurement; manual finance transactions remain editable; historical transaction dates remain allowed |
 | CSV export | Committee, schedule, tasks, procurement, finance, members | \`members\` export is group-wide |
@@ -157,8 +157,11 @@ Use this checklist for future UAT:
 - [ ] Edit/remove a committee assignment from the dedicated committee view and confirm redirect remains on that view.
 - [ ] Rundown main page shows at most five schedule items; navigate pages and open the dedicated all-rundown view.
 - [ ] Dedicated rundown view contains only schedule items, links back to Rundown, and edit/delete actions return to that view.
-- [ ] Tasks main page shows at most five tasks; navigate pages and open the dedicated all-tasks view.
-- [ ] Dedicated tasks view contains only task records, links back to Tugas, and edit/delete actions return to that view.
+- [ ] Tugas main page displays the four existing statuses as a colored/icon Kanban board with correct counts and empty states.
+- [ ] Drag-and-drop between all four status columns persists after refresh; the card status selector also works as a keyboard/touch alternative.
+- [ ] Kanban provides add/edit/delete controls; save/delete actions return to the Kanban page.
+- [ ] **Detail seluruh tugas** opens the dedicated full-list view with status counts, descriptions/notes, CRUD, and five-record pagination.
+- [ ] Dedicated tasks view links back to the Kanban board; create/edit/delete actions preserve the dedicated view.
 - [ ] Procurement main page shows at most five items; navigate pages and open the dedicated all-procurement view.
 - [ ] Dedicated procurement view contains only procurement items, links back to Pengadaan, and edit/delete/sync actions return to that view.
 - [ ] Finance categories, transactions, and commitments each show at most five records on the main page and have independent pagination.
@@ -252,10 +255,10 @@ Use this checklist for future UAT:
 
 ## 13. Event management list pagination and dedicated views — PR #23 in progress
 
-- Rundown, Tugas, and Pengadaan each show at most five records on their parent management page and provide a dedicated `/all` route for the selected list.
+- Rundown and Pengadaan each show at most five records on their parent management page and provide a dedicated `/all` route. Tugas uses a four-status Kanban board on `/events/[id]/tugas`; `/events/[id]/tugas/all` contains the full list, CRUD, and five-record pagination.
 - Keuangan paginates three independent lists: categories, transactions, and ordered procurement commitments. Each has a dedicated route that displays only that selected data type.
 - Dedicated views provide a back link and preserve their route after supported edit/delete/sync actions using the server-validated event `return_to` allowlist.
-- Add forms remain on the parent management pages. Existing server-side event/group authorization, event-roster PIC validation, and Procurement–Finance linked-transaction rules remain unchanged.
+- Add forms remain on the parent pages for Rundown, Pengadaan, and Keuangan. Tugas supports create/edit/delete on both Kanban and the dedicated all-tasks page. Existing server-side event/group authorization, event-roster PIC validation, and Procurement–Finance linked-transaction rules remain unchanged.
 - Pagination is client-side over data loaded by the existing server-scoped queries. No database migration, schema, RLS, or production data changes are included.
 - Source-level checks cover all six additional list views and their five-record pagination. Vercel status check for the latest PR #23 head (`7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf`) reported success. Local lint/build/browser E2E have not been run by the assistant; Owner Preview UAT remains required.
 
@@ -266,8 +269,9 @@ Use this checklist for future UAT:
 - Cards support native drag-and-drop status changes, plus a status selector as an accessible touch/keyboard alternative. The Server Action validates the status and scopes the update to the authenticated Owner group and event/task.
 - Kanban supports task creation, editing, and deletion. `/events/[id]/tugas/all` now holds the complete task-management list, status counts, descriptions/notes, CRUD, and five-record pagination.
 - No database schema, migration, RLS, or production data changes are required. Owner Preview UAT, local lint/build, and browser E2E remain pending.
+
 ## 9. PR #23 — management list pagination (open)
 
-PR #23 adds five-record pagination and dedicated **Lihat semua** views to Panitia, group Event and Member lists, Rundown, Tugas, Pengadaan, and Finance categories/transactions/commitments. The dedicated pages display only the selected data type and link back to the parent page. Member edits/deletes preserve the `/members/all` return destination through server-side allowlisting. No database migration, schema, RLS, production data, or deployment configuration changes are included.
+PR #23 adds search/filter and dedicated views to Panitia; five-record pagination to group Event/Member lists, Rundown, Pengadaan, and Finance categories/transactions/commitments; and a four-status drag-and-drop Kanban for Tugas. The complete task list, status counts, CRUD, and five-record pagination are available at `/events/[id]/tugas/all`. Dedicated pages link back to their parent and supported mutations preserve the originating view. No database migration, schema, RLS, production data, or deployment configuration changes are included.
 
 Vercel currently reports `build-rate-limit` (Preview quota/rate limit); the assistant has not run local lint/build/browser E2E. Owner Preview UAT is pending. The PR remains open and has not been merged.
