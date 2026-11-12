@@ -302,3 +302,17 @@ Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global
 - Daftar divisi dan susunan panitia menampilkan maksimal lima data per halaman dengan navigasi Sebelumnya/Berikutnya. Perubahan pencarian/filter mengembalikan daftar ke halaman pertama.
 - Tombol Lihat semua membuka halaman khusus sesuai daftar yang dipilih: hanya divisi atau hanya susunan panitia. Halaman khusus tetap memiliki pencarian/filter dan pagination lima data per halaman.
 - Filter dan kata kunci susunan panitia dibawa ke halaman khusus saat Lihat semua dipilih. Tersedia tautan kembali ke tab Panitia, dan aksi simpan/hapus kembali ke halaman tempat aksi dilakukan.
+
+
+## 15. Pagination daftar pengelolaan event
+
+Agar halaman pengelolaan tetap ringkas saat jumlah data bertambah, daftar operasional event menggunakan batas tampilan lima data per halaman.
+
+- Rundown menampilkan maksimal lima kegiatan per halaman. Tombol **Lihat semua rundown** membuka `/events/[id]/rundown/all`.
+- Tugas menampilkan maksimal lima tugas per halaman. Tombol **Lihat semua tugas** membuka `/events/[id]/tugas/all`.
+- Pengadaan menampilkan maksimal lima kebutuhan per halaman. Tombol **Lihat semua pengadaan** membuka `/events/[id]/pengadaan/all`.
+- Keuangan menerapkan pagination secara terpisah untuk kategori anggaran, riwayat transaksi, dan rincian komitmen pengadaan. Masing-masing memiliki halaman khusus: `/events/[id]/keuangan/categories`, `/events/[id]/keuangan/transactions`, dan `/events/[id]/keuangan/commitments`.
+- Setiap halaman khusus hanya menampilkan jenis data yang dipilih dan tetap membatasi tampilan lima data per halaman.
+- Halaman khusus menyediakan tautan kembali ke halaman pengelolaan induk. Form edit dan aksi hapus/sinkronisasi mempertahankan halaman asal melalui `return_to` yang divalidasi di Server Action.
+- Form tambah tetap berada di halaman pengelolaan utama; halaman khusus berfokus pada penelusuran dan pengelolaan data yang sudah ada.
+- Pagination ini hanya mengubah tampilan data yang telah dimuat dan diotorisasi di server. Tidak ada perubahan schema, migration, RLS, atau aturan otorisasi.
