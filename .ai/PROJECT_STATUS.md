@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search, filters, pagination, and dedicated views
+Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search/filter and pagination across event management lists
 
 ## Owner-reported verification
 
@@ -28,6 +28,9 @@ Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search, fi
 - Paginate both embedded lists at five records per page; reset to page one when search/filter changes.
 - Add dedicated Lihat semua routes for divisions and committee assignments, each showing only its selected data type with five-record pagination and the relevant search/filter controls.
 - Preserve committee search/filter values when opening its dedicated view; preserve the current view after save/delete using server-validated return paths.
+- Apply five-record pagination and dedicated Lihat semua views to Rundown, Tugas, and Pengadaan.
+- Apply independent five-record pagination and dedicated views to Keuangan categories, transactions, and procurement commitments.
+- Keep add forms on parent pages; dedicated views focus on the selected existing list and preserve their route after edit/delete/sync.
 - Keep this change UI/routing-only: no database migration, schema, RLS, or server authorization change.
 
 ## Database and deployment state
@@ -41,9 +44,9 @@ Last updated: 12 November 2026 — PR #22 merged; PR #23 adds Panitia search, fi
 ## Verification status
 
 - Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
-- PR #23 source-level checks cover search/filter behavior, five-record pagination, dedicated list routes, query-state transfer, and validated return paths.
+- PR #23 source-level checks cover Panitia search/filter, five-record pagination across management lists, dedicated list routes, query-state transfer, and validated return paths.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
-- The Vercel status check for the latest PR #23 commit must be rechecked; Owner Preview UAT for pagination and dedicated views is pending.
+- The Vercel status check for the latest PR #23 commit must be rechecked; Owner Preview UAT for Panitia, Rundown, Tugas, Pengadaan, and Keuangan pagination/dedicated views is pending.
 - No Supabase SQL, production data, RLS, environment, or deployment changes were performed.
 
 ## Next steps
