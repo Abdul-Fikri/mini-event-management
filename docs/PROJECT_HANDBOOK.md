@@ -3,7 +3,7 @@
 Dokumen utama untuk memahami produk, arsitektur, fitur, dan cara kerja aplikasi.
 
 - Repository: https://github.com/Abdul-Fikri/mini-event-management
-- Last reviewed: 11 November 2026
+- Last reviewed: 12 November 2026
 - Active app root: repository root
 - Source directory: \`src/\`
 
