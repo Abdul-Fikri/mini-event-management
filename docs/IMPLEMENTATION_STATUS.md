@@ -1,8 +1,8 @@
 # Implementation Status — Mini Event Management System
 
-Last reviewed: 12 November 2026
+Last reviewed: 13 November 2026
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source reviewed: `main` after PR #22 merge plus the unmerged Panitia and event-management pagination implementation in PR #23.
+Source reviewed: `main` after PR #23 merge (merge commit `5a2c2824623f5e2f12d4c668642511898d945c80`) and hotfix branch `hotfix/fix-events-revalidate-syntax`.
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -243,7 +243,7 @@ Use this checklist for future UAT:
 - `supabase/schema.sql` includes the same structure for fresh database setup.
 - Owner has CRUD; Panitia remains read-only and receives only assigned-event read access.
 
-## 12. Panitia division search, filters, pagination, and dedicated views — PR #23 in progress
+## 12. Panitia division search, filters, pagination, and dedicated views — PR #23 merged
 
 - Branch: `feat/panitia-division-filters-search`, created from `main` after PR #22 merge.
 - Kelola divisi adds client-side search across division name and description.
@@ -257,7 +257,7 @@ Use this checklist for future UAT:
 - Source-level checks cover five-record slicing, Panitia search/filter, all dedicated management routes, query-state transfer, and validated return paths. Latest Vercel status for PR head `db308b7bdae6f4cea52b09dcc5b884f2a4973eea` reports `failure` with a `build-rate-limit` target URL (Preview quota/rate limit, not an application compile result). Local lint/build and browser E2E have not been run by the assistant; Owner Preview UAT remains required.
 
 
-## 13. Event management list pagination and dedicated views — PR #23 in progress
+## 13. Event management list pagination and dedicated views — PR #23 merged
 
 - Rundown and Pengadaan each show at most five records on their parent management page and provide a dedicated `/all` route. Tugas uses a four-status Kanban board on `/events/[id]/tugas`; `/events/[id]/tugas/all` contains the full list, CRUD, and five-record pagination.
 - Keuangan paginates three independent lists: categories, transactions, and ordered procurement commitments. Each has a dedicated route that displays only that selected data type.
@@ -267,15 +267,23 @@ Use this checklist for future UAT:
 - Historical Vercel status check for an earlier PR #23 head (`7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf`) reported success. A later Preview attempt reported `build-rate-limit`; the latest inspected Task Kanban head (`4ed7109528765c65306c379da878b5cfebd58cec`) was `pending` (deployment in progress), not a compile result. Verify the final PR head. Local lint/build/browser E2E have not been run by the assistant; Owner Preview UAT remains required.
 
 
-## Task Kanban extension — PR #23 in progress
+## Task Kanban extension — PR #23 merged
 
 - The main `/events/[id]/tugas` page is a four-column Kanban board using the existing `todo`, `in_progress`, `done`, and `blocked` statuses.
 - Cards support native drag-and-drop status changes, plus a status selector as an accessible touch/keyboard alternative. The Server Action validates the status and scopes the update to the authenticated Owner group and event/task.
 - Kanban supports task creation, editing, and deletion. `/events/[id]/tugas/all` now holds the complete task-management list, status counts, descriptions/notes, CRUD, and five-record pagination.
 - No database schema, migration, RLS, or production data changes are required. Owner Preview UAT, local lint/build, and browser E2E remain pending.
 
-## 9. PR #23 — management list pagination (open)
+## 9. PR #23 — management list pagination (merged)
 
 PR #23 adds search/filter and dedicated views to Panitia; five-record pagination to group Event/Member lists, Rundown, Pengadaan, and Finance categories/transactions/commitments; and a four-status drag-and-drop Kanban for Tugas. The complete task list, status counts, CRUD, and five-record pagination are available at `/events/[id]/tugas/all`. Dedicated pages link back to their parent and supported mutations preserve the originating view. No database migration, schema, RLS, production data, or deployment configuration changes are included.
 
-Vercel currently reports `build-rate-limit` (Preview quota/rate limit); the assistant has not run local lint/build/browser E2E. Owner Preview UAT is pending. The PR remains open and has not been merged.
+PR #23 was merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`. The Owner-provided Vercel Production screenshot then showed `npm run build` failing with `Expected unicode escape` in `src/actions/events.js`; the source contained two literal `\\n` sequences between `revalidatePath` calls. The hotfix is tracked separately below. The assistant has not run local lint/build/browser E2E.
+
+
+## 14. Production build syntax hotfix — PR pending
+
+- Owner-provided Vercel Production build log for merged PR #23 commit `5a2c2824623f5e2f12d4c668642511898d945c80` shows `npm run build` failed with Turbopack `Expected unicode escape` in `src/actions/events.js` at lines 96 and 116.
+- Both lines contained a literal backslash-n sequence between two `revalidatePath` calls. The hotfix replaces each sequence with a real source line break; behavior is otherwise unchanged.
+- Branch: `hotfix/fix-events-revalidate-syntax`. No database schema, migration, RLS, production data, environment, or direct `main` change.
+- Source-level verification confirms both occurrences were corrected and no matching escaped sequence remains. Local lint/build/browser E2E have not been run; Vercel Preview result is pending.
