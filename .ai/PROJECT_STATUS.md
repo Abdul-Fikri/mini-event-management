@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 13 November 2026 — PRs #23–#26 merged; PR #28 open
+Last updated: 13 November 2026 — PRs #23–#27 merged; PR #28 open
 
 ## Owner-reported verification
 
@@ -60,6 +60,8 @@ Last updated: 13 November 2026 — PRs #23–#26 merged; PR #28 open
 
 - Reviewed latest `main` at preflight SHA `d4a5f1ebad7db8a69c6c7975aba7aa463495be3f`, all open PRs (none at preflight), remote branches, relevant historical feature branches, repository instructions, Panitia page, division manager, Server Actions, and requirements/handbook docs.
 - PR #28 source-level review confirms the main Panitia page shows quick-add and Kelola divisi navigation while the dedicated page retains full CRUD, search, and pagination. No database or authorization behavior changed.
+- Vercel status check for exact PR #28 head `2ef6b76f2ac3c35c117f3fe15dda1f6097eaee5e` reports `success`; this is a Preview status, not Production deployment.
+- Local `npm run lint`, `npm run build`, and browser E2E were not run. Attempting to clone the public repository failed because this session could not resolve `github.com`.
 - PR #23 source review covers Panitia search/filter, five-record pagination for Event, Member, Rundown, Procurement, Finance categories/transactions/commitments, dedicated list routes, query-state transfer, validated return paths, and the Tasks Kanban board with scoped status mutation and CRUD.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
 - Owner-provided Vercel Production build first failed with `Expected unicode escape` in `src/actions/events.js`; PR #24 corrected that file and was subsequently merged. The next Owner-provided build log showed a module import trace through `src/actions/members.js`. Inspection found the same malformed literal `\\n` sequences twice in that file; both are corrected on `hotfix/fix-members-revalidate-syntax`, tracked by PR #25.
@@ -67,7 +69,7 @@ Last updated: 13 November 2026 — PRs #23–#26 merged; PR #28 open
 
 ## Next steps
 
-1. Review PR #28 and verify Vercel Preview for its exact latest head; test quick-add from Panitia and full CRUD/search/pagination on the dedicated Kelola divisi page.
+1. Complete Owner UAT on PR #28 Preview: test quick-add from Panitia and full CRUD/search/pagination on the dedicated Kelola divisi page.
 2. Complete Owner UAT for the merged Kanban optimistic move using both drag-and-drop and the status selector; verify immediate movement, per-card spinner, and rollback on a failed save.
 3. Confirm task status persists after navigating away/back and appears in the dedicated full-task list and event overview.
 4. For the next feature, perform the mandatory branch/PR synchronization preflight in `.ai/PROJECT_CONTEXT.md` before creating a branch or editing source.
