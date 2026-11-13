@@ -219,17 +219,8 @@ The Owner workspace follows one consistent visual language based on the Stitch H
 - Event header and event subnavigation belong in one surface. Tabs are horizontal, scrollable on small screens, and use a soft background for the active route.
 - Cards and records use white surfaces, neutral thin borders, consistent spacing, and clear separation. Avoid blue shadows, glow, strong gradients, and excessive decoration.
 - Shared controls use the same radius, border, typography, focus, pending, and feedback patterns. Semantic success/warning/danger colors remain distinct.
-- Apply across Dashboard, Event and nested management pages, Anggota Panitia, Pengaturan Grup, and shared Owner navigation/components.
-
-Visual-only work must preserve data contracts, Server Actions, CRUD, route/query/return-path behavior, authorization, group/event scoping, role boundaries, RLS, cache policy, and database schema.
-
-
-## Owner workspace UI design system
-
-- PR #30 merged to `main` at `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`. It established the shared Stitch-inspired Owner shell: topbar, sidebar/mobile navigation, event header/subnavigation, shared controls, global soft-neutral palette, and separate member cards.
-- Follow-up branch `feat/stitch-management-ui-polish` extends the same visual language across management content: Dashboard, Event lists and forms, Member lists and forms/invitations, Rundown, Tugas Kanban and full list, Pengadaan, Keuangan, Ekspor, event overview, and group settings.
-- Reference language: canvas `#F5F8FC`, white surfaces, soft neutral border `#E3ECF5`, muted text `#64748B`, restrained blue accent `#407BB0` with hover `#32628E`. Use subtle neutral shadows only; no blue glow or decorative gradients.
+- PR #30 merged the shared Owner shell and base visual palette at `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`.
+- PR #31 (`feat/stitch-management-ui-polish`) extends the design to Dashboard, Event/Member lists and forms, Rundown, Tugas Kanban/full list, Pengadaan, Keuangan, Ekspor, event overview, and Pengaturan Grup. It also removes the decorative `01` tile beside the Divisi event heading.
 - Reusable presentation classes in `src/app/globals.css`: `management-panel`, `management-card`, `management-stat`, `management-form`, `management-empty`, and `management-link`.
-- The Divisi event heading has no decorative ordinal tile such as `01`; it is a section heading, not a numbered step or record.
-- This refresh is presentation-only. Preserve Server Components/data queries, Server Actions, CRUD, search/filter, pagination, dedicated routes, validated return paths, role boundaries, event/group scoping, authorization, and RLS. No schema, migration, environment, production data, or deployment changes are part of the UI work.
-- Verify local lint/build and browser behavior when a checkout is available; otherwise report the limitation and require Vercel Preview for the exact final branch head plus Owner UAT. A Preview deployment does not prove Production deployment.
+- Visual-only work must preserve data contracts, Server Actions, CRUD, invitations, route/query/return-path behavior, search/filter, pagination, authorization, group/event scoping, role boundaries, RLS, cache policy, and database schema. No schema, migration, environment, production data, or deployment changes are included in PR #31.
+- Local lint/build and browser E2E have not been run in this environment. Verify Vercel Preview for the exact final PR head and complete Owner UAT; a Preview deployment does not prove Production deployment.

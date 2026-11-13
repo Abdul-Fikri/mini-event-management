@@ -305,7 +305,7 @@ Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global
 - Filter dan kata kunci susunan panitia dibawa ke halaman khusus saat Lihat semua dipilih. Tersedia tautan kembali ke tab Panitia, dan aksi simpan/hapus kembali ke halaman tempat aksi dilakukan.
 - Tampilan Owner pada tab Panitia menggunakan bahasa visual Polar Bear/Stitch yang lembut: permukaan putih, panel biru pucat, aksen biru secukupnya, teks slate, dan border netral tipis. Area Divisi event dan Susunan panitia dipisahkan sebagai panel yang jelas; setiap anggota tampil pada kartu tersendiri dengan identitas, divisi/jabatan, kontak, dan tanggung jawab yang mudah dipindai. Form dan pagination memakai aksen yang sama.
 - PR #30 memperluas fondasi visual ke shell Owner (topbar, sidebar/mobile navigation), event header/subnavigation, palette global, shared controls, dan kartu Anggota Panitia.
-- Follow-up `feat/stitch-management-ui-polish` menyamakan Dashboard, Event/Member, Rundown, Tugas, Pengadaan, Keuangan, Ekspor, form CRUD, event overview, dan Pengaturan Grup dengan permukaan putih, panel netral lembut, border tipis, serta aksen biru yang terkendali. Bagian Divisi event tidak memakai tile ordinal dekoratif seperti `01`.
+- Follow-up PR #31 (`feat/stitch-management-ui-polish`, masih open dan belum merged) menyamakan Dashboard, Event/Member, Rundown, Tugas, Pengadaan, Keuangan, Ekspor, form CRUD, event overview, dan Pengaturan Grup dengan permukaan putih, panel netral lembut, border tipis, serta aksen biru yang terkendali. Bagian Divisi event tidak memakai tile ordinal dekoratif seperti `01`.
 - Penyegaran ini bersifat presentasi saja. Alur CRUD, data, authorization, route, search/filter, pagination, dan database tetap dipertahankan.
 
 

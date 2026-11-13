@@ -191,7 +191,7 @@ Update this file after substantial work. Keep public product/engineering documen
 - Opened PR #30: https://github.com/Abdul-Fikri/mini-event-management/pull/30, base `main`, branch `feat/stitch-soft-ui-refresh`.
 - Latest source/documentation head before this follow-up documentation commit: `206b23802dbe4470d898b8003a01791232f46f7d`; 19 files changed.
 - Vercel Preview status on that head was pending at the time of this note. Recheck the exact final head after documentation changes.
-- PR is open and unmerged. No Production deployment or merge was performed.
+- PR #30 was subsequently merged by the Owner to `main` at `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`. No Production deployment is inferred from this merge.
 
 
 ## 14 November 2026 — Stitch management UI consistency follow-up
@@ -203,3 +203,11 @@ Update this file after substantial work. Keep public product/engineering documen
 - Preserved existing UI behavior and data flow: CRUD, invitations, filters/search, pagination, dedicated routes, validated return paths, optimistic Kanban updates, Procurement–Finance linkage, Owner/group/event scoping, and authorization.
 - No database/schema/migration/RLS, environment, production data, or deployment configuration changes.
 - Updated handbook, implementation status, event-division acceptance criteria, and AI context/status/work log in the same branch. Local lint/build/browser E2E remain unrun; exact final Vercel Preview and Owner UAT are required.
+
+
+### PR #31 opened — Stitch management UI consistency
+
+- Opened PR #31: https://github.com/Abdul-Fikri/mini-event-management/pull/31, base `main`, branch `feat/stitch-management-ui-polish`.
+- PR #31 contains 35 changed files (29 application source files and 6 documentation files) across 2 commits at opening.
+- Initial PR head `3caec658764b185fef1a81dfb2b4f3712102a320` received Vercel Preview status `success`. This is a Preview result, not Production; recheck the exact final head after subsequent documentation updates.
+- PR remains open and unmerged. Local lint/build/browser E2E have not been run in this environment. No database, migration, RLS, production data, or deployment configuration changes.

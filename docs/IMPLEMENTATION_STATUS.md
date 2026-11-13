@@ -341,7 +341,7 @@ PR #30 is merged to `main` at `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`. It est
 
 ## Owner management UI consistency follow-up — in progress
 
-Branch: `feat/stitch-management-ui-polish`, created from the exact PR #30 merge commit.
+Branch: `feat/stitch-management-ui-polish`, created from the exact PR #30 merge commit. PR #31: https://github.com/Abdul-Fikri/mini-event-management/pull/31 (open, unmerged).
 
 Scope:
 - Remove the decorative `01` ordinal tile beside the Divisi event heading; it is a section heading, not a numbered step or record.
@@ -357,7 +357,7 @@ Compatibility and safety:
 Verification:
 - Source-level changes are limited to presentation classes/markup and reusable CSS surface classes; source review and exact diff inspection remain required.
 - Local `npm run lint`, `npm run build`, and browser E2E have not been run in this environment. Do not claim they passed.
-- Verify Vercel Preview for the exact final branch head, then complete Owner desktop/mobile visual UAT and functional regression checks before merge. A Preview result does not establish Production deployment.
+- Initial PR #31 head `3caec658764b185fef1a81dfb2b4f3712102a320` received Vercel Preview `success`; verify Preview again for the exact final branch head after documentation updates, then complete Owner desktop/mobile visual UAT and functional regression checks before merge. A Preview result does not establish Production deployment.
 
 ### Owner workspace visual consistency — Owner UAT checklist
 
