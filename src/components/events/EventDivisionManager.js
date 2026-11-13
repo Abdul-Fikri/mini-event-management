@@ -11,6 +11,8 @@ import { TextField } from "@/components/ui/TextField";
 
 const PAGE_SIZE = 5;
 const initial = { message: "", errors: {}, values: {} };
+const INPUT_CLASS =
+  "block w-full rounded-xl border border-[#D7E3F0] bg-white px-3.5 py-2.5 text-sm text-[#0F172A] shadow-sm placeholder:text-[#94A3B8] focus:border-[#3B82F6] focus:outline-none focus:ring-4 focus:ring-[#3B82F6]/10";
 
 function DivisionForm({ eventId, division = null, returnTo }) {
   const [state, action, pending] = useActionState(
@@ -21,29 +23,35 @@ function DivisionForm({ eventId, division = null, returnTo }) {
   const suffix = division?.id ?? "new";
 
   return (
-    <form action={action} className="space-y-3">
+    <form action={action} className="space-y-4">
       <input type="hidden" name="return_to" value={returnTo} />
       {state.message ? <Alert>{state.message}</Alert> : null}
-      <TextField
-        id={`division-name-${suffix}`}
-        name="name"
-        label="Nama divisi"
-        required
-        defaultValue={value("name")}
-        error={state.errors?.name}
-        hint="Contoh: Acara, Perlengkapan, Konsumsi, Publikasi."
-      />
-      <TextField
-        id={`division-description-${suffix}`}
-        name="description"
-        label="Deskripsi (opsional)"
-        multiline
-        defaultValue={value("description")}
-        error={state.errors?.description}
-      />
-      <Button type="submit" pending={pending} pendingText="Menyimpan…">
-        {division ? "Simpan divisi" : "Tambah divisi"}
-      </Button>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <TextField
+          id={`division-name-${suffix}`}
+          name="name"
+          label="Nama divisi"
+          required
+          defaultValue={value("name")}
+          error={state.errors?.name}
+          hint="Contoh: Acara, Perlengkapan, Konsumsi, Publikasi."
+          className={INPUT_CLASS}
+        />
+        <TextField
+          id={`division-description-${suffix}`}
+          name="description"
+          label="Deskripsi (opsional)"
+          multiline
+          defaultValue={value("description")}
+          error={state.errors?.description}
+          className={INPUT_CLASS}
+        />
+      </div>
+      <div className="flex justify-end">
+        <Button type="submit" variant="ice" pending={pending} pendingText="Menyimpan…" className="rounded-xl px-5 py-2.5">
+          {division ? "Simpan divisi" : "Tambah divisi"}
+        </Button>
+      </div>
     </form>
   );
 }
@@ -94,30 +102,39 @@ export default function EventDivisionManager({
 
   if (!standalone) {
     return (
-      <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-semibold">Divisi event</h2>
-            <p className="mt-1 text-sm text-zinc-600">
-              Tambahkan divisi dengan cepat atau buka halaman Kelola divisi untuk melihat dan mengatur seluruh daftar.
-            </p>
-            <p className="mt-1 text-xs text-zinc-500">
-              {divisions.length} divisi tersedia.
-            </p>
+      <section className="overflow-hidden rounded-2xl border border-[#E2EBF5] bg-white shadow-[0_4px_14px_rgba(148,163,184,0.08)]">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:p-6">
+          <div className="flex min-w-0 items-start gap-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EBF3FC] text-sm font-bold text-[#2563EB]">
+              01
+            </div>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-lg font-bold tracking-tight text-[#0F172A]">Divisi event</h2>
+                <span className="rounded-full bg-[#F0F5FA] px-2.5 py-1 text-xs font-semibold text-[#64748B]">
+                  {divisions.length} divisi tersedia
+                </span>
+              </div>
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-[#64748B]">
+                Atur kelompok kerja untuk event ini. Divisi yang dibuat akan tersedia saat menambahkan anggota panitia.
+              </p>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2">
+
+          <div className="flex w-full flex-wrap gap-2 sm:w-auto">
             <Button
               type="button"
-              variant="secondary"
+              variant="iceSecondary"
               onClick={() => setShowQuickAdd((open) => !open)}
               aria-expanded={showQuickAdd}
               aria-controls="quick-add-event-division"
+              className="rounded-xl px-4 py-2.5"
             >
               {showQuickAdd ? "Tutup form" : "Tambah divisi"}
             </Button>
             <Link
               href={`${basePath}/divisions`}
-              className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="inline-flex items-center justify-center rounded-xl bg-[#3B82F6] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#2563EB] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3B82F6]"
             >
               Kelola divisi
             </Link>
@@ -125,7 +142,11 @@ export default function EventDivisionManager({
         </div>
 
         {showQuickAdd ? (
-          <div id="quick-add-event-division" className="border-t border-zinc-100 pt-4">
+          <div id="quick-add-event-division" className="border-t border-[#E2EBF5] bg-[#F8FBFF] px-5 py-5 sm:px-6">
+            <div className="mb-4">
+              <h3 className="font-semibold text-[#0F172A]">Tambah divisi baru</h3>
+              <p className="mt-1 text-sm text-[#64748B]">Isi nama dan deskripsi singkat agar mudah dikenali.</p>
+            </div>
             <DivisionForm eventId={eventId} returnTo={returnTo} />
           </div>
         ) : null}
@@ -134,23 +155,29 @@ export default function EventDivisionManager({
   }
 
   return (
-    <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <Link href={basePath} className="text-sm font-medium text-indigo-700 hover:underline">
-            ← Kembali ke Panitia
-          </Link>
-          <h2 className="mt-2 text-xl font-semibold">Kelola divisi</h2>
-          <p className="mt-1 text-sm text-zinc-600">
-            Buat daftar divisi khusus untuk event ini. Saat menyusun panitia, pilih divisi dari daftar agar penamaannya konsisten.
-          </p>
+    <section className="space-y-5 rounded-2xl border border-[#E2EBF5] bg-white p-5 shadow-[0_4px_14px_rgba(148,163,184,0.08)] sm:p-6">
+      <div>
+        <Link href={basePath} className="text-sm font-semibold text-[#2563EB] hover:text-[#1D4ED8] hover:underline">
+          ← Kembali ke Panitia
+        </Link>
+        <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#64748B]">PENGELOLAAN EVENT</p>
+            <h2 className="mt-1 text-2xl font-bold tracking-tight text-[#0F172A]">Kelola divisi</h2>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-[#64748B]">
+              Buat daftar divisi khusus untuk event ini. Saat menyusun panitia, pilih divisi dari daftar agar penamaannya konsisten.
+            </p>
+          </div>
+          <span className="rounded-full bg-[#EBF3FC] px-3 py-1.5 text-sm font-semibold text-[#1D4ED8]">
+            {divisions.length} divisi
+          </span>
         </div>
       </div>
 
       {divisions.length ? (
-        <div className="space-y-3">
-          <div>
-            <label htmlFor="search-all-event-divisions" className="mb-1 block text-sm font-medium">
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-[#E2EBF5] bg-[#F8FBFF] p-4">
+            <label htmlFor="search-all-event-divisions" className="mb-1.5 block text-sm font-semibold text-[#334155]">
               Cari divisi
             </label>
             <input
@@ -162,32 +189,36 @@ export default function EventDivisionManager({
                 setPage(1);
               }}
               placeholder="Cari nama atau deskripsi divisi…"
-              className="block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm shadow-xs placeholder:text-zinc-400 focus:border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-600/25"
+              className={`${INPUT_CLASS} bg-white`}
             />
           </div>
 
-          <p className="text-xs text-zinc-500" aria-live="polite">
+          <p className="text-sm text-[#64748B]" aria-live="polite">
             {filteredDivisions.length
               ? `Menampilkan ${startIndex + 1}–${Math.min(startIndex + PAGE_SIZE, filteredDivisions.length)} dari ${filteredDivisions.length} divisi.`
               : `Menampilkan 0 dari ${divisions.length} divisi.`}
           </p>
 
           {filteredDivisions.length ? (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {visibleDivisions.map((division) => (
-                <article key={division.id} className="rounded-lg border border-zinc-200 p-3">
+                <article key={division.id} className="rounded-2xl border border-[#E2EBF5] bg-white p-4 shadow-[0_2px_8px_rgba(148,163,184,0.06)] transition-colors hover:border-[#C8DDF2] sm:p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <h3 className="font-medium">{division.name}</h3>
+                      <h3 className="font-bold text-[#0F172A]">{division.name}</h3>
                       {division.description ? (
-                        <p className="mt-1 whitespace-pre-wrap text-sm text-zinc-600">{division.description}</p>
-                      ) : null}
+                        <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-[#64748B]">{division.description}</p>
+                      ) : (
+                        <p className="mt-1 text-sm italic text-[#94A3B8]">Belum ada deskripsi.</p>
+                      )}
                     </div>
                     <DivisionDeleteForm eventId={eventId} division={division} returnTo={returnTo} />
                   </div>
-                  <details className="mt-3">
-                    <summary className="cursor-pointer text-sm font-medium text-indigo-700">Edit divisi</summary>
-                    <div className="mt-3 border-t border-zinc-100 pt-3">
+                  <details className="mt-4">
+                    <summary className="cursor-pointer rounded-xl border border-[#E2EBF5] bg-[#F8FBFF] px-3.5 py-2.5 text-sm font-semibold text-[#2563EB] transition-colors hover:bg-[#F0F5FA]">
+                      Edit divisi
+                    </summary>
+                    <div className="mt-4 border-t border-[#E2EBF5] pt-4">
                       <DivisionForm eventId={eventId} division={division} returnTo={returnTo} />
                     </div>
                   </details>
@@ -195,7 +226,7 @@ export default function EventDivisionManager({
               ))}
             </div>
           ) : (
-            <p className="rounded-md border border-dashed border-zinc-300 p-4 text-center text-sm text-zinc-600">
+            <p className="rounded-2xl border border-dashed border-[#C8DDF2] bg-[#F8FBFF] p-5 text-center text-sm text-[#64748B]">
               Divisi tidak ditemukan. Coba kata kunci lain.
             </p>
           )}
@@ -204,17 +235,20 @@ export default function EventDivisionManager({
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setPage}
+            tone="polar"
           />
         </div>
       ) : (
-        <p className="rounded-md border border-dashed border-zinc-300 p-4 text-center text-sm text-zinc-600">
+        <p className="rounded-2xl border border-dashed border-[#C8DDF2] bg-[#F8FBFF] p-5 text-center text-sm text-[#64748B]">
           Belum ada divisi. Tambahkan divisi terlebih dahulu agar bisa dipilih pada form penugasan panitia.
         </p>
       )}
 
-      <details className="border-t border-zinc-100 pt-3" open={divisions.length === 0}>
-        <summary className="cursor-pointer text-sm font-semibold text-indigo-700">Tambah divisi baru</summary>
-        <div className="mt-3">
+      <details className="rounded-2xl border border-[#E2EBF5] bg-[#F8FBFF] p-4" open={divisions.length === 0}>
+        <summary className="cursor-pointer text-sm font-semibold text-[#2563EB]">
+          Tambah divisi baru
+        </summary>
+        <div className="mt-4 border-t border-[#E2EBF5] pt-4">
           <DivisionForm eventId={eventId} returnTo={returnTo} />
         </div>
       </details>
