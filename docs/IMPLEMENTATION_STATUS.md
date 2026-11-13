@@ -350,3 +350,11 @@ This is presentation-only. No schema, migration, RLS, Supabase environment, prod
 ## Current follow-up — global Stitch-inspired UI
 
 PR #29 is merged. The Owner then supplied the full Stitch HTML reference and approved extending its clean, restrained visual language beyond Panitia. The follow-up branch `feat/stitch-soft-ui-refresh` updates the shared Owner shell (topbar/sidebar/mobile navigation), event header/subnavigation, shared controls, global workspace palette, member record cards, and the softened Panitia surfaces. It is presentation-only and preserves existing CRUD, data access, authorization, routes, and database behavior. Vercel Preview and Owner UAT for the exact final PR head are still required; local lint/build/browser E2E have not been run in this environment.
+
+
+### PR #30 — Stitch-inspired global Owner UI
+
+- PR #30: https://github.com/Abdul-Fikri/mini-event-management/pull/30 — open, base `main`, branch `feat/stitch-soft-ui-refresh`.
+- Implements the shared topbar/sidebar/mobile navigation, event header/subbar, global soft palette, shared controls, separate Member cards, and toned-down Panitia styling.
+- The UI is presentation-only; no database, migration, RLS, auth, or production data changes.
+- Latest Preview status must be checked for the exact final PR head. Local lint/build/browser E2E have not been run in this environment; Owner visual and functional UAT remains required.

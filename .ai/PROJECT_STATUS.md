@@ -70,8 +70,8 @@ Last updated: 13 November 2026 — PR #29 merged; Stitch-inspired global UI refr
 
 ## Next steps
 
-1. Complete source review and static checks for `feat/stitch-soft-ui-refresh`.
-2. Open the PR to `main` and verify Vercel Preview for the exact final head.
+1. Complete source review and static checks for PR #30.
+2. Verify Vercel Preview for the exact final PR head; the latest check is currently pending.
 3. Owner reviews the Preview on desktop and mobile across Dashboard, Event/subpages, Panitia, Anggota Panitia, and Pengaturan Grup.
 4. Confirm CRUD, search/filter, pagination, return paths, role boundaries, and form feedback remain intact.
 5. Ask for explicit Owner approval before merge; Owner manages Production deployment.
@@ -125,8 +125,9 @@ Last updated: 13 November 2026 — PR #29 merged; Stitch-inspired global UI refr
 
 - Owner supplied a Stitch HTML reference and requested a simple, clean, soft, restrained visual system across the Owner workspace, including topbar, sidebar, event subbar, and content pages.
 - Preflight: latest `main` SHA `5634b23a1538b36db2bf2c1fdbc1b5df607b8704`; PR #29 is closed/merged; no open PRs. Relevant historical branches checked (global loading, Lottie, Kanban, Polar Bear, Dashboard performance, and auth/dashboard); all are behind `main` with zero unique commits ahead.
-- Created `feat/stitch-soft-ui-refresh` from the latest `main`.
-- Implementing shared shell/navigation/event header, common controls, global Owner workspace palette, and clearer member cards. Soft neutral borders/surfaces and blue accents only; no blue shadows, glow, or decorative gradients.
+- Created `feat/stitch-soft-ui-refresh` from the latest `main` and opened PR #30: https://github.com/Abdul-Fikri/mini-event-management/pull/30.
+- Latest branch head at this documentation update: `206b23802dbe4470d898b8003a01791232f46f7d` (19 files changed). Vercel Preview check for this head is pending.
+- Implemented shared shell/navigation/event header, common controls, global Owner workspace palette, and clearer member cards. Soft neutral borders/surfaces and blue accents only; no blue shadows, glow, or decorative gradients.
 - No database, migration, RLS, Supabase environment, production data, or deployment configuration changes.
 - Local `npm run lint`, `npm run build`, and browser E2E have not been run because no local checkout is available. Inspect saved source/diff and require successful Vercel Preview for the exact final PR head plus Owner UAT.
 - No merge or Production deployment authorization has been given.

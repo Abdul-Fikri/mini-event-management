@@ -184,3 +184,11 @@ Update this file after substantial work. Keep public product/engineering documen
 
 - Owner merged PR #29 on 13 November 2026. GitHub confirms merge commit `5634b23a1538b36db2bf2c1fdbc1b5df607b8704` is current `main`.
 - The Stitch-inspired global refresh is a separate follow-up branch and PR; it does not alter Production or merge automatically.
+
+
+### PR #30 opened — Stitch-inspired global UI
+
+- Opened PR #30: https://github.com/Abdul-Fikri/mini-event-management/pull/30, base `main`, branch `feat/stitch-soft-ui-refresh`.
+- Latest source/documentation head before this follow-up documentation commit: `206b23802dbe4470d898b8003a01791232f46f7d`; 19 files changed.
+- Vercel Preview status on that head was pending at the time of this note. Recheck the exact final head after documentation changes.
+- PR is open and unmerged. No Production deployment or merge was performed.
