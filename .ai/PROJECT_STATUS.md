@@ -20,6 +20,7 @@ Last updated: 13 November 2026 — PRs #23–#26 merged; PR #28 open
 - PR #24: https://github.com/Abdul-Fikri/mini-event-management/pull/24 — events Server Action syntax hotfix, merged.
 - PR #25: https://github.com/Abdul-Fikri/mini-event-management/pull/25 — members Server Action syntax hotfix, merged.
 - PR #26: https://github.com/Abdul-Fikri/mini-event-management/pull/26 — optimistic Kanban status updates, merged to `main` at `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a`.
+- PR #27: https://github.com/Abdul-Fikri/mini-event-management/pull/27 — mandatory branch/PR synchronization workflow, merged to `main`.
 - PR #28: https://github.com/Abdul-Fikri/mini-event-management/pull/28 — compact Panitia division navigation with quick-add and dedicated full CRUD page; open, not merged.
 - At preflight, GitHub had no open PRs. Relevant historical branches `feat/panitia-division-filters-search` (PR #23), `feat/instant-optimistic-task-kanban` (PR #26), and `docs/sync-status-after-pr-21` (PR #22) were all behind the then-current `main` with no unique commits ahead; they are historical, not active dependencies. PR #28 is the current open work.
 - Do not infer Production deployment from source commits or a successful Preview check.
