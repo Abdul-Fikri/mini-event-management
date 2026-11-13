@@ -52,7 +52,7 @@ export default async function EventCommitteePage({ params }) {
   const availableCount = selectable.filter((member) => !member.assigned).length;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 rounded-2xl bg-[#F5F8FC] p-3 sm:p-4">
       <EventDivisionManager eventId={id} divisions={divisions ?? []} />
 
       <section className="overflow-hidden rounded-2xl border border-[#E2EBF5] bg-white shadow-[0_4px_14px_rgba(148,163,184,0.08)]">
