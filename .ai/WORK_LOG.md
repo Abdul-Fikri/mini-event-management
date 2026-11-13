@@ -79,3 +79,61 @@ Update this file after substantial work. Keep public product/engineering documen
 - Added task create/edit/delete controls to the Kanban. Moved the complete list, status summary, full details, CRUD, and five-record pagination to `/events/[id]/tugas/all`.
 - Updated requirements, handbook, implementation/UAT notes, and shared AI context. No schema, migration, RLS, production data, or deployment configuration changes.
 - Local lint/build/browser E2E and Owner Preview UAT have not been run; verify against the final PR head.
+
+
+## 13 November 2026 — Production build syntax hotfix
+
+- Investigated Owner-provided Vercel Production build failure after PR #23 merged. Log reported Turbopack `Expected unicode escape` at `src/actions/events.js:96:29`; the same literal escaped newline also appeared at line 116.
+- Created branch `hotfix/fix-events-revalidate-syntax` from current `main` commit `5a2c2824623f5e2f12d4c668642511898d945c80`.
+- Replaced both literal `\\n` sequences between `revalidatePath` calls with real source line breaks. Source-level verification found exactly two original occurrences and zero remaining matches.
+- Updated implementation status and shared AI project status. No application logic, database schema, migration, RLS, production data, environment, or direct `main` change.
+- Local lint/build/browser E2E not run because there is no local repository checkout in this session. Awaiting hotfix PR Preview build; merge and production deployment remain Owner-controlled.
+
+
+### Follow-up documentation — prevent source-generation syntax errors
+
+- Added durable rules to `.ai/PROJECT_CONTEXT.md` after the PR #23 production build incident: always use actual newline characters in source, inspect the saved file after API-based edits, search all matching occurrences, and review the complete affected function/file.
+- Added a pre-merge verification rule: run lint/build where possible; otherwise disclose missing local validation and require a successful Vercel Preview for the exact latest PR head.
+- Added evidence-based Vercel diagnosis guidance: parser/compiler syntax errors are not quota errors; only classify a failure as rate limiting when Vercel explicitly says so.
+- Reaffirmed branch/PR-only hotfixes and Owner-controlled merge/Production deployment.
+- These are preventative process rules; PR #24 Preview build remains unverified.
+
+
+## 13 November 2026 — Follow-up members syntax hotfix
+
+- Owner shared a second Vercel build log after PR #24 merge. The visible import trace listed `src/actions/members.js`, `src/components/members/MemberList.js`, and `src/app/(app)/members/page.js`.
+- Inspected current `main` and found the actual malformed source pattern in `src/actions/members.js`: two literal backslash-n sequences between `revalidatePath` statements in `saveMember` and `deleteMember`.
+- Created `hotfix/fix-members-revalidate-syntax` from current main `f637f5006af3c5be2a895199ee662588160be095`; corrected both occurrences to actual source line breaks. Source check found exactly two matches before correction and zero remaining matching sequences in the file.
+- Scanned all 12 `src/actions/*.js` Server Action files on main for literal backslash-n sequences. The only matches were the two corrected in `members.js`; the earlier `events.js` file is already corrected on main.
+- Added a repository-wide suspicious escaped-newline scan rule to `.ai/PROJECT_CONTEXT.md`, explicitly covering all changed source files and related Server Action modules.
+- PR #24 was confirmed merged. PR #25 will carry the members fix and documentation. No direct main update, database, migration, RLS, production data, environment, or deployment change.
+- Local lint/build/browser E2E were not run; require Vercel Preview for the exact latest PR #25 head before merge.
+
+
+## 13 November 2026 — Task Kanban optimistic interaction
+
+- Reviewed current `main` after Owner reported that changing task status feels slow. `TaskKanbanBoard` awaited the Server Action before moving a card, then called `router.refresh()`; the status action also revalidated the active Kanban route.
+- Changed the client to optimistically update local board state immediately for both drag-and-drop and the status selector. Server persistence runs in the background.
+- Added per-task pending state and an inline spinning indicator; unrelated cards remain interactive while another task is saving.
+- Added rollback to the previous status plus visible feedback when the Server Action returns an error or throws.
+- Removed `router.refresh()` and stopped revalidating the active Kanban route for status-only updates. Event overview and dedicated `/tugas/all` remain invalidated.
+- Updated `.ai/PROJECT_CONTEXT.md`, `.ai/PROJECT_STATUS.md`, and handbook/implementation docs with the behavior and UAT expectations.
+- No database, schema, migration, RLS, production data, environment, or direct `main` changes. Local lint/build/browser E2E were not run; verify Vercel Preview for the final PR #26 head and perform Owner UAT.
+
+
+### PR #26 initial Vercel Preview result
+
+- Checked GitHub status and check-runs for PR #26 head `4379df45902c55699ceb4cf279e25cf84c35c0f5`.
+- Vercel status: `success`, description `Deployment has completed`; Vercel Preview Comments: `success`.
+- PR #26 is open and mergeable at this check. No merge or Production deployment performed.
+- The docs update records this initial result; verify Vercel again for the final/latest PR head after the docs commit. Owner browser UAT remains necessary.
+
+
+## 13 November 2026 — Mandatory branch and PR synchronization preflight
+
+- Owner asked how to prevent feature work from missing changes that exist on separate, unmerged PR branches. Confirmed this is a real integration risk if development only reads `main`.
+- Refreshed GitHub before editing: latest `main` was `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a`; PR #26 was merged at that commit; there were no open PRs. The remote branch list still contains historical feature/hotfix branches, so branch existence alone is not proof of active work.
+- Added a mandatory pre-development workflow to `.ai/PROJECT_CONTEXT.md`: inspect all open PR metadata/head/base SHAs and changed-file lists; inspect full diffs for overlapping/dependent work; classify non-main branches; choose latest-main baseline for independent work or an explicitly documented stacked/dependent base for work that needs an unmerged PR; refresh PR state during long tasks; verify the final diff and exact Preview SHA.
+- Updated `.ai/PROJECT_STATUS.md` to record the actual merged PR #26/main state and the new workflow.
+- Documentation-only change on branch `docs/pr-branch-synchronization-workflow`, created from main SHA `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a`. No application source, database, schema, migration, RLS, production data, direct-main, or deployment changes.
+- Next: open a documentation-only PR and verify its final diff/Preview; do not merge without Owner authorization.

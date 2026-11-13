@@ -1,6 +1,6 @@
 # Project Context — Mini Event Management System
 
-Last reviewed: 12 November 2026
+Last reviewed: 13 November 2026
 
 Repository: https://github.com/Abdul-Fikri/mini-event-management
 Production URL reported by owner: https://mini-event-management-gules.vercel.app
@@ -124,4 +124,70 @@ Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEM
 - Rundown and Pengadaan each display at most five records per page and expose dedicated all-records routes. Tugas uses `/events/[id]/tugas` as a four-status Kanban board with drag-and-drop, an accessible status selector, and create/edit/delete controls; `/events/[id]/tugas/all` contains the complete task list, status counts, full CRUD, and five-record pagination.
 - Keuangan paginates categories, transactions, and ordered procurement commitments independently. Dedicated routes are `/events/[id]/keuangan/categories`, `/events/[id]/keuangan/transactions`, and `/events/[id]/keuangan/commitments`.
 - Every paginated list uses five records per page. The Tugas Kanban board displays all loaded tasks in their status columns; its dedicated detail view uses five-record pagination. Dedicated views contain only the selected data type, link back to their parent management page, and preserve their view after supported edit/delete/sync actions through the validated event return-path helper.
-- Add forms stay on the parent management pages for Rundown, Pengadaan, and Finance. Tugas supports create/edit/delete on both the Kanban board and its dedicated all-tasks view. No schema, migration, or RLS changes are introduced; the new task-status Server Action applies the existing Owner/group/event authorization scope and validates the status allowlist.
+- Add forms stay on the parent management pages for Rundown, Pengadaan, and Finance. Tugas supports create/edit/delete on both the Kanban board and its dedicated all-tasks view. No schema, migration, or RLS changes are introduced; the task-status Server Action applies the existing Owner/group/event authorization scope and validates the status allowlist.
+- Kanban status changes use optimistic client state: the card moves immediately on drop/status selection, only that card shows a saving spinner while the Server Action persists in the background, and a failed save rolls the card back with feedback. Do not call `router.refresh()` for this interaction; revalidate other server-rendered task views only. Track pending updates per task so unrelated cards remain interactive.
+
+
+## Source-editing and build-verification guardrails
+
+The production build failure after PR #23 was caused by literal backslash-n characters being inserted into JavaScript source between statements in `src/actions/events.js`. Turbopack reported `Expected unicode escape`. The same mistake appeared in two functions, so correcting only the first reported line would have left the second failure.
+
+Prevent recurrence on every future source change:
+
+1. **Preserve real source line breaks.** When creating or patching source through an API, use actual newline characters between JavaScript statements. Do not insert the two literal characters `\\n` where a source line break is intended. Remember that an escaped newline inside a JavaScript string literal is different from a literal backslash-n accidentally placed between source statements.
+2. **Inspect the saved file, not only the patch request.** After each source write, fetch/read the resulting file at the new branch head and inspect the exact changed region. Search the changed file for suspicious escaped sequences (especially literal `\\n` between statements), stray backslashes, malformed quotes, and duplicated fragments.
+3. **Check the whole affected file/function.** Search for every occurrence of the same generated pattern; fix and verify all occurrences, not only the first line mentioned by the compiler.
+4. **Run validation before asking for merge.** Run the repository's lint and production build commands when a local checkout is available. If they cannot be run, state that clearly, inspect the resulting diff/source, and require the Vercel Preview build to succeed before merge. Do not claim build success from source inspection alone.
+5. **Verify the exact latest commit.** Check Vercel status for the current PR head SHA after the final code and documentation commits. An earlier green deployment does not validate a later commit.
+6. **Classify deployment failures from evidence.** Read the actual build log. Treat `Expected unicode escape`/compiler parser output as a source syntax failure; call it a quota/rate-limit issue only when the Vercel result explicitly reports a quota/rate limit. Do not guess based on a generic failed status.
+7. **Keep production protected.** Fix through a branch and PR; do not push directly to `main`, merge, or redeploy Production without the Owner's explicit authorization.
+
+Incident reference: PR #23 merge commit `5a2c2824623f5e2f12d4c668642511898d945c80`; source file `src/actions/events.js`; corrected on `hotfix/fix-events-revalidate-syntax` and tracked by PR #24.
+
+
+## Follow-up guardrail: repository-wide escaped-newline scan
+
+The follow-up Vercel build after the `events.js` hotfix exposed the same malformed source pattern in `src/actions/members.js`. The first hotfix corrected only the first affected action file, so a successful source check on that file was not sufficient to establish that the repository was clean.
+
+Mandatory additions to the source-editing checklist:
+
+1. After any API-generated or automated source edit, scan **all modified source files and the complete related feature surface**, not just the first compiler-reported file. For shared helpers or generated patterns, search the entire `src/` tree.
+2. Search for literal backslash-n sequences (`\\n`) appearing between JavaScript statements. Review every match: valid escape sequences inside strings are not automatically errors, but a backslash-n outside a string where a line break is intended is invalid source.
+3. Inspect every Server Action file touched by the feature, including save, delete, and secondary CRUD actions. Build failures may surface through a Client Component import trace even when the actual parser error is inside an imported Server Action module.
+4. Verify the complete diff and the saved source after all edits and documentation commits. Re-run the repository-wide suspicious-sequence scan after the final source change.
+5. Do not merge based only on fixing the first reported file. Require lint/build validation where available and a successful Vercel Preview for the exact latest PR head.
+
+Incident chain:
+- PR #23 merge introduced malformed escaped newlines in `src/actions/events.js` and `src/actions/members.js`.
+- PR #24 corrected `events.js` but did not catch the remaining issue in `members.js`.
+- PR #25 hotfix corrects both malformed sequences in `members.js` on a separate branch.
+
+
+## Kanban interaction performance rule
+
+When changing task status from the four-column Kanban, preserve the optimistic interaction contract:
+- Update local board state immediately before awaiting the Server Action; never wait for the server response before moving the card.
+- Keep a per-card pending indicator/spinner while persistence is in flight. Do not block all cards because one task is saving.
+- If the Server Action returns failure or throws, restore the prior status and show clear feedback.
+- Avoid `router.refresh()` and avoid revalidating the active `/events/[id]/tugas` route for status-only updates; they can cause a full route render and defeat the immediate interaction. Invalidate the event overview and dedicated `/tugas/all` view only.
+- Preserve server-side authorization, group/event scoping, and the status allowlist. Optimistic UI is presentation only; the database remains authoritative.
+- Test both drag-and-drop and the status selector, slow/pending responses, failed updates/rollback, and a second independent card while the first is pending.
+
+
+## Mandatory branch and Pull Request synchronization preflight
+
+Before starting any new feature, refactor, or hotfix that changes application source, inspect the repository's current integration state. Do not assume that `main` contains work from an open PR or that a branch seen in an earlier conversation is still current.
+
+1. **Refresh the repository baseline.** Fetch the latest `main` commit SHA, list all open PRs, and list remote branches. Record the time/current SHA used for the task. Do not rely on remembered branch names, previous conversation summaries, or stale status documents without checking GitHub again.
+2. **Inspect every open PR branch.** For each open PR, record its number/title, state/draft status, base branch and SHA, head branch and SHA, and changed-file list. Compare those changed files with the files and feature surfaces planned for the task. Inspect the full diff and saved source at the exact head SHA for any overlapping or dependent work. Even when files do not overlap, account for whether the feature depends on behavior introduced by that PR.
+3. **Classify non-main branches.** Identify branches tied to open PRs, branches explicitly used as dependencies/active work, and stale or historical branches. Compare relevant branches against the latest `main` to identify unique commits and changed files. Do not assume every old remote branch is active, and do not silently ignore a known active branch just because it has no PR.
+4. **Choose the correct implementation base.**
+   - Independent feature: create a new branch from the latest `main`.
+   - Feature that requires code from an unmerged PR: base the work on that PR's head branch and document the dependency/stacked-PR relationship, or wait for that PR to merge if appropriate.
+   - If an open PR modifies the same component, Server Action, shared helper, route, schema contract, or interaction, inspect and account for its exact changes before editing. Do not recreate an older implementation from `main` and overwrite the newer PR behavior.
+   - Never silently change an existing PR's branch/base or merge another PR just to make the new feature work.
+5. **Re-check during longer tasks.** Before major edits and before opening/updating a PR, refresh the open-PR list and relevant head/base SHAs. Another PR may have merged or received new commits while implementation was in progress.
+6. **Verify integration, not just isolated code.** Review the complete diff against the intended base, check for overlapping changes and duplicated logic, inspect the saved files, and run the available lint/build/tests. If local validation is unavailable, disclose that and require Vercel Preview success for the exact final PR head. A green Preview for an earlier SHA does not validate later commits.
+7. **Preserve Owner-controlled operations.** Use a dedicated branch and PR. Do not push directly to `main`, merge/rebase branches, delete branches, or deploy Production unless the Owner explicitly authorizes that operation.
+
+A concise pre-development note should identify: latest `main` SHA; open PRs and their head/base SHAs; relevant branches/dependencies; overlapping files/features; chosen base branch and reason. If there are no open PRs, state that explicitly. This checklist is mandatory for every new feature request, not only when a conflict is already visible.

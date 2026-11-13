@@ -93,7 +93,8 @@ export async function saveEvent(id, _prev, formData) {
   }
 
   revalidatePath("/dashboard");
-  revalidatePath("/events");\n  revalidatePath("/events/all");
+  revalidatePath("/events");
+  revalidatePath("/events/all");
   if (id) revalidatePath(`/events/${id}`);
   redirect(id ? `/events/${id}` : "/events");
 }
@@ -113,7 +114,8 @@ export async function deleteEvent(formData) {
   if (error) throw new Error("Event gagal dihapus.");
 
   revalidatePath("/dashboard");
-  revalidatePath("/events");\n  revalidatePath("/events/all");
+  revalidatePath("/events");
+  revalidatePath("/events/all");
   revalidatePath("/members");
   redirect("/events");
 }

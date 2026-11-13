@@ -1,8 +1,8 @@
 # Implementation Status — Mini Event Management System
 
-Last reviewed: 12 November 2026
+Last reviewed: 13 November 2026
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source reviewed: `main` after PR #22 merge plus the unmerged Panitia and event-management pagination implementation in PR #23.
+Source reviewed: `main` after PR #23 merge (merge commit `5a2c2824623f5e2f12d4c668642511898d945c80`) and hotfix branch `hotfix/fix-events-revalidate-syntax`.
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -163,6 +163,9 @@ Use this checklist for future UAT:
 - [ ] Dedicated rundown view contains only schedule items, links back to Rundown, and edit/delete actions return to that view.
 - [ ] Tugas main page displays the four existing statuses as a colored/icon Kanban board with correct counts and empty states.
 - [ ] Drag-and-drop between all four status columns persists after refresh; the card status selector also works as a keyboard/touch alternative.
+- [ ] Drag-and-drop and status selector move the card immediately before the Server Action finishes; a small spinner appears only on the card being saved.
+- [ ] A task save failure or network error restores the card's previous column and displays feedback; another card can still be moved while the first card is pending.
+- [ ] After an optimistic status update succeeds, navigate to `/events/[id]/tugas/all` and the event overview to confirm the persisted status is current.
 - [ ] Kanban provides add/edit/delete controls; save/delete actions return to the Kanban page.
 - [ ] **Detail seluruh tugas** opens the dedicated full-list view with status counts, descriptions/notes, CRUD, and five-record pagination.
 - [ ] Dedicated tasks view links back to the Kanban board; create/edit/delete actions preserve the dedicated view.
@@ -243,7 +246,7 @@ Use this checklist for future UAT:
 - `supabase/schema.sql` includes the same structure for fresh database setup.
 - Owner has CRUD; Panitia remains read-only and receives only assigned-event read access.
 
-## 12. Panitia division search, filters, pagination, and dedicated views — PR #23 in progress
+## 12. Panitia division search, filters, pagination, and dedicated views — PR #23 merged
 
 - Branch: `feat/panitia-division-filters-search`, created from `main` after PR #22 merge.
 - Kelola divisi adds client-side search across division name and description.
@@ -257,7 +260,7 @@ Use this checklist for future UAT:
 - Source-level checks cover five-record slicing, Panitia search/filter, all dedicated management routes, query-state transfer, and validated return paths. Latest Vercel status for PR head `db308b7bdae6f4cea52b09dcc5b884f2a4973eea` reports `failure` with a `build-rate-limit` target URL (Preview quota/rate limit, not an application compile result). Local lint/build and browser E2E have not been run by the assistant; Owner Preview UAT remains required.
 
 
-## 13. Event management list pagination and dedicated views — PR #23 in progress
+## 13. Event management list pagination and dedicated views — PR #23 merged
 
 - Rundown and Pengadaan each show at most five records on their parent management page and provide a dedicated `/all` route. Tugas uses a four-status Kanban board on `/events/[id]/tugas`; `/events/[id]/tugas/all` contains the full list, CRUD, and five-record pagination.
 - Keuangan paginates three independent lists: categories, transactions, and ordered procurement commitments. Each has a dedicated route that displays only that selected data type.
@@ -267,15 +270,43 @@ Use this checklist for future UAT:
 - Historical Vercel status check for an earlier PR #23 head (`7d797a29f1dbc6c320cb1563f7b22d8fad3d3faf`) reported success. A later Preview attempt reported `build-rate-limit`; the latest inspected Task Kanban head (`4ed7109528765c65306c379da878b5cfebd58cec`) was `pending` (deployment in progress), not a compile result. Verify the final PR head. Local lint/build/browser E2E have not been run by the assistant; Owner Preview UAT remains required.
 
 
-## Task Kanban extension — PR #23 in progress
+## Task Kanban extension — PR #23 merged
 
 - The main `/events/[id]/tugas` page is a four-column Kanban board using the existing `todo`, `in_progress`, `done`, and `blocked` statuses.
 - Cards support native drag-and-drop status changes, plus a status selector as an accessible touch/keyboard alternative. The Server Action validates the status and scopes the update to the authenticated Owner group and event/task.
 - Kanban supports task creation, editing, and deletion. `/events/[id]/tugas/all` now holds the complete task-management list, status counts, descriptions/notes, CRUD, and five-record pagination.
 - No database schema, migration, RLS, or production data changes are required. Owner Preview UAT, local lint/build, and browser E2E remain pending.
 
-## 9. PR #23 — management list pagination (open)
+## 9. PR #23 — management list pagination (merged)
 
 PR #23 adds search/filter and dedicated views to Panitia; five-record pagination to group Event/Member lists, Rundown, Pengadaan, and Finance categories/transactions/commitments; and a four-status drag-and-drop Kanban for Tugas. The complete task list, status counts, CRUD, and five-record pagination are available at `/events/[id]/tugas/all`. Dedicated pages link back to their parent and supported mutations preserve the originating view. No database migration, schema, RLS, production data, or deployment configuration changes are included.
 
-Vercel currently reports `build-rate-limit` (Preview quota/rate limit); the assistant has not run local lint/build/browser E2E. Owner Preview UAT is pending. The PR remains open and has not been merged.
+PR #23 was merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`. The Owner-provided Vercel Production screenshot then showed `npm run build` failing with `Expected unicode escape` in `src/actions/events.js`; the source contained two literal `\\n` sequences between `revalidatePath` calls. The hotfix is tracked separately below. The assistant has not run local lint/build/browser E2E.
+
+
+## 14. Production build syntax hotfix — PR pending
+
+- Owner-provided Vercel Production build log for merged PR #23 commit `5a2c2824623f5e2f12d4c668642511898d945c80` shows `npm run build` failed with Turbopack `Expected unicode escape` in `src/actions/events.js` at lines 96 and 116.
+- Both lines contained a literal backslash-n sequence between two `revalidatePath` calls. The hotfix replaces each sequence with a real source line break; behavior is otherwise unchanged.
+- Branch: `hotfix/fix-events-revalidate-syntax`. No database schema, migration, RLS, production data, environment, or direct `main` change.
+- Source-level verification confirms both occurrences were corrected and no matching escaped sequence remains. Local lint/build/browser E2E have not been run; Vercel Preview result is pending.
+
+
+## 15. Follow-up production build syntax hotfix — members actions
+
+- After PR #24 merged, the Owner-provided Vercel build log showed a failing build with an import trace through `src/actions/members.js`, `MemberList.js`, and `members/page.js`.
+- Current `main` contained two malformed literal backslash-n sequences in `src/actions/members.js`, between the member-list `revalidatePath` calls in save and delete actions.
+- Both occurrences were replaced with real source line breaks on `hotfix/fix-members-revalidate-syntax`. Source check: two occurrences fixed, zero matching malformed sequences remain in the file.
+- The 12 Server Action JavaScript files under `src/actions/` were scanned; the only matching literal backslash-n sequences were the two in `members.js`, now fixed. The prior `events.js` correction is present on `main`.
+- PR #25 is merged. No database, migration, RLS, production data, or environment change was required. Local lint/build/browser E2E were not run in that hotfix session.
+
+
+## 16. Task Kanban optimistic status updates — PR #26 in progress
+
+- Owner reported slow status changes on the four-column task Kanban. The prior client waited for `updateTaskStatus` to complete and then called `router.refresh()`, causing the card to wait for the server round-trip and a route refresh.
+- The board now moves the card immediately using optimistic local state for both drag-and-drop and the status selector.
+- The Server Action persists the change in the background. The affected card shows a small spinner and "Menyimpan status…" while pending; other cards remain interactive.
+- If the Server Action rejects or throws, the card rolls back to its previous status and visible feedback is shown.
+- The active Kanban route is no longer revalidated for status-only updates and the client no longer calls `router.refresh()`. Event overview and dedicated `/tugas/all` are still revalidated.
+- No schema, migration, RLS, database, or production data changes.
+- Source-level checks passed: optimistic state is updated before awaiting the Server Action, no `router.refresh()` remains, pending state is per task, spinner and rollback are present, and the active Kanban route is not revalidated. Vercel status for initial PR head `4379df45902c55699ceb4cf279e25cf84c35c0f5` reported `success` / deployment completed. Local lint/build/browser E2E have not been run. Verify Vercel Preview against the exact latest PR #26 head after this documentation update and complete Owner UAT for immediate move, spinner, rollback, and independent concurrent card updates.
