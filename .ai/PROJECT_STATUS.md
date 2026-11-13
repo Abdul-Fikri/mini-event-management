@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 13 November 2026 — PR #23 and PR #24 merged; PR #25 members syntax hotfix open
+Last updated: 13 November 2026 — PR #23, #24, and #25 merged; PR #26 Kanban optimistic update in progress
 
 ## Owner-reported verification
 
@@ -53,11 +53,10 @@ Last updated: 13 November 2026 — PR #23 and PR #24 merged; PR #25 members synt
 
 ## Next steps
 
-1. Review PR #25 diff and verify the latest Vercel Preview build/log for its exact head SHA.
-2. Confirm no other malformed escaped-newline sequences remain across the source files changed by the management-list feature.
-3. After PR #25 is reviewed and merged with Owner approval, verify the Production build and application behavior.
-4. Owner completes UAT for Panitia, Rundown, Task Kanban/full task list, Pengadaan, Keuangan, Event, and Member views.
-5. Owner handles Vercel Production deployment and confirms production behavior.
+1. Review PR #26 and verify its Vercel Preview build for the exact latest head SHA.
+2. UAT the Kanban optimistic move using both drag-and-drop and the status selector; verify immediate movement, per-card spinner, and rollback on a failed save.
+3. Confirm status persists after navigating away/back and appears in the dedicated full-task list and event overview.
+4. Owner handles merge and Production deployment only after Preview verification and approval.
 
 
 ## Production build hotfix
@@ -84,3 +83,13 @@ Last updated: 13 November 2026 — PR #23 and PR #24 merged; PR #25 members synt
 - Both occurrences corrected on `hotfix/fix-members-revalidate-syntax`; PR #25 is pending. Source check: exactly two malformed occurrences found and zero remain in the file.
 - Repository-wide follow-up guardrail added to `.ai/PROJECT_CONTEXT.md`: scan all modified source and related Server Action files for suspicious escaped newlines, not just the first compiler-reported file.
 - Local lint/build/browser E2E not run in this session. Verify Vercel Preview against the latest PR #25 head before merge.
+
+
+## Kanban responsiveness improvement — PR #26 in progress
+
+- Owner reported slow task movement on the event Kanban. Source review found the client awaited `updateTaskStatus` before changing the displayed task and then called `router.refresh()`, forcing a route data refresh after each move.
+- Implemented optimistic local task state: move the card immediately, persist through the existing Server Action in the background, show a spinner on the affected card, and roll back with feedback if persistence fails.
+- Pending state is tracked per task so other cards remain usable during another task's save.
+- Removed active Kanban route revalidation from the status-only Server Action; event overview and dedicated `/tugas/all` are still revalidated for fresh server-rendered data.
+- No schema, migration, RLS, database, or production data changes.
+- Branch: `feat/instant-optimistic-task-kanban`; PR #26 will track the change. Preview and real-device/browser UAT remain pending.
