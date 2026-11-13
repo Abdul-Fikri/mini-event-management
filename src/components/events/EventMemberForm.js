@@ -8,7 +8,7 @@ import { TextField } from "@/components/ui/TextField";
 
 const initial = { message: "", errors: {}, values: {} };
 const INPUT_CLASS =
-  "block w-full rounded-xl border border-[#D7E3F0] bg-white px-3.5 py-2.5 text-sm text-[#0F172A] shadow-sm placeholder:text-[#94A3B8] focus:border-[#3B82F6] focus:outline-none focus:ring-4 focus:ring-[#3B82F6]/10";
+  "block w-full rounded-xl border border-[#D7E3F0] bg-white px-3.5 py-2.5 text-sm text-[#0F172A] shadow-sm placeholder:text-[#94A3B8] focus:border-[#5C98CB] focus:outline-none focus:ring-4 focus:ring-[#5C98CB]/10";
 
 export default function EventMemberForm({
   eventId,
@@ -28,7 +28,7 @@ export default function EventMemberForm({
   return (
     <form
       action={action}
-      className="space-y-4 rounded-2xl border border-[#E2EBF5] bg-white p-4 shadow-[0_2px_8px_rgba(148,163,184,0.06)] sm:p-5"
+      className="space-y-4 rounded-2xl border border-[#E2EBF5] bg-white p-4 shadow-none sm:p-5"
     >
       <input type="hidden" name="return_to" value={returnTo} />
       {state.message ? <Alert>{state.message}</Alert> : null}
