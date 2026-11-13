@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 13 November 2026 — PRs #23–#26 merged; no open PRs at latest repository check
+Last updated: 13 November 2026 — PRs #23–#26 merged; PR #28 open
 
 ## Owner-reported verification
 
@@ -12,7 +12,7 @@ Last updated: 13 November 2026 — PRs #23–#26 merged; no open PRs at latest r
 
 ## GitHub state
 
-- Current `main` HEAD: `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a` (includes PR #26 merge).
+- Current `main` HEAD at the 13 November 2026 preflight: `d4a5f1ebad7db8a69c6c7975aba7aa463495be3f` (six commits ahead of the previously recorded PR #26 merge SHA; no new open PRs were present at preflight).
 - PR #20 Procurement–Finance integration: merged.
 - PR #21 event lifecycle automation: merged.
 - PR #22 event-specific division CRUD: merged to `main` on 12 November 2026 at `20ca806309629eace877536f245409e546824fac`.
@@ -20,7 +20,8 @@ Last updated: 13 November 2026 — PRs #23–#26 merged; no open PRs at latest r
 - PR #24: https://github.com/Abdul-Fikri/mini-event-management/pull/24 — events Server Action syntax hotfix, merged.
 - PR #25: https://github.com/Abdul-Fikri/mini-event-management/pull/25 — members Server Action syntax hotfix, merged.
 - PR #26: https://github.com/Abdul-Fikri/mini-event-management/pull/26 — optimistic Kanban status updates, merged to `main` at `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a`.
-- Latest repository check found no open PRs. Remote branches still include historical feature/hotfix branches; do not assume they are active without checking their PR association and unique commits.
+- PR #28: https://github.com/Abdul-Fikri/mini-event-management/pull/28 — compact Panitia division navigation with quick-add and dedicated full CRUD page; open, not merged.
+- At preflight, GitHub had no open PRs. Relevant historical branches `feat/panitia-division-filters-search` (PR #23), `feat/instant-optimistic-task-kanban` (PR #26), and `docs/sync-status-after-pr-21` (PR #22) were all behind the then-current `main` with no unique commits ahead; they are historical, not active dependencies. PR #28 is the current open work.
 - Do not infer Production deployment from source commits or a successful Preview check.
 
 ## Merged management-list and task-board scope (PR #23 and follow-up)
@@ -39,6 +40,13 @@ Last updated: 13 November 2026 — PRs #23–#26 merged; no open PRs at latest r
 - Keep add forms on parent pages except Tugas, which provides create/edit/delete on both Kanban and its dedicated all-tasks view; supported dedicated-view mutations preserve their route.
 - No database migration, schema, or RLS changes. The new task-status Server Action uses the existing Owner/group/event authorization boundary and validates the allowed statuses.
 
+## Current PR #28 scope
+
+- Keep the main event Panitia page compact: show only a quick Tambah divisi button and a Kelola divisi link.
+- Tambah divisi opens the create form in place and returns to Panitia after save.
+- Kelola divisi navigates to `/events/[id]/panitia/divisions`, where the complete CRUD, search, and five-record pagination remain available.
+- No database, migration, schema, RLS, Server Action authorization, or production data changes.
+
 ## Database and deployment state
 
 - Migration `20261111_procurement_finance_integration.sql` and `20261112_event_lifecycle_automation.sql` are present in `main`; application to the target Supabase database is not confirmed.
@@ -49,7 +57,8 @@ Last updated: 13 November 2026 — PRs #23–#26 merged; no open PRs at latest r
 
 ## Verification status
 
-- Reviewed latest `main`, PR #22 merged state, repository instructions, event Panitia page, division manager, Server Actions, and relevant docs.
+- Reviewed latest `main` at preflight SHA `d4a5f1ebad7db8a69c6c7975aba7aa463495be3f`, all open PRs (none at preflight), remote branches, relevant historical feature branches, repository instructions, Panitia page, division manager, Server Actions, and requirements/handbook docs.
+- PR #28 source-level review confirms the main Panitia page shows quick-add and Kelola divisi navigation while the dedicated page retains full CRUD, search, and pagination. No database or authorization behavior changed.
 - PR #23 source review covers Panitia search/filter, five-record pagination for Event, Member, Rundown, Procurement, Finance categories/transactions/commitments, dedicated list routes, query-state transfer, validated return paths, and the Tasks Kanban board with scoped status mutation and CRUD.
 - Assistant did not run local `npm run lint`, `npm run build`, or browser E2E because no local repository checkout is available in this session.
 - Owner-provided Vercel Production build first failed with `Expected unicode escape` in `src/actions/events.js`; PR #24 corrected that file and was subsequently merged. The next Owner-provided build log showed a module import trace through `src/actions/members.js`. Inspection found the same malformed literal `\\n` sequences twice in that file; both are corrected on `hotfix/fix-members-revalidate-syntax`, tracked by PR #25.
@@ -57,10 +66,11 @@ Last updated: 13 November 2026 — PRs #23–#26 merged; no open PRs at latest r
 
 ## Next steps
 
-1. Complete Owner UAT for the merged Kanban optimistic move using both drag-and-drop and the status selector; verify immediate movement, per-card spinner, and rollback on a failed save.
-2. Confirm status persists after navigating away/back and appears in the dedicated full-task list and event overview.
-3. For the next feature, perform the mandatory branch/PR synchronization preflight in `.ai/PROJECT_CONTEXT.md` before creating a branch or editing source.
-4. Owner handles Vercel Production deployment and confirms production behavior; do not infer it from a merged PR or Preview result.
+1. Review PR #28 and verify Vercel Preview for its exact latest head; test quick-add from Panitia and full CRUD/search/pagination on the dedicated Kelola divisi page.
+2. Complete Owner UAT for the merged Kanban optimistic move using both drag-and-drop and the status selector; verify immediate movement, per-card spinner, and rollback on a failed save.
+3. Confirm task status persists after navigating away/back and appears in the dedicated full-task list and event overview.
+4. For the next feature, perform the mandatory branch/PR synchronization preflight in `.ai/PROJECT_CONTEXT.md` before creating a branch or editing source.
+5. Owner handles Vercel Production deployment and confirms production behavior; do not infer it from a merged PR or Preview result.
 
 
 ## Production build hotfix
