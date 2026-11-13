@@ -20,7 +20,7 @@ export default async function MembersPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div><h1 className="text-2xl font-semibold">Anggota panitia</h1><p className="text-sm text-zinc-600">Daftar orang yang dapat ditugaskan ke event.</p></div>
-        <Link href="/members/new" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">+ Tambah anggota</Link>
+        <Link href="/members/new" className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">+ Tambah anggota</Link>
       </div>
       <MemberList members={members ?? []} />
     </div>

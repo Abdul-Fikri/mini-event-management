@@ -1,9 +1,9 @@
 "use client";
 
 const BASE =
-  "block w-full rounded-md border bg-white px-3 py-2 text-sm text-zinc-900 shadow-xs placeholder:text-zinc-400 focus:outline-none focus:ring-2 disabled:bg-zinc-100";
-const NORMAL = "border-zinc-300 focus:border-indigo-600 focus:ring-indigo-600/25";
-const INVALID = "border-red-500 focus:border-red-600 focus:ring-red-600/25";
+  "block w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-[#1E293B] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 disabled:bg-[#F8FAFC]";
+const NORMAL = "border-[#D8E3ED] focus:border-[#8FB0CE] focus:ring-[#8FB0CE]/20";
+const INVALID = "border-red-500 focus:border-red-600 focus:ring-red-600/15";
 
 const onlyDigits = value => String(value ?? "").replace(/\D/g, "");
 const normalizeDigits = value => {
@@ -55,7 +55,7 @@ export function MoneyField({
 
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-sm font-medium text-zinc-800">
+      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-slate-700">
         {label}
         {required ? (
           <span aria-hidden="true" className="ml-0.5 text-red-600">
@@ -80,12 +80,12 @@ export function MoneyField({
         className={`${BASE} ${error ? INVALID : NORMAL}`}
       />
       {hint ? (
-        <p id={hintId} className="mt-1 text-xs text-zinc-500">
+        <p id={hintId} className="mt-1.5 text-xs text-[#64748B]">
           {hint}
         </p>
       ) : null}
       {error ? (
-        <p id={errorId} className="mt-1 text-sm text-red-700">
+        <p id={errorId} className="mt-1.5 text-sm text-red-700">
           {error}
         </p>
       ) : null}

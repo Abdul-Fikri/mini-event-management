@@ -3,7 +3,7 @@
 Dokumen utama untuk memahami produk, arsitektur, fitur, dan cara kerja aplikasi.
 
 - Repository: https://github.com/Abdul-Fikri/mini-event-management
-- Last reviewed: 13 November 2026
+- Last reviewed: 14 November 2026
 - Active app root: repository root
 - Source directory: \`src/\`
 
@@ -303,8 +303,10 @@ Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global
 - Daftar divisi dan susunan panitia menampilkan maksimal lima data per halaman dengan navigasi Sebelumnya/Berikutnya. Perubahan pencarian/filter mengembalikan daftar ke halaman pertama.
 - Tombol Kelola divisi pada tab Panitia membuka halaman khusus yang hanya berisi pengelolaan divisi. Daftar susunan panitia tetap memiliki tombol Lihat semua untuk membuka halaman khusus panitia.
 - Filter dan kata kunci susunan panitia dibawa ke halaman khusus saat Lihat semua dipilih. Tersedia tautan kembali ke tab Panitia, dan aksi simpan/hapus kembali ke halaman tempat aksi dilakukan.
-- Tampilan Owner pada tab Panitia menggunakan tema Polar Bear yang lembut: permukaan putih, panel biru es pucat, aksen tombol biru, teks navy, dan border soft frost. Area Divisi event dan Susunan panitia dipisahkan sebagai panel yang jelas; setiap anggota tampil pada kartu tersendiri dengan identitas, divisi/jabatan, kontak, dan tanggung jawab yang mudah dipindai. Form dan pagination memakai aksen yang sama.
-- Penyegaran visual ini berlaku pada halaman Panitia event dan halaman khusus Kelola divisi/Semua susunan panitia; modul manajemen lain belum diubah.
+- Tampilan Owner pada tab Panitia menggunakan bahasa visual Polar Bear/Stitch yang lembut: permukaan putih, panel biru pucat, aksen biru secukupnya, teks slate, dan border netral tipis. Area Divisi event dan Susunan panitia dipisahkan sebagai panel yang jelas; setiap anggota tampil pada kartu tersendiri dengan identitas, divisi/jabatan, kontak, dan tanggung jawab yang mudah dipindai. Form dan pagination memakai aksen yang sama.
+- PR #30 memperluas fondasi visual ke shell Owner (topbar, sidebar/mobile navigation), event header/subnavigation, palette global, shared controls, dan kartu Anggota Panitia.
+- Follow-up `feat/stitch-management-ui-polish` menyamakan Dashboard, Event/Member, Rundown, Tugas, Pengadaan, Keuangan, Ekspor, form CRUD, event overview, dan Pengaturan Grup dengan permukaan putih, panel netral lembut, border tipis, serta aksen biru yang terkendali. Bagian Divisi event tidak memakai tile ordinal dekoratif seperti `01`.
+- Penyegaran ini bersifat presentasi saja. Alur CRUD, data, authorization, route, search/filter, pagination, dan database tetap dipertahankan.
 
 
 ## 15. Pagination daftar pengelolaan event

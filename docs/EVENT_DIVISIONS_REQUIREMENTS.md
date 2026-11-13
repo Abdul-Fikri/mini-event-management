@@ -57,7 +57,8 @@ The Owner-facing Panitia management experience uses a scoped Polar Bear palette 
 - Soft border: `#E2EBF5`; stronger nested-card border: `#D7E6F5`.
 - Main text: `#0F172A`; secondary text: `#64748B`.
 - Visually separate the Divisi event and Susunan panitia sections. Place search/filter controls in a lightly tinted panel and give each committee record its own outlined card, with division, position, contact, and responsibility arranged as distinct information levels.
-- The main Panitia page and dedicated division/committee management views share the theme. Other management modules remain unchanged until the Owner requests expansion.
+- The main Panitia page and dedicated division/committee management views share the theme. The Owner subsequently approved extending this same restrained visual language across all Owner management modules.
+- The Divisi event heading starts directly with its title. Do not add a decorative ordinal tile such as `01`; this panel is a management section, not a numbered step or record.
 - This is presentation-only: no data, authorization, route, or database behavior should change as part of visual refinement.
 
 ## Validation and security
@@ -73,6 +74,7 @@ The Owner-facing Panitia management experience uses a scoped Polar Bear palette 
 
 - [ ] The Panitia page shows a quick Tambah divisi button that opens the create form in place and returns to Panitia after a successful save.
 - [ ] The Panitia page shows a Kelola divisi link to the dedicated division CRUD page.
+- [ ] The Divisi event heading has no decorative `01` ordinal tile.
 - [ ] The Panitia page does not embed the full division list, search, edit, or delete controls.
 - [ ] Owner can view all divisions for that event on `/events/[id]/panitia/divisions`.
 - [ ] Owner can edit a division name and description.
@@ -101,4 +103,4 @@ The Owner-facing Panitia management experience uses a scoped Polar Bear palette 
 
 ## Verification notes
 
-Event-specific division CRUD and its database migration were merged in PR #22 (merge commit `20ca806309629eace877536f245409e546824fac`). Division/committee search, filters, five-record pagination, and dedicated list views were merged in PR #23. The compact division quick-add and dedicated management navigation were merged in PR #28 (merge commit `ed00f75ec0beda51f20c8b407f7b95721ef70253`). The Polar Bear styling is being refined in PR #29. Migration application to the target Supabase database is not confirmed. Preview status and Production deployment must be checked separately; local lint/build and browser E2E results must be recorded before claiming runtime verification.
+Event-specific division CRUD and its database migration were merged in PR #22 (merge commit `20ca806309629eace877536f245409e546824fac`). Division/committee search, filters, five-record pagination, and dedicated list views were merged in PR #23. The compact division quick-add and dedicated management navigation were merged in PR #28 (merge commit `ed00f75ec0beda51f20c8b407f7b95721ef70253`). The Polar Bear styling was merged in PR #29. PR #30 merged the shared Stitch-inspired Owner shell and global palette. The follow-up management UI consistency work is tracked separately in `feat/stitch-management-ui-polish`. Migration application to the target Supabase database is not confirmed. Preview status and Production deployment must be checked separately; local lint/build and browser E2E results must be recorded before claiming runtime verification.

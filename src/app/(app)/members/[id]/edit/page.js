@@ -25,10 +25,10 @@ export default async function EditMemberPage({ params, searchParams }) {
   return (
     <div className="space-y-5">
       <div>
-        <Link href={returnTo} className="text-sm text-indigo-700">← Kembali ke anggota</Link>
+        <Link href={returnTo} className="management-link text-sm hover:underline">← Kembali ke anggota</Link>
         <h1 className="mt-2 text-2xl font-semibold">Edit anggota</h1>
       </div>
-      <div className="rounded-lg border border-zinc-200 bg-white p-5">
+      <div className="management-panel p-5 sm:p-6">
         <MemberForm member={member} returnTo={returnTo} />
       </div>
     </div>

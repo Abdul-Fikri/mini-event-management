@@ -1,8 +1,8 @@
 # Implementation Status — Mini Event Management System
 
-Last reviewed: 13 November 2026
+Last reviewed: 14 November 2026
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source reviewed: `main` after PR #29 merge (commit `5634b23a1538b36db2bf2c1fdbc1b5df607b8704`) and feature branch `feat/stitch-soft-ui-refresh`.
+Source reviewed: `main` after PR #30 merge (commit `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`) and follow-up branch `feat/stitch-management-ui-polish`.
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -15,7 +15,7 @@ Source reviewed: `main` after PR #29 merge (commit `5634b23a1538b36db2bf2c1fdbc1
 | Dashboard | Dynamic server-rendered dashboard and summary queries | User-reported Lighthouse Performance 96 |
 | Group members | Create/read/update/delete member directory; five-record pagination and dedicated all-members view | Group-level directory; edit/delete preserve the dedicated view when opened from `/members/all` |
 | Events | Create/read/update/delete events; five-record pagination and dedicated all-events view | Dynamic route `/events/[id]`; event status labels use the effective-status resolver |
-| Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown; search/filter committee by division and text; search division master list; Polar Bear UI refinement | `event_divisions` master data + `event_members` assignment; UI-only refinement in PR #29 |
+| Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown; search/filter committee by division and text; search division master list; Polar Bear/Stitch visual refinement | `event_divisions` master data + `event_members` assignment; presentation-only changes in PR #29 and follow-up branch |
 | Rundown | Create/update/delete schedule items; five-record pagination and dedicated all-items view | PIC restricted to current event roster |
 | Tasks | Four-status Kanban with drag-and-drop, alternative status selector, and create/update/delete; full list and five-record pagination at dedicated all-tasks view | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
 | Procurement | Create/update/delete procurement items; five-record pagination and dedicated all-items view; assign budget category; separate requested/ordered/purchased/ready states | PIC restricted to current event roster; ordered items become budget commitments; purchased/ready items automatically create or update one linked finance expense |
@@ -57,9 +57,15 @@ Source reviewed: `main` after PR #29 merge (commit `5634b23a1538b36db2bf2c1fdbc1
 - Procurement currently has no user-entered date field affected by this rule.
 - The event form's HTML `min` attributes improve the input experience; Zod validation in the Server Action remains authoritative. No database migration or historical data rewrite is required.
 
-## 3. Panitia visual refinement
+## 3. Panitia and Owner workspace visual design
 
-The Owner-facing event Panitia tab and its dedicated division/committee management views use a scoped Polar Bear theme. The UI separates Divisi event and Susunan panitia into distinct white surfaces, places search/filter and forms on soft-blue panels, and presents each committee member in an individual card with clear hierarchy for name, division, position, contact, and responsibility. Buttons and pagination use soft ice-blue accents. The theme is intentionally not applied globally to other management modules. This is a UI-only change; existing data fetching, CRUD, search/filter, pagination, routes, authorization, and database behavior remain unchanged. PR #29: https://github.com/Abdul-Fikri/mini-event-management/pull/29 — merged to `main` at `5634b23a1538b36db2bf2c1fdbc1b5df607b8704`. The earlier Preview deployment later returned a runtime error because Preview Supabase environment configuration was incomplete; do not treat the earlier successful deployment status as proof of working runtime.
+The Owner-facing Panitia tab and its dedicated division/committee management views use the approved Polar Bear reference: separate white panels, soft-blue tinted forms/search surfaces, individual committee cards, restrained blue accents, and minimal neutral borders/shadows. The Divisi event heading has no decorative ordinal tile such as `01`.
+
+PR #29 applied the scoped Panitia refinement and merged at `5634b23a1538b36db2bf2c1fdbc1b5df607b8704`. PR #30 then established the shared Stitch-inspired Owner shell and global palette (topbar, sidebar/mobile navigation, event header/subnavigation, shared controls, and Member cards), merging at `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`.
+
+The follow-up branch `feat/stitch-management-ui-polish` extends the same simple, clean, soft visual language across Dashboard, Event and Member management, event forms/overview, Rundown, Tugas Kanban/full list, Pengadaan, Keuangan, Ekspor, and Pengaturan Grup. Shared neutral management surfaces keep panels and records distinct; forms and summary cards use light tints; blue remains a restrained action/link accent. No exaggerated blue shadow, glow, or decorative gradient is introduced.
+
+These are presentation-only changes. Existing data fetching, CRUD, invitations, search/filter, pagination, dedicated routes, validated return paths, Server Actions, authorization, and database behavior remain unchanged. The follow-up does not modify schema, migration, RLS, production data, environment, or deployment configuration.
 
 ## 4. Pagination and dedicated list views
 
@@ -93,6 +99,8 @@ PR #23 applies five-record pagination and dedicated **Lihat semua** routes to gr
 | #20 | Integrate Procurement with Finance: ordered commitments and linked purchase expenses | Merged 11 Nov 2026; migration application to Supabase is not confirmed |
 | #21 | Automate event lifecycle status with automatic/manual modes | Merged 11 Nov 2026 at `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80`; migration application to Supabase is not confirmed |
 | #28 | Keep Panitia division quick-add on the main tab and move full CRUD to a dedicated page | Merged to main at `ed00f75ec0beda51f20c8b407f7b95721ef70253` |
+| #29 | Apply restrained Polar Bear UI to Panitia management | Merged to main at `5634b23a1538b36db2bf2c1fdbc1b5df607b8704` |
+| #30 | Apply Stitch-inspired shared Owner shell, global palette, shared controls, and member cards | Merged to main at `6ab8e1bccd42edd65f6fef921375f252dc0a64c5` |
 
 Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
@@ -327,34 +335,43 @@ PR #23 was merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`. The O
 - An earlier PR #28 head received a successful Vercel Preview status. The latest PR #28 Preview check is rate-limited with `Deployment rate limited — retry in 24 hours` (`build-rate-limit`); this is a Preview quota limit, not an application compile result. Local lint/build and browser E2E have not been run by the assistant; complete Owner UAT after a usable Preview is available.
 
 
-## Stitch-inspired soft UI refresh — in progress
+## PR #30 — Stitch-inspired global Owner UI (merged)
 
-A global visual refresh is being implemented on branch `feat/stitch-soft-ui-refresh` from `main` commit `5634b23a1538b36db2bf2c1fdbc1b5df607b8704`.
+PR #30 is merged to `main` at `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`. It establishes the shared Owner topbar, sidebar/mobile navigation, event header/subnavigation, global soft-neutral palette, shared Button/TextField/Alert/ListPagination styling, and separate Member cards. This is presentation-only; no database, migration, RLS, authorization, or production data changes.
+
+## Owner management UI consistency follow-up — in progress
+
+Branch: `feat/stitch-management-ui-polish`, created from the exact PR #30 merge commit.
 
 Scope:
-- Shared Owner topbar, profile area, sidebar, mobile navigation, and event subnavigation.
-- Event workspace header and subbar grouped into one clean surface.
-- Shared buttons, inputs, alerts, and pagination.
-- Dashboard, Event, Rundown, Tugas, Pengadaan, Keuangan, Panitia, Anggota Panitia, and Pengaturan inherit the same soft neutral palette and surface hierarchy.
-- Member records are displayed as separate cards for clearer scanning.
-- The Panitia Polar Bear styling is softened to remove exaggerated/colored shadows and keep blue as a restrained accent.
+- Remove the decorative `01` ordinal tile beside the Divisi event heading; it is a section heading, not a numbered step or record.
+- Extend the same Stitch/Panitia visual language to Dashboard, Event lists and create/edit forms, Member lists and create/edit/invitation forms, event overview, Rundown, Tugas Kanban and full task list, Pengadaan, Keuangan (including dedicated category/transaction/commitment views), Ekspor, and Pengaturan Grup.
+- Use reusable neutral management surfaces, separate outlined record cards, soft-tinted form/summary panels, consistent input/select treatments, and subtle blue links/actions.
+- Keep topbar, sidebar, mobile navigation, event header, and subnavigation from PR #30 as the shared foundation.
 
-Visual direction:
-- Canvas `#F5F8FC`, white surfaces, neutral borders `#E3ECF5`, muted text `#64748B`.
-- Primary accent `#407BB0`; hover `#32628E`; active surface `#EDF4FA`.
-- No blue shadows, glow, or decorative gradients.
+Compatibility and safety:
+- Preserve existing CRUD, invitation flows, data queries, Server Actions, search/filter, five-record pagination, dedicated routes, validated return paths, optimistic Kanban status updates, and Procurement–Finance linkage.
+- Preserve Owner/Panitia role boundaries, group/event scoping, server-side authorization, Supabase RLS, and private cache behavior.
+- No database/schema/migration/RLS, environment, production data, or deployment configuration changes are part of this UI work.
 
-This is presentation-only. No schema, migration, RLS, Supabase environment, production data, or deployment changes are included. Local lint/build and browser E2E remain unrun in this environment; verify the exact final PR head with Vercel Preview and Owner UAT before merge.
+Verification:
+- Source-level changes are limited to presentation classes/markup and reusable CSS surface classes; source review and exact diff inspection remain required.
+- Local `npm run lint`, `npm run build`, and browser E2E have not been run in this environment. Do not claim they passed.
+- Verify Vercel Preview for the exact final branch head, then complete Owner desktop/mobile visual UAT and functional regression checks before merge. A Preview result does not establish Production deployment.
 
+### Owner workspace visual consistency — Owner UAT checklist
 
-## Current follow-up — global Stitch-inspired UI
-
-PR #29 is merged. The Owner then supplied the full Stitch HTML reference and approved extending its clean, restrained visual language beyond Panitia. The follow-up branch `feat/stitch-soft-ui-refresh` updates the shared Owner shell (topbar/sidebar/mobile navigation), event header/subnavigation, shared controls, global workspace palette, member record cards, and the softened Panitia surfaces. It is presentation-only and preserves existing CRUD, data access, authorization, routes, and database behavior. Vercel Preview and Owner UAT for the exact final PR head are still required; local lint/build/browser E2E have not been run in this environment.
-
-
-### PR #30 — Stitch-inspired global Owner UI
-
-- PR #30: https://github.com/Abdul-Fikri/mini-event-management/pull/30 — open, base `main`, branch `feat/stitch-soft-ui-refresh`.
-- Implements the shared topbar/sidebar/mobile navigation, event header/subbar, global soft palette, shared controls, separate Member cards, and toned-down Panitia styling.
-- The UI is presentation-only; no database, migration, RLS, auth, or production data changes.
-- Latest Preview status must be checked for the exact final PR head. Local lint/build/browser E2E have not been run in this environment; Owner visual and functional UAT remains required.
+- [ ] Divisi event heading starts directly with its title; no decorative `01` tile remains.
+- [ ] Dashboard summary panels and event/activity lists use the same neutral surface hierarchy.
+- [ ] Event list, event create/edit forms, and event overview remain readable on desktop and mobile.
+- [ ] Anggota Panitia cards, invitation form, and member create/edit forms use consistent spacing and controls.
+- [ ] Rundown cards, PIC/date/time details, edit form, delete action, and five-record pagination remain usable.
+- [ ] Tugas Kanban retains all four statuses, drag-and-drop, keyboard/touch status selector, optimistic movement, pending feedback, rollback, and CRUD.
+- [ ] Full task list retains status counts, CRUD, and five-record pagination.
+- [ ] Pengadaan retains status indicators, linked finance feedback, CRUD, and five-record pagination.
+- [ ] Keuangan summary, category/transaction/commitment cards, linked procurement restrictions, CRUD, and each dedicated list remain correct.
+- [ ] Ekspor links still download the correct CSV types.
+- [ ] Pengaturan Grup logo upload/removal controls remain usable; verify actual upload/removal separately.
+- [ ] Shared topbar, sidebar/mobile navigation, event header/subnavigation, button, input, alert, and pagination remain consistent.
+- [ ] No excessive blue shadow, glow, saturated decorative background, or cramped record layout.
+- [ ] Search/filter, return paths, authorization boundaries, and Owner/Panitia role access show no regressions.

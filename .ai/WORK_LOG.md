@@ -192,3 +192,14 @@ Update this file after substantial work. Keep public product/engineering documen
 - Latest source/documentation head before this follow-up documentation commit: `206b23802dbe4470d898b8003a01791232f46f7d`; 19 files changed.
 - Vercel Preview status on that head was pending at the time of this note. Recheck the exact final head after documentation changes.
 - PR is open and unmerged. No Production deployment or merge was performed.
+
+
+## 14 November 2026 — Stitch management UI consistency follow-up
+
+- Verified PR #30 is merged; merge commit and current `main` HEAD: `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`. No other open PRs were found at preflight.
+- Created branch `feat/stitch-management-ui-polish` from that exact `main`.
+- Removed the decorative `01` tile from the Divisi event section heading.
+- Extended reusable soft-neutral management surfaces to Dashboard, Event and Member lists/forms, Rundown, Tugas Kanban/full list, Pengadaan, Keuangan, Ekspor, event overview, and group settings. Updated nested management forms/controls to match the restrained Stitch palette.
+- Preserved existing UI behavior and data flow: CRUD, invitations, filters/search, pagination, dedicated routes, validated return paths, optimistic Kanban updates, Procurement–Finance linkage, Owner/group/event scoping, and authorization.
+- No database/schema/migration/RLS, environment, production data, or deployment configuration changes.
+- Updated handbook, implementation status, event-division acceptance criteria, and AI context/status/work log in the same branch. Local lint/build/browser E2E remain unrun; exact final Vercel Preview and Owner UAT are required.

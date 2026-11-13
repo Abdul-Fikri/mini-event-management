@@ -77,7 +77,7 @@ export default function GroupLogoForm({ logoUrl, groupName }) {
   }
 
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white p-5">
+    <section className="management-panel space-y-4 p-5">
       <h2 className="font-semibold">Logo grup</h2>
       <p className="mt-1 text-sm text-zinc-600">
         Gunakan gambar JPG, PNG, atau WebP dengan ukuran maksimal 2 MB.
@@ -88,12 +88,12 @@ export default function GroupLogoForm({ logoUrl, groupName }) {
           <img
             src={logoUrl}
             alt={`Logo ${groupName}`}
-            className="h-20 w-20 rounded-lg border border-zinc-200 bg-white object-contain p-1"
+            className="h-20 w-20 rounded-xl border border-[#E3ECF5] bg-white object-contain p-1"
           />
         ) : (
           <div
             aria-label="Belum ada logo"
-            className="flex h-20 w-20 items-center justify-center rounded-lg border border-dashed border-zinc-300 bg-zinc-50 text-2xl font-semibold text-zinc-400"
+            className="flex h-20 w-20 items-center justify-center rounded-xl border border-dashed border-[#D6E1EB] bg-[#F8FAFC] text-2xl font-semibold text-[#94A3B8]"
           >
             {groupName?.trim()?.charAt(0)?.toUpperCase() || "G"}
           </div>
@@ -105,7 +105,7 @@ export default function GroupLogoForm({ logoUrl, groupName }) {
             type="file"
             accept="image/jpeg,image/png,image/webp"
             disabled={pending}
-            className="block w-full text-sm text-zinc-700 file:mr-3 file:rounded-md file:border-0 file:bg-zinc-100 file:px-3 file:py-2 file:text-sm file:font-medium"
+            className="block w-full text-sm text-zinc-700 file:mr-3 file:rounded-lg file:border-0 file:bg-[#EDF4FA] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-[#32628E]"
           />
           <div className="flex flex-wrap gap-2">
             <Button type="submit" pending={pending} pendingText="Mengunggah...">

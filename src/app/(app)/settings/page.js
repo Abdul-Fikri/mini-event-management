@@ -11,7 +11,7 @@ export default async function SettingsPage() {
         <h1 className="text-2xl font-semibold">Pengaturan grup</h1>
         <p className="mt-1 text-sm text-zinc-600">Kelola identitas visual grup event Anda.</p>
       </div>
-      <section className="rounded-lg border border-zinc-200 bg-white p-5">
+      <section className="management-panel p-5">
         <h2 className="font-semibold">{group.name}</h2>
         <p className="mt-1 text-sm text-zinc-600">{group.description || "Belum ada deskripsi grup."}</p>
       </section>

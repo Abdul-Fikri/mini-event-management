@@ -19,11 +19,11 @@ export default function EventList({ events, standalone = false }) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          {standalone ? <Link href="/events" className="text-sm font-medium text-indigo-700 hover:underline">← Kembali ke daftar event</Link> : null}
+          {standalone ? <Link href="/events" className="management-link text-sm hover:underline">← Kembali ke daftar event</Link> : null}
           {standalone ? <h2 className="mt-2 text-xl font-semibold">Semua event grup</h2> : null}
           <p className="text-sm text-zinc-600">{standalone ? "Seluruh event yang dikelola oleh grup." : "Daftar event terbaru yang dikelola oleh grup. (ketuk event untuk melihat)"}</p>
         </div>
-        {!standalone && events.length > 0 ? <Link href="/events/all" className="shrink-0 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-800 hover:bg-indigo-100">Lihat semua event</Link> : null}
+        {!standalone && events.length > 0 ? <Link href="/events/all" className="shrink-0 rounded-xl border border-[#D7E5F1] bg-[#EDF4FA] px-3.5 py-2.5 text-sm font-semibold text-[#32628E] transition-colors hover:bg-[#E5EFF8]">Lihat semua event</Link> : null}
       </div>
 
       {events.length ? (
@@ -31,7 +31,7 @@ export default function EventList({ events, standalone = false }) {
           <p className="text-xs text-zinc-500" aria-live="polite">Menampilkan {startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, events.length)} dari {events.length} event.</p>
           <div className="grid gap-3">
             {visibleEvents.map((event) => (
-              <Link key={event.id} href={`/events/${event.id}`} className="rounded-lg border border-zinc-200 bg-white p-4 hover:border-indigo-300">
+              <Link key={event.id} href={`/events/${event.id}`} className="management-card p-4">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>
                     <h2 className="font-semibold">{event.name}</h2>
@@ -46,10 +46,10 @@ export default function EventList({ events, standalone = false }) {
           <ListPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
         </>
       ) : (
-        <div className="rounded-lg border border-dashed border-zinc-300 bg-white p-8 text-center">
+        <div className="management-empty p-8 text-center">
           <h2 className="font-semibold">Belum ada event</h2>
           <p className="mt-1 text-sm text-zinc-600">Buat event pertama untuk mulai mengelola acara grup.</p>
-          {!standalone ? <Link href="/events/new" className="mt-4 inline-block text-sm font-medium text-indigo-700">Buat event pertama →</Link> : null}
+          {!standalone ? <Link href="/events/new" className="mt-4 inline-block text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Buat event pertama →</Link> : null}
         </div>
       )}
     </div>

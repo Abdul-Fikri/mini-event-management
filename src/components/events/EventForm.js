@@ -125,7 +125,7 @@ export default function EventForm({ event = null, members = [] }) {
         />
       </div>
 
-      <section className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+      <section className="management-form p-4">
         <div>
           <h2 className="font-semibold">Timeline dan status event</h2>
           <p className="mt-1 text-sm text-zinc-600">
@@ -144,7 +144,7 @@ export default function EventForm({ event = null, members = [] }) {
               name="status_mode"
               value={statusMode}
               onChange={(event) => handleStatusModeChange(event.target.value)}
-              className="block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm"
+              className="block w-full rounded-xl border border-[#D8E3ED] bg-white px-3.5 py-2.5 text-sm text-[#1E293B] focus:border-[#8FB0CE] focus:outline-none focus:ring-2 focus:ring-[#8FB0CE]/20"
             >
               <option value="automatic">Otomatis mengikuti timeline</option>
               <option value="manual">Manual</option>
@@ -161,7 +161,7 @@ export default function EventForm({ event = null, members = [] }) {
                 name="status"
                 value={manualStatus}
                 onChange={(event) => setManualStatus(event.target.value)}
-                className="block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm"
+                className="block w-full rounded-xl border border-[#D8E3ED] bg-white px-3.5 py-2.5 text-sm text-[#1E293B] focus:border-[#8FB0CE] focus:outline-none focus:ring-2 focus:ring-[#8FB0CE]/20"
               >
                 {EVENT_STATUS_OPTIONS.map(([status, label]) => (
                   <option key={status} value={status}>
@@ -174,13 +174,13 @@ export default function EventForm({ event = null, members = [] }) {
               ) : null}
             </div>
           ) : (
-            <div className="rounded-md border border-indigo-100 bg-white p-3">
+            <div className="rounded-xl border border-[#E3ECF5] bg-white p-3">
               <input type="hidden" name="status" value={previewStatus} />
-              <p className="text-xs text-zinc-500">Status berdasarkan tanggal hari ini</p>
-              <p className="mt-1 font-semibold text-indigo-800">
+              <p className="text-xs text-[#64748B]">Status berdasarkan tanggal hari ini</p>
+              <p className="mt-1 font-semibold text-[#407BB0]">
                 {EVENT_STATUS_LABELS[previewStatus]}
               </p>
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className="mt-1 text-xs text-[#64748B]">
                 Status akan dihitung ulang di server setiap halaman memuat data.
               </p>
             </div>
@@ -221,14 +221,14 @@ export default function EventForm({ event = null, members = [] }) {
         </div>
 
         {statusMode === "automatic" ? (
-          <p className="mt-3 rounded-md bg-white p-3 text-sm text-zinc-700">
+          <p className="mt-3 rounded-xl border border-[#E8EEF5] bg-white p-3 text-sm text-[#475569]">
             Pratinjau: status saat ini akan menjadi{" "}
             <strong>{EVENT_STATUS_LABELS[previewStatus]}</strong>. Tanpa tanggal
             perencanaan/persiapan, event tetap berstatus Direncanakan sampai
             tanggal mulai.
           </p>
         ) : (
-          <p className="mt-3 text-xs text-zinc-500">
+          <p className="mt-3 text-xs text-[#64748B]">
             Mode manual tidak mengubah status berdasarkan tanggal. Kamu dapat
             menggantinya kapan saja dari halaman edit event.
           </p>
@@ -254,7 +254,7 @@ export default function EventForm({ event = null, members = [] }) {
             id="coordinator_id"
             name="coordinator_id"
             defaultValue={value("coordinator_id")}
-            className="block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm"
+            className="block w-full rounded-xl border border-[#D8E3ED] bg-white px-3.5 py-2.5 text-sm text-[#1E293B] focus:border-[#8FB0CE] focus:outline-none focus:ring-2 focus:ring-[#8FB0CE]/20"
           >
             <option value="">Belum ditentukan</option>
             {members.map((member) => (
@@ -294,7 +294,7 @@ export default function EventForm({ event = null, members = [] }) {
         </Button>
         <a
           href={event ? `/events/${event.id}` : "/events"}
-          className="rounded-md border border-zinc-300 px-4 py-2 text-sm"
+          className="rounded-xl border border-[#D8E3ED] px-4 py-2.5 text-sm font-medium text-[#475569] transition-colors hover:bg-[#F8FAFC]"
         >
           Batal
         </a>
