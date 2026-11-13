@@ -127,3 +127,13 @@ Update this file after substantial work. Keep public product/engineering documen
 - Vercel status: `success`, description `Deployment has completed`; Vercel Preview Comments: `success`.
 - PR #26 is open and mergeable at this check. No merge or Production deployment performed.
 - The docs update records this initial result; verify Vercel again for the final/latest PR head after the docs commit. Owner browser UAT remains necessary.
+
+
+## 13 November 2026 — Mandatory branch and PR synchronization preflight
+
+- Owner asked how to prevent feature work from missing changes that exist on separate, unmerged PR branches. Confirmed this is a real integration risk if development only reads `main`.
+- Refreshed GitHub before editing: latest `main` was `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a`; PR #26 was merged at that commit; there were no open PRs. The remote branch list still contains historical feature/hotfix branches, so branch existence alone is not proof of active work.
+- Added a mandatory pre-development workflow to `.ai/PROJECT_CONTEXT.md`: inspect all open PR metadata/head/base SHAs and changed-file lists; inspect full diffs for overlapping/dependent work; classify non-main branches; choose latest-main baseline for independent work or an explicitly documented stacked/dependent base for work that needs an unmerged PR; refresh PR state during long tasks; verify the final diff and exact Preview SHA.
+- Updated `.ai/PROJECT_STATUS.md` to record the actual merged PR #26/main state and the new workflow.
+- Documentation-only change on branch `docs/pr-branch-synchronization-workflow`, created from main SHA `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a`. No application source, database, schema, migration, RLS, production data, direct-main, or deployment changes.
+- Next: open a documentation-only PR and verify its final diff/Preview; do not merge without Owner authorization.
