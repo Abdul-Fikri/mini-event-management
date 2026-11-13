@@ -3,7 +3,7 @@
 Dokumen utama untuk memahami produk, arsitektur, fitur, dan cara kerja aplikasi.
 
 - Repository: https://github.com/Abdul-Fikri/mini-event-management
-- Last reviewed: 12 November 2026
+- Last reviewed: 13 November 2026
 - Active app root: repository root
 - Source directory: \`src/\`
 
@@ -329,3 +329,17 @@ Agar daftar tetap mudah dipindai, halaman daftar Event dan Anggota grup juga men
 - Halaman khusus menyediakan tautan kembali ke daftar induk. Jika anggota diedit atau dihapus dari `/members/all`, pengguna dikembalikan ke daftar khusus tersebut; halaman daftar biasa tetap kembali ke `/members`.
 - Label status pada daftar Event tetap dihitung menggunakan resolver status efektif yang sama dengan halaman Event lainnya.
 - Pagination adalah perilaku tampilan di atas data yang telah dimuat dan dibatasi berdasarkan grup Owner di server. Ini tidak mengubah otorisasi, RLS, schema, atau data.
+
+
+## 17. Responsivitas perpindahan status Kanban
+
+Perubahan status tugas di Kanban menggunakan pola optimistic UI agar kartu tidak menunggu round-trip Server Action untuk berpindah secara visual.
+
+- Saat kartu di-drag ke kolom lain atau status dipilih melalui dropdown, state lokal langsung diperbarui dan kartu langsung tampil di kolom tujuan.
+- Penyimpanan ke Supabase berjalan di belakang layar. Kartu yang sedang disimpan menampilkan spinner kecil dan status "Menyimpan status…".
+- Status pending berlaku per kartu, sehingga tugas lain tetap dapat dipindahkan tanpa menunggu penyimpanan kartu sebelumnya.
+- Jika penyimpanan gagal atau request melempar error, kartu dikembalikan ke status sebelumnya dan pesan error ditampilkan.
+- Interaksi ini tidak menjalankan `router.refresh()` dan tidak me-revalidate route Kanban yang sedang dibuka. Server Action tetap menginvalidasi halaman ringkasan event dan daftar seluruh tugas agar tampilan server-rendered lain mengambil data terbaru.
+- Optimistic UI tidak menggantikan validasi server. Server Action tetap memeriksa status allowlist, identitas Owner, group, event, dan task.
+
+UAT: uji drag-and-drop serta dropdown status; pastikan perpindahan langsung terlihat, spinner muncul hanya pada kartu yang sedang disimpan, tugas lain tetap interaktif, kegagalan mengembalikan status lama, dan status tersimpan terlihat setelah membuka ulang halaman atau daftar seluruh tugas.

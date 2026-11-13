@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
   CalendarDays,
@@ -10,6 +9,7 @@ import {
   CircleDashed,
   Clock3,
   GripVertical,
+  LoaderCircle,
   UserRound,
 } from "lucide-react";
 import { deleteTask, updateTaskStatus } from "@/actions/tasks";
@@ -68,35 +68,53 @@ const PRIORITIES = {
 };
 
 export default function TaskKanbanBoard({ eventId, tasks, members }) {
-  const router = useRouter();
+  const [boardTasks, setBoardTasks] = useState(tasks);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [draggedTaskId, setDraggedTaskId] = useState(null);
   const [dropTargetStatus, setDropTargetStatus] = useState(null);
-  const [pendingTaskId, setPendingTaskId] = useState(null);
+  const [pendingTaskIds, setPendingTaskIds] = useState(() => new Set());
+  const pendingTaskIdsRef = useRef(new Set());
   const [feedback, setFeedback] = useState("");
   const basePath = `/events/${eventId}/tugas`;
+
+  useEffect(() => {
+    setBoardTasks(tasks);
+  }, [tasks]);
   const memberById = new Map(members.map((member) => [member.id, member]));
 
   async function changeTaskStatus(taskId, nextStatus) {
-    const task = tasks.find((item) => item.id === taskId);
-    if (!task || task.status === nextStatus || pendingTaskId) return;
+    const task = boardTasks.find((item) => item.id === taskId);
+    if (!task || task.status === nextStatus || pendingTaskIdsRef.current.has(taskId)) return;
 
-    setPendingTaskId(taskId);
+    // Optimistically move the card before waiting for the Server Action round-trip.
+    pendingTaskIdsRef.current.add(taskId);
+    setPendingTaskIds(new Set(pendingTaskIdsRef.current));
+    setBoardTasks((current) =>
+      current.map((item) => item.id === taskId ? { ...item, status: nextStatus } : item)
+    );
+    setDraggedTaskId(null);
+    setDropTargetStatus(null);
     setFeedback("");
+
+    const rollback = () => {
+      setBoardTasks((current) =>
+        current.map((item) => item.id === taskId ? { ...item, status: task.status } : item)
+      );
+    };
+
     try {
       const result = await updateTaskStatus(eventId, taskId, nextStatus);
       if (!result?.success) {
-        setFeedback(result?.message || "Status tugas gagal diperbarui.");
-        return;
+        rollback();
+        setFeedback(result?.message || "Status tugas gagal diperbarui. Status dikembalikan.");
       }
-      router.refresh();
     } catch {
-      setFeedback("Status tugas gagal diperbarui. Silakan coba lagi.");
+      rollback();
+      setFeedback("Status tugas gagal diperbarui. Periksa koneksi lalu coba lagi.");
     } finally {
-      setPendingTaskId(null);
-      setDraggedTaskId(null);
-      setDropTargetStatus(null);
+      pendingTaskIdsRef.current.delete(taskId);
+      setPendingTaskIds(new Set(pendingTaskIdsRef.current));
     }
   }
 
@@ -156,7 +174,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {STATUSES.map((status) => {
           const Icon = status.icon;
-          const statusTasks = tasks.filter((task) => task.status === status.key);
+          const statusTasks = boardTasks.filter((task) => task.status === status.key);
           const isDropTarget = dropTargetStatus === status.key;
 
           return (
@@ -187,7 +205,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
               <div className="space-y-3">
                 {statusTasks.map((task) => {
                   const priority = PRIORITIES[task.priority] || PRIORITIES.medium;
-                  const isPending = pendingTaskId === task.id;
+                  const isPending = pendingTaskIds.has(task.id);
                   const isEditing = editingTaskId === task.id;
 
                   return (
@@ -199,7 +217,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
                         setDraggedTaskId(null);
                         setDropTargetStatus(null);
                       }}
-                      className={`cursor-grab rounded-lg border border-l-4 border-zinc-200 bg-white p-3 shadow-sm transition hover:shadow-md active:cursor-grabbing ${status.accent} ${draggedTaskId === task.id ? "opacity-50" : ""} ${isPending ? "opacity-60" : ""}`}
+                      className={`cursor-grab rounded-lg border border-l-4 border-zinc-200 bg-white p-3 shadow-sm transition hover:shadow-md active:cursor-grabbing ${status.accent} ${draggedTaskId === task.id ? "opacity-50" : ""} ${isPending ? "ring-1 ring-indigo-300" : ""}`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex min-w-0 items-start gap-1.5">
@@ -231,7 +249,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
                         <select
                           id={`task-status-${task.id}`}
                           value={task.status}
-                          disabled={isPending || Boolean(pendingTaskId)}
+                          disabled={isPending}
                           onChange={(event) => changeTaskStatus(task.id, event.target.value)}
                           className="min-w-0 max-w-full rounded-md border border-zinc-200 bg-white px-2 py-1.5 text-xs text-zinc-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 disabled:opacity-50"
                         >
@@ -255,7 +273,12 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
                         </form>
                       </div>
 
-                      {isPending ? <p className="mt-2 text-xs font-medium text-indigo-700" role="status">Memperbarui status…</p> : null}
+                      {isPending ? (
+                        <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-indigo-700" role="status" aria-live="polite">
+                          <LoaderCircle size={13} className="animate-spin" aria-hidden="true" />
+                          Menyimpan status…
+                        </p>
+                      ) : null}
                       {isEditing ? (
                         <div className="mt-3 border-t border-zinc-100 pt-3">
                           <TaskForm eventId={eventId} members={members} task={task} returnTo={basePath} />
@@ -277,7 +300,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
       </div>
 
       <p className="text-xs text-zinc-500">
-        {tasks.length} tugas · {tasks.filter((task) => task.status === "done").length} selesai · Drag kartu untuk memindahkan status, atau gunakan pilihan status pada kartu.
+        {boardTasks.length} tugas · {boardTasks.filter((task) => task.status === "done").length} selesai · Drag kartu untuk memindahkan status, atau gunakan pilihan status pada kartu.
       </p>
     </section>
   );

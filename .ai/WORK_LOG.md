@@ -108,3 +108,22 @@ Update this file after substantial work. Keep public product/engineering documen
 - Added a repository-wide suspicious escaped-newline scan rule to `.ai/PROJECT_CONTEXT.md`, explicitly covering all changed source files and related Server Action modules.
 - PR #24 was confirmed merged. PR #25 will carry the members fix and documentation. No direct main update, database, migration, RLS, production data, environment, or deployment change.
 - Local lint/build/browser E2E were not run; require Vercel Preview for the exact latest PR #25 head before merge.
+
+
+## 13 November 2026 — Task Kanban optimistic interaction
+
+- Reviewed current `main` after Owner reported that changing task status feels slow. `TaskKanbanBoard` awaited the Server Action before moving a card, then called `router.refresh()`; the status action also revalidated the active Kanban route.
+- Changed the client to optimistically update local board state immediately for both drag-and-drop and the status selector. Server persistence runs in the background.
+- Added per-task pending state and an inline spinning indicator; unrelated cards remain interactive while another task is saving.
+- Added rollback to the previous status plus visible feedback when the Server Action returns an error or throws.
+- Removed `router.refresh()` and stopped revalidating the active Kanban route for status-only updates. Event overview and dedicated `/tugas/all` remain invalidated.
+- Updated `.ai/PROJECT_CONTEXT.md`, `.ai/PROJECT_STATUS.md`, and handbook/implementation docs with the behavior and UAT expectations.
+- No database, schema, migration, RLS, production data, environment, or direct `main` changes. Local lint/build/browser E2E were not run; verify Vercel Preview for the final PR #26 head and perform Owner UAT.
+
+
+### PR #26 initial Vercel Preview result
+
+- Checked GitHub status and check-runs for PR #26 head `4379df45902c55699ceb4cf279e25cf84c35c0f5`.
+- Vercel status: `success`, description `Deployment has completed`; Vercel Preview Comments: `success`.
+- PR #26 is open and mergeable at this check. No merge or Production deployment performed.
+- The docs update records this initial result; verify Vercel again for the final/latest PR head after the docs commit. Owner browser UAT remains necessary.

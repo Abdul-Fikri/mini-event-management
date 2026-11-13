@@ -163,6 +163,9 @@ Use this checklist for future UAT:
 - [ ] Dedicated rundown view contains only schedule items, links back to Rundown, and edit/delete actions return to that view.
 - [ ] Tugas main page displays the four existing statuses as a colored/icon Kanban board with correct counts and empty states.
 - [ ] Drag-and-drop between all four status columns persists after refresh; the card status selector also works as a keyboard/touch alternative.
+- [ ] Drag-and-drop and status selector move the card immediately before the Server Action finishes; a small spinner appears only on the card being saved.
+- [ ] A task save failure or network error restores the card's previous column and displays feedback; another card can still be moved while the first card is pending.
+- [ ] After an optimistic status update succeeds, navigate to `/events/[id]/tugas/all` and the event overview to confirm the persisted status is current.
 - [ ] Kanban provides add/edit/delete controls; save/delete actions return to the Kanban page.
 - [ ] **Detail seluruh tugas** opens the dedicated full-list view with status counts, descriptions/notes, CRUD, and five-record pagination.
 - [ ] Dedicated tasks view links back to the Kanban board; create/edit/delete actions preserve the dedicated view.
@@ -295,4 +298,15 @@ PR #23 was merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`. The O
 - Current `main` contained two malformed literal backslash-n sequences in `src/actions/members.js`, between the member-list `revalidatePath` calls in save and delete actions.
 - Both occurrences were replaced with real source line breaks on `hotfix/fix-members-revalidate-syntax`. Source check: two occurrences fixed, zero matching malformed sequences remain in the file.
 - The 12 Server Action JavaScript files under `src/actions/` were scanned; the only matching literal backslash-n sequences were the two in `members.js`, now fixed. The prior `events.js` correction is present on `main`.
-- PR #25 is pending. No database, migration, RLS, production data, environment, direct `main` change, or Production deployment. Local lint/build/browser E2E were not run; Vercel Preview must be verified against the final PR head.
+- PR #25 is merged. No database, migration, RLS, production data, or environment change was required. Local lint/build/browser E2E were not run in that hotfix session.
+
+
+## 16. Task Kanban optimistic status updates — PR #26 in progress
+
+- Owner reported slow status changes on the four-column task Kanban. The prior client waited for `updateTaskStatus` to complete and then called `router.refresh()`, causing the card to wait for the server round-trip and a route refresh.
+- The board now moves the card immediately using optimistic local state for both drag-and-drop and the status selector.
+- The Server Action persists the change in the background. The affected card shows a small spinner and "Menyimpan status…" while pending; other cards remain interactive.
+- If the Server Action rejects or throws, the card rolls back to its previous status and visible feedback is shown.
+- The active Kanban route is no longer revalidated for status-only updates and the client no longer calls `router.refresh()`. Event overview and dedicated `/tugas/all` are still revalidated.
+- No schema, migration, RLS, database, or production data changes.
+- Source-level checks passed: optimistic state is updated before awaiting the Server Action, no `router.refresh()` remains, pending state is per task, spinner and rollback are present, and the active Kanban route is not revalidated. Vercel status for initial PR head `4379df45902c55699ceb4cf279e25cf84c35c0f5` reported `success` / deployment completed. Local lint/build/browser E2E have not been run. Verify Vercel Preview against the exact latest PR #26 head after this documentation update and complete Owner UAT for immediate move, spinner, rollback, and independent concurrent card updates.

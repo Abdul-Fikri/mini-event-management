@@ -51,8 +51,9 @@ export async function updateTaskStatus(eventId, taskId, status) {
     return { success: false, message: "Status tugas gagal diperbarui." };
   }
 
+  // The Kanban board updates optimistically on the client; only invalidate
+  // other server-rendered task views to avoid refreshing the active board.
   revalidatePath(`/events/${eventId}`);
-  revalidatePath(`/events/${eventId}/tugas`);
   revalidatePath(`/events/${eventId}/tugas/all`);
   return { success: true, message: "Status tugas diperbarui." };
 }

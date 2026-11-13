@@ -124,7 +124,8 @@ Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEM
 - Rundown and Pengadaan each display at most five records per page and expose dedicated all-records routes. Tugas uses `/events/[id]/tugas` as a four-status Kanban board with drag-and-drop, an accessible status selector, and create/edit/delete controls; `/events/[id]/tugas/all` contains the complete task list, status counts, full CRUD, and five-record pagination.
 - Keuangan paginates categories, transactions, and ordered procurement commitments independently. Dedicated routes are `/events/[id]/keuangan/categories`, `/events/[id]/keuangan/transactions`, and `/events/[id]/keuangan/commitments`.
 - Every paginated list uses five records per page. The Tugas Kanban board displays all loaded tasks in their status columns; its dedicated detail view uses five-record pagination. Dedicated views contain only the selected data type, link back to their parent management page, and preserve their view after supported edit/delete/sync actions through the validated event return-path helper.
-- Add forms stay on the parent management pages for Rundown, Pengadaan, and Finance. Tugas supports create/edit/delete on both the Kanban board and its dedicated all-tasks view. No schema, migration, or RLS changes are introduced; the new task-status Server Action applies the existing Owner/group/event authorization scope and validates the status allowlist.
+- Add forms stay on the parent management pages for Rundown, Pengadaan, and Finance. Tugas supports create/edit/delete on both the Kanban board and its dedicated all-tasks view. No schema, migration, or RLS changes are introduced; the task-status Server Action applies the existing Owner/group/event authorization scope and validates the status allowlist.
+- Kanban status changes use optimistic client state: the card moves immediately on drop/status selection, only that card shows a saving spinner while the Server Action persists in the background, and a failed save rolls the card back with feedback. Do not call `router.refresh()` for this interaction; revalidate other server-rendered task views only. Track pending updates per task so unrelated cards remain interactive.
 
 
 ## Source-editing and build-verification guardrails
@@ -160,3 +161,14 @@ Incident chain:
 - PR #23 merge introduced malformed escaped newlines in `src/actions/events.js` and `src/actions/members.js`.
 - PR #24 corrected `events.js` but did not catch the remaining issue in `members.js`.
 - PR #25 hotfix corrects both malformed sequences in `members.js` on a separate branch.
+
+
+## Kanban interaction performance rule
+
+When changing task status from the four-column Kanban, preserve the optimistic interaction contract:
+- Update local board state immediately before awaiting the Server Action; never wait for the server response before moving the card.
+- Keep a per-card pending indicator/spinner while persistence is in flight. Do not block all cards because one task is saving.
+- If the Server Action returns failure or throws, restore the prior status and show clear feedback.
+- Avoid `router.refresh()` and avoid revalidating the active `/events/[id]/tugas` route for status-only updates; they can cause a full route render and defeat the immediate interaction. Invalidate the event overview and dedicated `/tugas/all` view only.
+- Preserve server-side authorization, group/event scoping, and the status allowlist. Optimistic UI is presentation only; the database remains authoritative.
+- Test both drag-and-drop and the status selector, slow/pending responses, failed updates/rollback, and a second independent card while the first is pending.
