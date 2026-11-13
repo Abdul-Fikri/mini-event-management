@@ -91,7 +91,6 @@ export default function EventDivisionManager({
   const visibleDivisions = filteredDivisions.slice(startIndex, startIndex + PAGE_SIZE);
   const basePath = `/events/${eventId}/panitia`;
   const returnTo = standalone ? `${basePath}/divisions` : basePath;
-  const viewAllHref = `${basePath}/divisions${search.trim() ? `?q=${encodeURIComponent(search.trim())}` : ""}`;
 
   if (!standalone) {
     return (
@@ -138,36 +137,24 @@ export default function EventDivisionManager({
     <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          {standalone ? (
-            <Link href={basePath} className="text-sm font-medium text-indigo-700 hover:underline">
-              ← Kembali ke Panitia
-            </Link>
-          ) : null}
-          <h2 className={standalone ? "mt-2 text-xl font-semibold" : "text-lg font-semibold"}>
-            Kelola divisi
-          </h2>
+          <Link href={basePath} className="text-sm font-medium text-indigo-700 hover:underline">
+            ← Kembali ke Panitia
+          </Link>
+          <h2 className="mt-2 text-xl font-semibold">Kelola divisi</h2>
           <p className="mt-1 text-sm text-zinc-600">
             Buat daftar divisi khusus untuk event ini. Saat menyusun panitia, pilih divisi dari daftar agar penamaannya konsisten.
           </p>
         </div>
-        {!standalone && divisions.length > 0 ? (
-          <Link
-            href={viewAllHref}
-            className="shrink-0 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-800 hover:bg-indigo-100"
-          >
-            Lihat semua divisi
-          </Link>
-        ) : null}
       </div>
 
       {divisions.length ? (
         <div className="space-y-3">
           <div>
-            <label htmlFor={standalone ? "search-all-event-divisions" : "search-event-divisions"} className="mb-1 block text-sm font-medium">
+            <label htmlFor="search-all-event-divisions" className="mb-1 block text-sm font-medium">
               Cari divisi
             </label>
             <input
-              id={standalone ? "search-all-event-divisions" : "search-event-divisions"}
+              id="search-all-event-divisions"
               type="search"
               value={search}
               onChange={(event) => {
