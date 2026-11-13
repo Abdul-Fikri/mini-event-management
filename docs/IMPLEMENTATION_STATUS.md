@@ -346,7 +346,7 @@ Branch: `feat/stitch-management-ui-polish`, created from the exact PR #30 merge 
 Scope:
 - Remove the decorative `01` ordinal tile beside the Divisi event heading; it is a section heading, not a numbered step or record.
 - Extend the same Stitch/Panitia visual language to Dashboard, Event lists and create/edit forms, Member lists and create/edit/invitation forms, event overview, Rundown, Tugas Kanban and full task list, Pengadaan, Keuangan (including dedicated category/transaction/commitment views), Ekspor, and Pengaturan Grup.
-- Use reusable neutral management surfaces, separate outlined record cards, soft-tinted form/summary panels, consistent input/select treatments, and subtle blue links/actions.
+- Use reusable neutral management surfaces, separate outlined record cards, soft-tinted form/summary panels, consistent input/select treatments, subtle blue links/actions, and muted focus rings on Kanban drag/pending states.
 - Keep topbar, sidebar, mobile navigation, event header, and subnavigation from PR #30 as the shared foundation.
 
 Compatibility and safety:
@@ -357,7 +357,7 @@ Compatibility and safety:
 Verification:
 - Source-level changes are limited to presentation classes/markup and reusable CSS surface classes; source review and exact diff inspection remain required.
 - Local `npm run lint`, `npm run build`, and browser E2E have not been run in this environment. Do not claim they passed.
-- Initial PR #31 head `3caec658764b185fef1a81dfb2b4f3712102a320` received Vercel Preview `success`; verify Preview again for the exact final branch head after documentation updates, then complete Owner desktop/mobile visual UAT and functional regression checks before merge. A Preview result does not establish Production deployment.
+- Implementation head `ce64bf772000b8f5ab84e727d3b9be43570d043c` received Vercel Preview `success` after the Kanban focus-ring polish. This documentation-only follow-up commit triggers a fresh Preview check; verify the exact final branch head, then complete Owner desktop/mobile visual UAT and functional regression checks before merge. A Preview result does not establish Production deployment.
 
 ### Owner workspace visual consistency — Owner UAT checklist
 
