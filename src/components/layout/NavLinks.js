@@ -40,7 +40,7 @@ export default function NavLinks() {
                 href={item.href}
                 onClick={closeMobileNav}
                 aria-current={active ? "page" : undefined}
-                className={`group flex items-center gap-3 rounded-xl border-l-[3px] px-3 py-2.5 text-sm transition-colors lg:w-full ${
+                className={`group flex items-center gap-3 whitespace-nowrap rounded-xl border-l-[3px] px-3 py-2.5 text-sm transition-colors lg:w-full ${
                   active
                     ? "border border-[#DCE8F3] border-l-[#5C98CB] bg-[#EDF4FA] font-semibold text-[#284F73]"
                     : "border-transparent text-[#64748B] hover:bg-[#F7F9FC] hover:text-[#334155]"

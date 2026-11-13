@@ -134,7 +134,7 @@ export default function EventDivisionManager({
             </Button>
             <Link
               href={`${basePath}/divisions`}
-              className="inline-flex items-center justify-center rounded-xl bg-[#5C98CB] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#407BB0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5C98CB]"
+              className="inline-flex items-center justify-center rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#32628E] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#407BB0]"
             >
               Kelola divisi
             </Link>
