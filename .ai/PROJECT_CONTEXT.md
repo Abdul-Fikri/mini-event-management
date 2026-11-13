@@ -197,9 +197,9 @@ A concise pre-development note should identify: latest `main` SHA; open PRs and 
 
 The Owner-facing event Panitia management pages use a scoped Polar Bear visual theme inspired by soft ice blue and white:
 
-- App canvas/surface references: `#F5F8FC` (ice canvas), `#FFFFFF` (card surface), `#F0F5FA` (soft tinted panels), and `#EBF3FC` (active/soft blue highlights).
-- Primary accent: `#3B82F6`; hover/darker accent: `#2563EB`; focus accent: `#BFDBFE`.
-- Borders: `#E2EBF5` or slightly stronger `#D7E6F5` for nested data cards. Primary text: `#0F172A`; secondary text: `#64748B`.
+- App canvas/surface references: `#F5F8FC` (canvas), `#FFFFFF` (card surface), `#F8FAFC` (soft panel), and `#EDF4FA` (active/soft blue highlights).
+- Primary accent: `#407BB0`; hover/darker accent: `#32628E`; focus accent: `#8FB0CE`.
+- Borders: `#E3ECF5` or slightly stronger `#D7E3EF` for nested data cards. Primary text: `#1E293B`; secondary text: `#64748B`.
 - Use clear surface hierarchy: separate white sections, tinted filter/form panels, and individually outlined/shadowed data cards. Keep spacing and typography consistent so adjacent records do not visually blend together.
 - This was the initial PR #29 scope. The Owner subsequently approved extending the same restrained design language across the entire Owner workspace; see `Owner workspace visual design system — Stitch-inspired` below.
 - Keep danger actions visibly distinct with accessible red styling. Preserve keyboard focus, labels, semantic elements, responsive stacking, and pending/error feedback.

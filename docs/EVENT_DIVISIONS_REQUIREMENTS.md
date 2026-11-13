@@ -51,11 +51,11 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 
 The Owner-facing Panitia management experience uses a scoped Polar Bear palette inspired by soft ice blue and white:
 
-- Canvas reference: `#F5F8FC`; white card surface: `#FFFFFF`.
-- Subtle panel tint: `#F0F5FA`; soft blue highlight: `#EBF3FC`.
-- Primary blue: `#3B82F6`; hover/darker blue: `#2563EB`; focus border: `#BFDBFE`.
-- Soft border: `#E2EBF5`; stronger nested-card border: `#D7E6F5`.
-- Main text: `#0F172A`; secondary text: `#64748B`.
+- Canvas reference: `#F5F8FC`; white card surface: `#FFFFFF`; subtle panel: `#F8FAFC`.
+- Soft blue highlight: `#EDF4FA`.
+- Primary accent: `#407BB0`; hover/darker accent: `#32628E`; focus border: `#8FB0CE`.
+- Soft border: `#E3ECF5`; stronger nested-card border: `#D7E3EF`.
+- Main text: `#1E293B`; secondary text: `#64748B`.
 - Visually separate the Divisi event and Susunan panitia sections. Place search/filter controls in a lightly tinted panel and give each committee record its own outlined card, with division, position, contact, and responsibility arranged as distinct information levels.
 - The main Panitia page and dedicated division/committee management views share the theme. The Owner subsequently approved extending this same restrained visual language across all Owner management modules.
 - The Divisi event heading starts directly with its title. Do not add a decorative ordinal tile such as `01`; this panel is a management section, not a numbered step or record.
