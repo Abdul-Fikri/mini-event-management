@@ -357,7 +357,7 @@ Compatibility and safety:
 Verification:
 - Source-level changes are limited to presentation classes/markup and reusable CSS surface classes; source review and exact diff inspection remain required.
 - Local `npm run lint`, `npm run build`, and browser E2E have not been run in this environment. Do not claim they passed.
-- Implementation head `ce64bf772000b8f5ab84e727d3b9be43570d043c` received Vercel Preview `success` after the Kanban focus-ring polish. This documentation-only follow-up commit triggers a fresh Preview check; verify the exact final branch head, then complete Owner desktop/mobile visual UAT and functional regression checks before merge. A Preview result does not establish Production deployment.
+- Latest reviewed implementation/documentation head `8504173e158c6eb82b352640e29543fa6a5381ee` received Vercel Preview `success`. This is a Preview result only; local lint/build/browser E2E remain unrun. Complete Owner desktop/mobile visual UAT and functional regression checks before merge. A Preview result does not establish Production deployment.
 
 ### Owner workspace visual consistency — Owner UAT checklist
 

@@ -210,5 +210,5 @@ Update this file after substantial work. Keep public product/engineering documen
 - Opened PR #31: https://github.com/Abdul-Fikri/mini-event-management/pull/31, base `main`, branch `feat/stitch-management-ui-polish`.
 - PR #31 contains 35 changed files (29 application source files and 6 documentation files) at opening; subsequent source/doc polish commits are recorded on the same branch.
 - Softened the Kanban drag-target and pending-card focus rings to the muted blue accent; behavior is unchanged.
-- Implementation head `ce64bf772000b8f5ab84e727d3b9be43570d043c` received Vercel Preview status `success`. This is a Preview result, not Production; the documentation-only follow-up commit must be rechecked.
+- The latest reviewed implementation/documentation head `8504173e158c6eb82b352640e29543fa6a5381ee` received Vercel Preview status `success`. This is a Preview result, not Production. Local lint/build/browser E2E remain unrun.
 - PR remains open and unmerged. Local lint/build/browser E2E have not been run in this environment. No database, migration, RLS, production data, or deployment configuration changes.
