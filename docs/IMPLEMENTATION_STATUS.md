@@ -284,7 +284,7 @@ PR #23 adds search/filter and dedicated views to Panitia; five-record pagination
 PR #23 was merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`. The Owner-provided Vercel Production screenshot then showed `npm run build` failing with `Expected unicode escape` in `src/actions/events.js`; the source contained two literal `\\n` sequences between `revalidatePath` calls. The hotfix is tracked separately below. The assistant has not run local lint/build/browser E2E.
 
 
-## 14. Production build syntax hotfix — PR pending
+## 14. Production build syntax hotfix — PR #24 merged
 
 - Owner-provided Vercel Production build log for merged PR #23 commit `5a2c2824623f5e2f12d4c668642511898d945c80` shows `npm run build` failed with Turbopack `Expected unicode escape` in `src/actions/events.js` at lines 96 and 116.
 - Both lines contained a literal backslash-n sequence between two `revalidatePath` calls. The hotfix replaces each sequence with a real source line break; behavior is otherwise unchanged.
@@ -301,7 +301,7 @@ PR #23 was merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`. The O
 - PR #25 is merged. No database, migration, RLS, production data, or environment change was required. Local lint/build/browser E2E were not run in that hotfix session.
 
 
-## 16. Task Kanban optimistic status updates — PR #26 in progress
+## 16. Task Kanban optimistic status updates — PR #26 merged
 
 - Owner reported slow status changes on the four-column task Kanban. The prior client waited for `updateTaskStatus` to complete and then called `router.refresh()`, causing the card to wait for the server round-trip and a route refresh.
 - The board now moves the card immediately using optimistic local state for both drag-and-drop and the status selector.
@@ -310,3 +310,13 @@ PR #23 was merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`. The O
 - The active Kanban route is no longer revalidated for status-only updates and the client no longer calls `router.refresh()`. Event overview and dedicated `/tugas/all` are still revalidated.
 - No schema, migration, RLS, database, or production data changes.
 - Source-level checks passed: optimistic state is updated before awaiting the Server Action, no `router.refresh()` remains, pending state is per task, spinner and rollback are present, and the active Kanban route is not revalidated. Vercel status for initial PR head `4379df45902c55699ceb4cf279e25cf84c35c0f5` reported `success` / deployment completed. Local lint/build/browser E2E have not been run. Verify Vercel Preview against the exact latest PR #26 head after this documentation update and complete Owner UAT for immediate move, spinner, rollback, and independent concurrent card updates.
+
+
+## 17. Panitia division management layout — PR #27 in progress
+
+- The main Panitia page no longer embeds the full division list, search, edit, and delete controls.
+- It now shows a quick Tambah divisi button that opens the create form in place and a Kelola divisi link to `/events/[id]/panitia/divisions`.
+- The quick-add form submits through the existing Owner-validated Server Action and returns to the Panitia page after a successful save.
+- The dedicated Kelola divisi page retains the full division CRUD, search by name/description, five-record pagination, and return link.
+- This is a UI/layout and route-navigation refinement only. No database schema, migration, RLS, Server Action authorization, or production data changes.
+- Source-level checks confirm the quick-add action, dedicated manager route, and existing CRUD controls remain present. Local lint/build and browser E2E have not been run by the assistant; verify the exact PR Preview and complete Owner UAT.
