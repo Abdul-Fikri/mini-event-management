@@ -114,7 +114,6 @@ export default function EventDivisionManager({
               <p className="mt-1 max-w-2xl text-sm leading-6 text-[#64748B]">
                 Atur kelompok kerja untuk event ini. Divisi yang dibuat akan tersedia saat menambahkan anggota panitia.
               </p>
-            </div>
           </div>
 
           <div className="flex w-full flex-wrap gap-2 sm:w-auto">
