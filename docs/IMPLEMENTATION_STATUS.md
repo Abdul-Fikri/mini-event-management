@@ -312,7 +312,7 @@ PR #23 was merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`. The O
 - Source-level checks passed: optimistic state is updated before awaiting the Server Action, no `router.refresh()` remains, pending state is per task, spinner and rollback are present, and the active Kanban route is not revalidated. Vercel status for initial PR head `4379df45902c55699ceb4cf279e25cf84c35c0f5` reported `success` / deployment completed. Local lint/build/browser E2E have not been run. Verify Vercel Preview against the exact latest PR #26 head after this documentation update and complete Owner UAT for immediate move, spinner, rollback, and independent concurrent card updates.
 
 
-## 17. Panitia division management layout — PR #27 in progress
+## 17. Panitia division management layout — PR #28 in progress
 
 - The main Panitia page no longer embeds the full division list, search, edit, and delete controls.
 - It now shows a quick Tambah divisi button that opens the create form in place and a Kelola divisi link to `/events/[id]/panitia/divisions`.
