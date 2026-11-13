@@ -47,6 +47,19 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 - Susunan panitia remains on the main Panitia page with its search/filter and five-record pagination, plus a dedicated `/events/[id]/panitia/committee` view.
 - Dedicated views provide a return link to the main Panitia page. Save/delete actions return to the view where the action was initiated; return paths are validated server-side.
 
+## Panitia UI visual design
+
+The Owner-facing Panitia management experience uses a scoped Polar Bear palette inspired by soft ice blue and white:
+
+- Canvas reference: `#F5F8FC`; white card surface: `#FFFFFF`.
+- Subtle panel tint: `#F0F5FA`; soft blue highlight: `#EBF3FC`.
+- Primary blue: `#3B82F6`; hover/darker blue: `#2563EB`; focus border: `#BFDBFE`.
+- Soft border: `#E2EBF5`; stronger nested-card border: `#D7E6F5`.
+- Main text: `#0F172A`; secondary text: `#64748B`.
+- Visually separate the Divisi event and Susunan panitia sections. Place search/filter controls in a lightly tinted panel and give each committee record its own outlined card, with division, position, contact, and responsibility arranged as distinct information levels.
+- The main Panitia page and dedicated division/committee management views share the theme. Other management modules remain unchanged until the Owner requests expansion.
+- This is presentation-only: no data, authorization, route, or database behavior should change as part of visual refinement.
+
 ## Validation and security
 
 - Name is required, trimmed, and limited to 80 characters.
@@ -88,4 +101,4 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 
 ## Verification notes
 
-Event-specific division CRUD and its database migration were merged in PR #22 (merge commit `20ca806309629eace877536f245409e546824fac`). Division/committee search and filters, five-record pagination, and dedicated list views were merged in PR #23. The Panitia layout refinement (quick-add button plus a separate Kelola divisi destination) is being implemented in PR #28. The migration's application to the target Supabase database is not confirmed. An earlier PR #28 head received a successful Vercel Preview status check; the latest PR #28 Preview check is rate-limited by Vercel (`Deployment rate limited — retry in 24 hours`), which is a quota result rather than a compile result. This does not establish Production deployment. Local lint/build and browser E2E were not run in this environment; record their actual results before describing the features as runtime-verified.
+Event-specific division CRUD and its database migration were merged in PR #22 (merge commit `20ca806309629eace877536f245409e546824fac`). Division/committee search, filters, five-record pagination, and dedicated list views were merged in PR #23. The compact division quick-add and dedicated management navigation were merged in PR #28 (merge commit `ed00f75ec0beda51f20c8b407f7b95721ef70253`). The Polar Bear styling is being refined in PR #29. Migration application to the target Supabase database is not confirmed. Preview status and Production deployment must be checked separately; local lint/build and browser E2E results must be recorded before claiming runtime verification.
