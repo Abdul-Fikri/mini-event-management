@@ -21,7 +21,7 @@ export default function EventList({ events, standalone = false }) {
         <div>
           {standalone ? <Link href="/events" className="text-sm font-medium text-indigo-700 hover:underline">← Kembali ke daftar event</Link> : null}
           {standalone ? <h2 className="mt-2 text-xl font-semibold">Semua event grup</h2> : null}
-          <p className="text-sm text-zinc-600">{standalone ? "Seluruh event yang dikelola oleh grup." : "Daftar event terbaru yang dikelola oleh grup."}</p>
+          <p className="text-sm text-zinc-600">{standalone ? "Seluruh event yang dikelola oleh grup." : "Daftar event terbaru yang dikelola oleh grup. (ketuk event untuk melihat)"}</p>
         </div>
         {!standalone && events.length > 0 ? <Link href="/events/all" className="shrink-0 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-800 hover:bg-indigo-100">Lihat semua event</Link> : null}
       </div>
