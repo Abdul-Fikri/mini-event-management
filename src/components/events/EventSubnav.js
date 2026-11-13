@@ -20,7 +20,7 @@ export default function EventSubnav({ eventId }) {
   return (
     <nav
       aria-label="Navigasi event"
-      className="flex items-center gap-1 overflow-x-auto"
+      className="app-event-subnav flex items-center gap-1 overflow-x-auto"
     >
       {SECTIONS.map((item) => {
         const href = `${basePath}${item.href}`;

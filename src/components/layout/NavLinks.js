@@ -25,7 +25,7 @@ export default function NavLinks() {
     <nav
       id="primary-navigation"
       aria-label="Navigasi utama"
-      className={`app-sidebar rounded-2xl border p-3 ${mobileNavOpen ? "block" : "hidden"} md:block`}
+      className={`app-sidebar rounded-2xl border p-3 lg:sticky lg:top-20 ${mobileNavOpen ? "block" : "hidden"} md:block`}
     >
       <ul className="flex gap-1 overflow-x-auto md:flex-col">
         {NAV_ITEMS.map((item) => {

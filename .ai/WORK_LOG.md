@@ -178,3 +178,9 @@ Update this file after substantial work. Keep public product/engineering documen
 - Scope: Owner AppShell/topbar/sidebar/mobile navigation, event workspace header/subnav, global Owner palette, shared Button/TextField/Alert/ListPagination, clearer separate member cards, and toned-down Panitia styling. Existing feature behavior and server-side boundaries are preserved.
 - No database, migration, RLS, production data, environment, or deployment changes.
 - Local lint/build/browser E2E not run; exact final PR Preview and Owner UAT required. Merge and Production deployment remain Owner-controlled.
+
+
+### PR #29 merge confirmation
+
+- Owner merged PR #29 on 13 November 2026. GitHub confirms merge commit `5634b23a1538b36db2bf2c1fdbc1b5df607b8704` is current `main`.
+- The Stitch-inspired global refresh is a separate follow-up branch and PR; it does not alter Production or merge automatically.

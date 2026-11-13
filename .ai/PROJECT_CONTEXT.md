@@ -201,7 +201,7 @@ The Owner-facing event Panitia management pages use a scoped Polar Bear visual t
 - Primary accent: `#3B82F6`; hover/darker accent: `#2563EB`; focus accent: `#BFDBFE`.
 - Borders: `#E2EBF5` or slightly stronger `#D7E6F5` for nested data cards. Primary text: `#0F172A`; secondary text: `#64748B`.
 - Use clear surface hierarchy: separate white sections, tinted filter/form panels, and individually outlined/shadowed data cards. Keep spacing and typography consistent so adjacent records do not visually blend together.
-- Apply this theme only to Owner event Panitia management surfaces (main tab, division management, committee list, and related forms/pagination) until the Owner approves extending it to other management modules.
+- This was the initial PR #29 scope. The Owner subsequently approved extending the same restrained design language across the entire Owner workspace; see `Owner workspace visual design system — Stitch-inspired` below.
 - Keep danger actions visibly distinct with accessible red styling. Preserve keyboard focus, labels, semantic elements, responsive stacking, and pending/error feedback.
 - This is a presentation-only theme. Do not change data contracts, Server Actions, authorization, group/event scoping, RLS, or database schema as part of visual-only work.
 

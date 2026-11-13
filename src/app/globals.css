@@ -51,6 +51,14 @@ body {
   box-shadow: 0 1px 3px rgb(15 23 42 / 4%);
 }
 
+.app-event-subnav {
+  scrollbar-width: none;
+}
+
+.app-event-subnav::-webkit-scrollbar {
+  display: none;
+}
+
 /* Harmonize the existing Tailwind utility palette inside the Owner workspace. */
 .app-shell .bg-zinc-50 { background-color: #F8FAFC; }
 .app-shell .bg-zinc-100 { background-color: #F1F5F9; }

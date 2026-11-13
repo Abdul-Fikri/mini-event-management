@@ -70,10 +70,11 @@ Last updated: 13 November 2026 — PR #29 merged; Stitch-inspired global UI refr
 
 ## Next steps
 
-1. Complete Owner UAT for the Polar Bear Panitia UI on the PR Preview: check desktop/mobile spacing, card separation, readability, quick-add, search/filter, pagination, edit, delete, and form feedback.
-2. Confirm all existing Panitia interactions and server authorization remain unchanged.
-3. Complete Owner UAT for the merged Kanban optimistic move using drag-and-drop and status selector; verify immediate movement, per-card spinner, and rollback on a failed save.
-4. Owner handles Vercel Production deployment and confirms production behavior; do not infer it from a merged PR or Preview result.
+1. Complete source review and static checks for `feat/stitch-soft-ui-refresh`.
+2. Open the PR to `main` and verify Vercel Preview for the exact final head.
+3. Owner reviews the Preview on desktop and mobile across Dashboard, Event/subpages, Panitia, Anggota Panitia, and Pengaturan Grup.
+4. Confirm CRUD, search/filter, pagination, return paths, role boundaries, and form feedback remain intact.
+5. Ask for explicit Owner approval before merge; Owner manages Production deployment.
 
 
 ## Production build hotfix

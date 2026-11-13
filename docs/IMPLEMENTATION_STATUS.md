@@ -345,3 +345,8 @@ Visual direction:
 - No blue shadows, glow, or decorative gradients.
 
 This is presentation-only. No schema, migration, RLS, Supabase environment, production data, or deployment changes are included. Local lint/build and browser E2E remain unrun in this environment; verify the exact final PR head with Vercel Preview and Owner UAT before merge.
+
+
+## Current follow-up — global Stitch-inspired UI
+
+PR #29 is merged. The Owner then supplied the full Stitch HTML reference and approved extending its clean, restrained visual language beyond Panitia. The follow-up branch `feat/stitch-soft-ui-refresh` updates the shared Owner shell (topbar/sidebar/mobile navigation), event header/subnavigation, shared controls, global workspace palette, member record cards, and the softened Panitia surfaces. It is presentation-only and preserves existing CRUD, data access, authorization, routes, and database behavior. Vercel Preview and Owner UAT for the exact final PR head are still required; local lint/build/browser E2E have not been run in this environment.
