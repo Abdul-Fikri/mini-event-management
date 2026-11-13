@@ -9,6 +9,10 @@ const VARIANTS = {
     "bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:outline-indigo-600",
   secondary:
     "border border-zinc-300 bg-white text-zinc-800 hover:bg-zinc-50 focus-visible:outline-indigo-600",
+  ice:
+    "bg-[#3B82F6] text-white shadow-sm hover:bg-[#2563EB] focus-visible:outline-[#3B82F6]",
+  iceSecondary:
+    "border border-[#D7E6F5] bg-white text-[#1D4ED8] hover:bg-[#F5F9FE] focus-visible:outline-[#3B82F6]",
 };
 
 export function Button({
