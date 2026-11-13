@@ -80,9 +80,9 @@ Last updated: 13 November 2026 — PR #23, #24, and #25 merged; PR #26 Kanban op
 
 - PR #24 is now merged. The subsequent Owner-provided Vercel log shows a failing build with an import trace through `src/actions/members.js` → `MemberList.js` → `members/page.js`.
 - Inspection of current `main` found two literal backslash-n sequences in `src/actions/members.js`, between `revalidatePath("/members")` and `revalidatePath("/members/all")` in save and delete actions. This is the same source syntax issue, not a Vercel quota diagnosis.
-- Both occurrences corrected on `hotfix/fix-members-revalidate-syntax`; PR #25 is pending. Source check: exactly two malformed occurrences found and zero remain in the file.
+- Both occurrences corrected on `hotfix/fix-members-revalidate-syntax`; PR #25 is merged. Source check found exactly two malformed occurrences before correction and zero remaining in the file.
 - Repository-wide follow-up guardrail added to `.ai/PROJECT_CONTEXT.md`: scan all modified source and related Server Action files for suspicious escaped newlines, not just the first compiler-reported file.
-- Local lint/build/browser E2E not run in this session. Verify Vercel Preview against the latest PR #25 head before merge.
+- Local lint/build/browser E2E were not run during that hotfix session.
 
 
 ## Kanban responsiveness improvement — PR #26 in progress
