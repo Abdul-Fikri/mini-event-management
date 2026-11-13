@@ -2,7 +2,7 @@
 
 Last reviewed: 13 November 2026
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source reviewed: `main` after PR #23 merge (merge commit `5a2c2824623f5e2f12d4c668642511898d945c80`) and hotfix branch `hotfix/fix-events-revalidate-syntax`.
+Source reviewed: `main` baseline after PR #28 merge (commit `ed00f75ec0beda51f20c8b407f7b95721ef70253`) and feature branch `feat/polar-blue-panitia-ui`.
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -15,7 +15,7 @@ Source reviewed: `main` after PR #23 merge (merge commit `5a2c2824623f5e2f12d4c6
 | Dashboard | Dynamic server-rendered dashboard and summary queries | User-reported Lighthouse Performance 96 |
 | Group members | Create/read/update/delete member directory; five-record pagination and dedicated all-members view | Group-level directory; edit/delete preserve the dedicated view when opened from `/members/all` |
 | Events | Create/read/update/delete events; five-record pagination and dedicated all-events view | Dynamic route `/events/[id]`; event status labels use the effective-status resolver |
-| Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown; search/filter committee by division and text; search division master list | `event_divisions` master data + `event_members` assignment |
+| Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown; search/filter committee by division and text; search division master list; Polar Bear UI refinement | `event_divisions` master data + `event_members` assignment; UI-only refinement in PR #29 |
 | Rundown | Create/update/delete schedule items; five-record pagination and dedicated all-items view | PIC restricted to current event roster |
 | Tasks | Four-status Kanban with drag-and-drop, alternative status selector, and create/update/delete; full list and five-record pagination at dedicated all-tasks view | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
 | Procurement | Create/update/delete procurement items; five-record pagination and dedicated all-items view; assign budget category; separate requested/ordered/purchased/ready states | PIC restricted to current event roster; ordered items become budget commitments; purchased/ready items automatically create or update one linked finance expense |
@@ -57,7 +57,11 @@ Source reviewed: `main` after PR #23 merge (merge commit `5a2c2824623f5e2f12d4c6
 - Procurement currently has no user-entered date field affected by this rule.
 - The event form's HTML `min` attributes improve the input experience; Zod validation in the Server Action remains authoritative. No database migration or historical data rewrite is required.
 
-## 3. Pagination and dedicated list views
+## 3. Panitia visual refinement
+
+The Owner-facing event Panitia tab and its dedicated division/committee management views use a scoped Polar Bear theme. The UI separates Divisi event and Susunan panitia into distinct white surfaces, places search/filter and forms on soft-blue panels, and presents each committee member in an individual card with clear hierarchy for name, division, position, contact, and responsibility. Buttons and pagination use soft ice-blue accents. The theme is intentionally not applied globally to other management modules. This is a UI-only change; existing data fetching, CRUD, search/filter, pagination, routes, authorization, and database behavior remain unchanged. PR #29 is in progress; Preview and Owner UAT are pending.
+
+## 4. Pagination and dedicated list views
 
 PR #23 applies five-record pagination and dedicated **Lihat semua** routes to group Event and Member lists, Panitia, Rundown, Pengadaan, and the three Keuangan lists. Tugas uses a four-status Kanban board on its main route and a five-record paginated full-list view at `/events/[id]/tugas/all`. Group-level routes are `/events/all` and `/members/all`. The member edit/delete flow validates and preserves `/members/all` as a return destination. These are UI/routing changes over group-scoped server queries; no database changes are introduced. Runtime verification remains pending until Preview is available and the Owner completes UAT.
 
@@ -88,6 +92,7 @@ PR #23 applies five-record pagination and dedicated **Lihat semua** routes to gr
 | #16 | Move group-logo Storage upload/removal to Owner-authorized server actions | Merged; final logo upload path; owner reports upload now succeeds |
 | #20 | Integrate Procurement with Finance: ordered commitments and linked purchase expenses | Merged 11 Nov 2026; migration application to Supabase is not confirmed |
 | #21 | Automate event lifecycle status with automatic/manual modes | Merged 11 Nov 2026 at `a87556aa24480cd8e0e9d83f22409a7f9fb2ab80`; migration application to Supabase is not confirmed |
+| #28 | Keep Panitia division quick-add on the main tab and move full CRUD to a dedicated page | Merged to main at `ed00f75ec0beda51f20c8b407f7b95721ef70253` |
 
 Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
