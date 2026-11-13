@@ -303,6 +303,8 @@ Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global
 - Daftar divisi dan susunan panitia menampilkan maksimal lima data per halaman dengan navigasi Sebelumnya/Berikutnya. Perubahan pencarian/filter mengembalikan daftar ke halaman pertama.
 - Tombol Kelola divisi pada tab Panitia membuka halaman khusus yang hanya berisi pengelolaan divisi. Daftar susunan panitia tetap memiliki tombol Lihat semua untuk membuka halaman khusus panitia.
 - Filter dan kata kunci susunan panitia dibawa ke halaman khusus saat Lihat semua dipilih. Tersedia tautan kembali ke tab Panitia, dan aksi simpan/hapus kembali ke halaman tempat aksi dilakukan.
+- Tampilan Owner pada tab Panitia menggunakan tema Polar Bear yang lembut: permukaan putih, panel biru es pucat, aksen tombol biru, teks navy, dan border soft frost. Area Divisi event dan Susunan panitia dipisahkan sebagai panel yang jelas; setiap anggota tampil pada kartu tersendiri dengan identitas, divisi/jabatan, kontak, dan tanggung jawab yang mudah dipindai. Form dan pagination memakai aksen yang sama.
+- Penyegaran visual ini berlaku pada halaman Panitia event dan halaman khusus Kelola divisi/Semua susunan panitia; modul manajemen lain belum diubah.
 
 
 ## 15. Pagination daftar pengelolaan event

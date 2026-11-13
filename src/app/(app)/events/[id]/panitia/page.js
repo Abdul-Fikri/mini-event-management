@@ -49,38 +49,67 @@ export default async function EventCommitteePage({ params }) {
     ...member,
     assigned: assigned.has(member.id),
   }));
+  const availableCount = selectable.filter((member) => !member.assigned).length;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5 rounded-2xl bg-[#F5F8FC] p-3 sm:p-4">
       <EventDivisionManager eventId={id} divisions={divisions ?? []} />
 
-      <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
-        <div>
-          <h2 className="text-lg font-semibold">Susunan panitia</h2>
-          <p className="text-sm text-zinc-600">
-            Tambahkan anggota grup ke event, lalu tentukan divisi, jabatan, dan tanggung jawabnya.
-          </p>
-        </div>
-
-        <EventCommitteeList
-          eventId={id}
-          committee={committee}
-          members={selectable}
-          divisions={divisions ?? []}
-        />
-
-        {selectable.some((member) => !member.assigned) ? (
-          <div className="border-t border-zinc-100 pt-4">
-            <h3 className="mb-3 font-medium">Tambah anggota</h3>
-            <EventMemberForm eventId={id} members={selectable} divisions={divisions ?? []} />
+      <section className="overflow-hidden rounded-2xl border border-[#E2EBF5] bg-white shadow-[0_4px_14px_rgba(148,163,184,0.08)]">
+        <header className="flex flex-wrap items-start justify-between gap-4 border-b border-[#E2EBF5] bg-gradient-to-r from-[#F8FBFF] via-white to-white px-5 py-5 sm:px-6">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#64748B]">STRUKTUR TIM EVENT</p>
+            <h2 className="mt-1 text-xl font-bold tracking-tight text-[#0F172A]">Susunan panitia</h2>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-[#64748B]">
+              Atur anggota yang bertugas, divisi, jabatan, dan tanggung jawab masing-masing.
+            </p>
           </div>
-        ) : (members ?? []).length === 0 ? (
-          <p className="text-sm text-zinc-600">
-            Tambahkan data anggota grup melalui menu Anggota Panitia terlebih dahulu.
-          </p>
-        ) : (
-          <p className="text-sm text-zinc-500">Semua anggota grup sudah masuk dalam susunan panitia event ini.</p>
-        )}
+          <span className="rounded-full border border-[#DCEAF8] bg-[#EBF3FC] px-3 py-1.5 text-sm font-semibold text-[#1D4ED8]">
+            {committee.length} anggota terdaftar
+          </span>
+        </header>
+
+        <div className="space-y-5 p-5 sm:p-6">
+          <EventCommitteeList
+            eventId={id}
+            committee={committee}
+            members={selectable}
+            divisions={divisions ?? []}
+          />
+
+          {availableCount > 0 ? (
+            <section className="rounded-2xl border border-[#DCEAF8] bg-[#F5F9FE] p-4 sm:p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#64748B]">TAMBAH ANGGOTA</p>
+                  <h3 className="mt-1 text-lg font-bold text-[#0F172A]">Tambahkan anggota ke event</h3>
+                  <p className="mt-1 text-sm leading-6 text-[#64748B]">
+                    Pilih anggota grup yang belum ditugaskan, lalu lengkapi divisi dan tanggung jawabnya.
+                  </p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#1D4ED8] shadow-sm ring-1 ring-[#DCEAF8]">
+                  {availableCount} tersedia
+                </span>
+              </div>
+              <div className="mt-4">
+                <EventMemberForm eventId={id} members={selectable} divisions={divisions ?? []} />
+              </div>
+            </section>
+          ) : (members ?? []).length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-[#C8DDF2] bg-[#F8FBFF] p-5">
+              <p className="font-semibold text-[#334155]">Belum ada anggota grup.</p>
+              <p className="mt-1 text-sm leading-6 text-[#64748B]">
+                Tambahkan data anggota melalui menu Anggota Panitia terlebih dahulu, lalu kembali ke halaman ini untuk menyusun kepanitiaan.
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-[#DCEAF8] bg-[#F8FBFF] px-4 py-3">
+              <p className="text-sm font-medium text-[#475569]">
+                Semua anggota grup sudah masuk dalam susunan panitia event ini.
+              </p>
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );
