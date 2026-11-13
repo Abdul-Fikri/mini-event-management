@@ -190,7 +190,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
                 if (!event.currentTarget.contains(event.relatedTarget)) setDropTargetStatus(null);
               }}
               onDrop={(event) => handleDrop(event, status.key)}
-              className={`min-h-72 rounded-xl border p-3 transition ${status.column} ${isDropTarget ? "ring-2 ring-indigo-400 ring-offset-2" : ""}`}
+              className={`min-h-72 rounded-xl border p-3 transition ${status.column} ${isDropTarget ? "ring-2 ring-[#A9C4DC] ring-offset-2" : ""}`}
             >
               <div className={`mb-3 flex items-center justify-between gap-2 rounded-lg px-3 py-2 ${status.heading}`}>
                 <div className="flex min-w-0 items-center gap-2">
@@ -217,7 +217,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
                         setDraggedTaskId(null);
                         setDropTargetStatus(null);
                       }}
-                      className={`cursor-grab rounded-lg border border-l-4 border-zinc-200 bg-white p-3 shadow-sm transition hover:shadow-md active:cursor-grabbing ${status.accent} ${draggedTaskId === task.id ? "opacity-50" : ""} ${isPending ? "ring-1 ring-indigo-300" : ""}`}
+                      className={`cursor-grab rounded-lg border border-l-4 border-zinc-200 bg-white p-3 shadow-sm transition hover:shadow-md active:cursor-grabbing ${status.accent} ${draggedTaskId === task.id ? "opacity-50" : ""} ${isPending ? "ring-1 ring-[#A9C4DC]" : ""}`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex min-w-0 items-start gap-1.5">
