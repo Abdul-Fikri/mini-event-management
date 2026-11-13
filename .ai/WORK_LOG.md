@@ -119,3 +119,11 @@ Update this file after substantial work. Keep public product/engineering documen
 - Removed `router.refresh()` and stopped revalidating the active Kanban route for status-only updates. Event overview and dedicated `/tugas/all` remain invalidated.
 - Updated `.ai/PROJECT_CONTEXT.md`, `.ai/PROJECT_STATUS.md`, and handbook/implementation docs with the behavior and UAT expectations.
 - No database, schema, migration, RLS, production data, environment, or direct `main` changes. Local lint/build/browser E2E were not run; verify Vercel Preview for the final PR #26 head and perform Owner UAT.
+
+
+### PR #26 initial Vercel Preview result
+
+- Checked GitHub status and check-runs for PR #26 head `4379df45902c55699ceb4cf279e25cf84c35c0f5`.
+- Vercel status: `success`, description `Deployment has completed`; Vercel Preview Comments: `success`.
+- PR #26 is open and mergeable at this check. No merge or Production deployment performed.
+- The docs update records this initial result; verify Vercel again for the final/latest PR head after the docs commit. Owner browser UAT remains necessary.
