@@ -289,18 +289,19 @@ Status otomatis dihitung saat data dibaca oleh resolver bersama; tidak memerluka
 
 Divisi dikelola sebagai master data khusus untuk satu event, bukan daftar global grup. Dengan begitu, satu grup dapat memakai susunan divisi yang berbeda pada event yang berbeda.
 
-- Owner mengelola divisi dari bagian Kelola divisi pada tab Panitia event: tambah, lihat, ubah nama/deskripsi, dan hapus.
+- Tab Panitia menampilkan tombol Tambah divisi untuk membuka form pembuatan cepat tanpa meninggalkan halaman, serta tombol Kelola divisi yang membuka halaman khusus `/events/[id]/panitia/divisions`.
+- Seluruh daftar dan pengelolaan divisi (lihat, cari, tambah, ubah nama/deskripsi, dan hapus) tersedia pada halaman khusus Kelola divisi agar halaman Panitia tetap ringkas. Setelah quick-add berhasil, pengguna kembali ke tab Panitia.
 - Form penugasan anggota memilih divisi dari dropdown master data. Nama divisi tidak lagi diketik bebas pada form penugasan.
 - Nama divisi harus unik tanpa membedakan huruf besar/kecil dalam event yang sama.
 - Saat divisi diubah namanya, label pada penugasan, workspace Panitia, dan ekspor CSV ikut diperbarui.
 - Saat divisi dihapus, referensi master pada penugasan dilepas, tetapi teks nama lama tetap disimpan sebagai label historis agar tampilan Panitia dan CSV tidak kehilangan informasi.
 - Migration 20261112_event_divisions.sql membuat tabel event_divisions, menambahkan event_members.division_id, dan mengonversi nilai divisi lama menjadi master data tanpa menghilangkan labelnya.
 - CRUD divisi hanya tersedia bagi Owner. Panitia tetap read-only dan hanya dapat membaca metadata divisi untuk event yang memang ditugaskan.
-- Daftar Kelola divisi menyediakan pencarian berdasarkan nama dan deskripsi divisi.
+- Halaman khusus Kelola divisi menyediakan pencarian berdasarkan nama dan deskripsi divisi serta pagination lima data per halaman.
 - Susunan panitia menyediakan filter berdasarkan divisi (semua divisi, divisi tertentu, atau tanpa divisi aktif) dan pencarian berdasarkan nama anggota, kontak, divisi, jabatan, serta tanggung jawab.
 - Pencarian dan filter dapat digunakan bersamaan; jumlah hasil ditampilkan dan tersedia pesan ketika tidak ada data yang cocok.
 - Daftar divisi dan susunan panitia menampilkan maksimal lima data per halaman dengan navigasi Sebelumnya/Berikutnya. Perubahan pencarian/filter mengembalikan daftar ke halaman pertama.
-- Tombol Lihat semua membuka halaman khusus sesuai daftar yang dipilih: hanya divisi atau hanya susunan panitia. Halaman khusus tetap memiliki pencarian/filter dan pagination lima data per halaman.
+- Tombol Kelola divisi pada tab Panitia membuka halaman khusus yang hanya berisi pengelolaan divisi. Daftar susunan panitia tetap memiliki tombol Lihat semua untuk membuka halaman khusus panitia.
 - Filter dan kata kunci susunan panitia dibawa ke halaman khusus saat Lihat semua dipilih. Tersedia tautan kembali ke tab Panitia, dan aksi simpan/hapus kembali ke halaman tempat aksi dilakukan.
 
 

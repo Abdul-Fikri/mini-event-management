@@ -23,12 +23,11 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 ## Owner workflow
 
 1. Open an event and select the Panitia tab.
-2. Use Kelola divisi to add a division name and optional description.
-3. Edit a division to change its name/description.
-4. Delete a division when it is no longer needed; already assigned members retain the old label as historical text.
-5. Add or edit a committee assignment and select a division from the dropdown. A division is optional.
-6. Search the division list by name or description when it becomes long.
-7. Search committee assignments by member name, contact, division, position, or responsibility; optionally combine the search with a division filter.
+2. Use the Tambah divisi button for quick creation without leaving the Panitia page. The create form opens in place and returns to the Panitia page after saving.
+3. Use the Kelola divisi button to open the dedicated `/events/[id]/panitia/divisions` page for the complete division list and full CRUD.
+4. On the dedicated Kelola divisi page, create, search, edit, or delete divisions. Already assigned members retain the old label as historical text if a division is deleted.
+5. Return to the Panitia page and add or edit a committee assignment using the division dropdown. A division is optional.
+6. Search committee assignments by member name, contact, division, position, or responsibility; optionally combine the search with a division filter.
 
 ## Search and filtering
 
@@ -41,10 +40,11 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 
 ## Pagination and dedicated list views
 
-- The embedded Kelola divisi and Susunan panitia lists show at most five records per page.
-- Each list has previous/next pagination controls and resets to page one when its search or filter changes.
-- Each list provides a Lihat semua link that opens a dedicated route for only that data type: `/events/[id]/panitia/divisions` or `/events/[id]/panitia/committee`.
-- Dedicated views retain the relevant search/filter controls and five-record pagination. Committee view carries the current search query and division filter from the embedded list.
+- The main Panitia page does not embed the full division list or its search/edit/delete controls. It shows only a quick Tambah divisi button and a Kelola divisi link.
+- The quick-add button opens the create form in place; a successful save returns to the main Panitia page.
+- The Kelola divisi link opens `/events/[id]/panitia/divisions`, which contains the complete division list and full CRUD.
+- The dedicated division list provides search by name/description and displays at most five records per page with previous/next pagination.
+- Susunan panitia remains on the main Panitia page with its search/filter and five-record pagination, plus a dedicated `/events/[id]/panitia/committee` view.
 - Dedicated views provide a return link to the main Panitia page. Save/delete actions return to the view where the action was initiated; return paths are validated server-side.
 
 ## Validation and security
@@ -58,22 +58,24 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 
 ## Acceptance criteria
 
-- [ ] Owner can create a division from the event Panitia page.
-- [ ] Owner can view all divisions for that event.
+- [ ] The Panitia page shows a quick Tambah divisi button that opens the create form in place and returns to Panitia after a successful save.
+- [ ] The Panitia page shows a Kelola divisi link to the dedicated division CRUD page.
+- [ ] The Panitia page does not embed the full division list, search, edit, or delete controls.
+- [ ] Owner can view all divisions for that event on `/events/[id]/panitia/divisions`.
 - [ ] Owner can edit a division name and description.
 - [ ] Renaming a division updates all assigned committee labels and Panitia-facing snapshots.
 - [ ] Owner can delete a division; existing assignments retain the old label as historical text and lose only the master reference.
 - [ ] Division names are unique case-insensitively within an event.
 - [ ] The committee assignment form uses a dropdown and no longer accepts arbitrary free-text division names.
-- [ ] Owner can search the Kelola divisi list by division name or description.
+- [ ] Owner can search the dedicated Kelola divisi list by division name or description.
 - [ ] Owner can filter Susunan panitia by every event division, all divisions, and assignments without an active division.
 - [ ] Owner can search committee assignments by member name, contact, division label, position, and responsibility.
 - [ ] Search and division filter work together, update the visible result count, and show a useful empty state when no rows match.
 - [ ] Reset control clears both the committee search and selected division filter.
-- [ ] Kelola divisi displays no more than five records per page and pagination navigates through the filtered result set.
+- [ ] The dedicated Kelola divisi page displays no more than five records per page and pagination navigates through the filtered result set.
 - [ ] Susunan panitia displays no more than five records per page and pagination navigates through the filtered result set.
 - [ ] Changing search or division filter resets pagination to the first page.
-- [ ] Lihat semua divisi opens a dedicated view containing only the division list, with search and pagination.
+- [ ] The Kelola divisi button opens a dedicated view containing only the division list, with full CRUD, search, and pagination.
 - [ ] Lihat semua susunan panitia opens a dedicated view containing only committee assignments, with search, division filter, and pagination.
 - [ ] Current committee search and division filter are preserved when opening the dedicated committee view.
 - [ ] Dedicated views provide a return link to the main Panitia page; create/edit/delete actions return to the same dedicated view.
@@ -86,4 +88,4 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 
 ## Verification notes
 
-Event-specific division CRUD and its database migration were merged in PR #22 (merge commit `20ca806309629eace877536f245409e546824fac`). Division/committee search and filters, five-record pagination, and dedicated list views are being added in PR #23. The migration's application to the target Supabase database is not confirmed. Local lint/build and browser E2E were not run in this environment; record their actual results before describing the features as runtime-verified.
+Event-specific division CRUD and its database migration were merged in PR #22 (merge commit `20ca806309629eace877536f245409e546824fac`). Division/committee search and filters, five-record pagination, and dedicated list views were merged in PR #23. The Panitia layout refinement (quick-add button plus a separate Kelola divisi destination) is being implemented in PR #28. The migration's application to the target Supabase database is not confirmed. An earlier PR #28 head received a successful Vercel Preview status check; the latest PR #28 Preview check is rate-limited by Vercel (`Deployment rate limited — retry in 24 hours`), which is a quota result rather than a compile result. This does not establish Production deployment. Local lint/build and browser E2E were not run in this environment; record their actual results before describing the features as runtime-verified.

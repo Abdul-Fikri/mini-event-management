@@ -103,16 +103,16 @@ Read `docs/PROJECT_HANDBOOK.md`, `docs/DATABASE_AND_MIGRATIONS.md`, `docs/IMPLEM
 ## Event division behavior
 
 - Divisions are master data scoped to one event, not global to the Owner's group.
-- Owner CRUD is available in the event's Panitia tab. Assignment forms select a division ID from that event's master list.
+- Owner manages division CRUD on the dedicated `/events/[id]/panitia/divisions` page. The main Panitia tab shows a quick Tambah divisi button (opens an in-place create form) and a Kelola divisi link to that dedicated page. Assignment forms select a division ID from that event's master list.
 - Server Actions validate that the selected division belongs to the same event and group.
 - Migration `20261112_event_divisions.sql` backfills existing free-text division labels into `event_divisions` and adds the composite `event_members.division_id` reference.
 - Keep `event_members.division` as a synchronized text snapshot for existing Panitia pages and CSV exports. Renaming a master updates the snapshot; deleting a master clears only `division_id`, preserving the old label as history.
 - Owner has CRUD; Panitia remains read-only and may read division metadata only for assigned events.
-- Owner's Kelola divisi list can be searched by division name or description.
+- The dedicated Kelola divisi page can be searched by division name or description and shows five records per page.
 - Susunan panitia supports a division filter (all, one master division, or no active division) and text search across member name, contact, division label, position, and responsibility. Search and filter combine, with result count, empty state, and reset control.
 - These are client-side display filters over the event data already loaded and authorized by the server; they do not replace authorization or RLS.
-- Both embedded lists show a maximum of five records per page with previous/next pagination; changing search/filter resets to page one.
-- Lihat semua opens a dedicated view for only the selected data type (`/events/[id]/panitia/divisions` or `/events/[id]/panitia/committee`). Dedicated views retain five-record pagination and the corresponding search/filter controls; committee search/filter values are carried into the dedicated view.
+- The embedded Susunan panitia list shows a maximum of five records per page with previous/next pagination; changing search/filter resets to page one. The dedicated Kelola divisi page independently uses five-record pagination.
+- The Kelola divisi button opens `/events/[id]/panitia/divisions`, which contains the complete division CRUD/search/pagination view. The Susunan panitia Lihat semua action opens `/events/[id]/panitia/committee`; committee search/filter values are carried into that dedicated view.
 - Dedicated views link back to the main Panitia tab. Division and committee save/delete actions use a server-validated return path so the user stays on the view where the action started.
 - The migration file is not evidence that the target Supabase database has been updated.
 
