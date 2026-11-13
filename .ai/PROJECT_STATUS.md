@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 13 November 2026 — PR #23, #24, and #25 merged; PR #26 optimistic Kanban update open, initial Preview passed
+Last updated: 13 November 2026 — PRs #23–#26 merged; no open PRs at latest repository check
 
 ## Owner-reported verification
 
@@ -12,14 +12,18 @@ Last updated: 13 November 2026 — PR #23, #24, and #25 merged; PR #26 optimisti
 
 ## GitHub state
 
-- Current `main` HEAD: `5a2c2824623f5e2f12d4c668642511898d945c80`.
+- Current `main` HEAD: `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a` (includes PR #26 merge).
 - PR #20 Procurement–Finance integration: merged.
 - PR #21 event lifecycle automation: merged.
 - PR #22 event-specific division CRUD: merged to `main` on 12 November 2026 at `20ca806309629eace877536f245409e546824fac`.
-- PR #23: https://github.com/Abdul-Fikri/mini-event-management/pull/23 — merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`.
+- PR #23: https://github.com/Abdul-Fikri/mini-event-management/pull/23 — merged to `main`.
+- PR #24: https://github.com/Abdul-Fikri/mini-event-management/pull/24 — events Server Action syntax hotfix, merged.
+- PR #25: https://github.com/Abdul-Fikri/mini-event-management/pull/25 — members Server Action syntax hotfix, merged.
+- PR #26: https://github.com/Abdul-Fikri/mini-event-management/pull/26 — optimistic Kanban status updates, merged to `main` at `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a`.
+- Latest repository check found no open PRs. Remote branches still include historical feature/hotfix branches; do not assume they are active without checking their PR association and unique commits.
 - Do not infer Production deployment from source commits or a successful Preview check.
 
-## Current PR #23 scope
+## Merged management-list and task-board scope (PR #23 and follow-up)
 
 - Add search by name/description in the event's Kelola divisi list.
 - Add Susunan panitia filter for all divisions, each event master division, and assignments without an active division.
@@ -53,10 +57,10 @@ Last updated: 13 November 2026 — PR #23, #24, and #25 merged; PR #26 optimisti
 
 ## Next steps
 
-1. Review PR #26 and verify its Vercel Preview build for the exact latest head SHA.
-2. UAT the Kanban optimistic move using both drag-and-drop and the status selector; verify immediate movement, per-card spinner, and rollback on a failed save.
-3. Confirm status persists after navigating away/back and appears in the dedicated full-task list and event overview.
-4. Owner handles merge and Production deployment only after Preview verification and approval.
+1. Complete Owner UAT for the merged Kanban optimistic move using both drag-and-drop and the status selector; verify immediate movement, per-card spinner, and rollback on a failed save.
+2. Confirm status persists after navigating away/back and appears in the dedicated full-task list and event overview.
+3. For the next feature, perform the mandatory branch/PR synchronization preflight in `.ai/PROJECT_CONTEXT.md` before creating a branch or editing source.
+4. Owner handles Vercel Production deployment and confirms production behavior; do not infer it from a merged PR or Preview result.
 
 
 ## Production build hotfix
@@ -73,7 +77,7 @@ Last updated: 13 November 2026 — PR #23, #24, and #25 merged; PR #26 optimisti
 - Before merge, run lint and production build when a local checkout is available; otherwise disclose that limitation and require a successful Vercel Preview for the exact latest PR head.
 - Diagnose deployment failures from the actual compiler/build log. Do not confuse parser/syntax errors with quota/rate-limit failures.
 - Keep fixes on a branch/PR; no direct `main` changes or Production redeploy without Owner authorization.
-- Current syntax fix is tracked by PR #24: https://github.com/Abdul-Fikri/mini-event-management/pull/24. Its Vercel Preview result is not yet verified.
+- The `events.js` syntax fix was tracked by PR #24 and is merged. Production deployment remains Owner-managed; do not infer deployment from merge state.
 
 
 ## Follow-up Production build failure — members action
@@ -85,11 +89,19 @@ Last updated: 13 November 2026 — PR #23, #24, and #25 merged; PR #26 optimisti
 - Local lint/build/browser E2E were not run during that hotfix session.
 
 
-## Kanban responsiveness improvement — PR #26 in progress
+## Kanban responsiveness improvement — PR #26 merged
 
 - Owner reported slow task movement on the event Kanban. Source review found the client awaited `updateTaskStatus` before changing the displayed task and then called `router.refresh()`, forcing a route data refresh after each move.
 - Implemented optimistic local task state: move the card immediately, persist through the existing Server Action in the background, show a spinner on the affected card, and roll back with feedback if persistence fails.
 - Pending state is tracked per task so other cards remain usable during another task's save.
 - Removed active Kanban route revalidation from the status-only Server Action; event overview and dedicated `/tugas/all` are still revalidated for fresh server-rendered data.
 - No schema, migration, RLS, database, or production data changes.
-- Branch: `feat/instant-optimistic-task-kanban`; PR #26 is open. Vercel status for initial PR head `4379df45902c55699ceb4cf279e25cf84c35c0f5` reports `success` and deployment completed. Owner browser UAT remains pending; any later docs-only commit must be checked at the exact latest head.
+- Branch: `feat/instant-optimistic-task-kanban`; PR #26 merged at `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a`. Vercel status for initial PR head `4379df45902c55699ceb4cf279e25cf84c35c0f5` reported `success`; this does not establish Production deployment. Owner browser UAT remains pending.
+
+
+## Branch/PR synchronization workflow
+
+- Added a mandatory pre-development checklist to `.ai/PROJECT_CONTEXT.md`: refresh latest main SHA, list all open PRs and remote branches, inspect every open PR's head/base SHA and changed files, compare relevant branches for unique commits, and choose the correct base branch based on feature dependencies.
+- The checklist requires checking overlapping files/features and unmerged PR dependencies before editing, refreshing PR/head state during longer tasks, and verifying the exact final diff/build/Preview SHA.
+- Repository state at this update: main `1b28b8188cb3a604f3da1090c98c6eaa4c92ad4a`; no open PRs; PR #26 merged. Historical remote branches remain and must be classified rather than presumed active.
+- This is a documentation-only process update; no application source, database, schema, migration, RLS, production data, or deployment changed.
