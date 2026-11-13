@@ -172,3 +172,22 @@ When changing task status from the four-column Kanban, preserve the optimistic i
 - Avoid `router.refresh()` and avoid revalidating the active `/events/[id]/tugas` route for status-only updates; they can cause a full route render and defeat the immediate interaction. Invalidate the event overview and dedicated `/tugas/all` view only.
 - Preserve server-side authorization, group/event scoping, and the status allowlist. Optimistic UI is presentation only; the database remains authoritative.
 - Test both drag-and-drop and the status selector, slow/pending responses, failed updates/rollback, and a second independent card while the first is pending.
+
+
+## Mandatory branch and Pull Request synchronization preflight
+
+Before starting any new feature, refactor, or hotfix that changes application source, inspect the repository's current integration state. Do not assume that `main` contains work from an open PR or that a branch seen in an earlier conversation is still current.
+
+1. **Refresh the repository baseline.** Fetch the latest `main` commit SHA, list all open PRs, and list remote branches. Record the time/current SHA used for the task. Do not rely on remembered branch names, previous conversation summaries, or stale status documents without checking GitHub again.
+2. **Inspect every open PR branch.** For each open PR, record its number/title, state/draft status, base branch and SHA, head branch and SHA, and changed-file list. Compare those changed files with the files and feature surfaces planned for the task. Inspect the full diff and saved source at the exact head SHA for any overlapping or dependent work. Even when files do not overlap, account for whether the feature depends on behavior introduced by that PR.
+3. **Classify non-main branches.** Identify branches tied to open PRs, branches explicitly used as dependencies/active work, and stale or historical branches. Compare relevant branches against the latest `main` to identify unique commits and changed files. Do not assume every old remote branch is active, and do not silently ignore a known active branch just because it has no PR.
+4. **Choose the correct implementation base.**
+   - Independent feature: create a new branch from the latest `main`.
+   - Feature that requires code from an unmerged PR: base the work on that PR's head branch and document the dependency/stacked-PR relationship, or wait for that PR to merge if appropriate.
+   - If an open PR modifies the same component, Server Action, shared helper, route, schema contract, or interaction, inspect and account for its exact changes before editing. Do not recreate an older implementation from `main` and overwrite the newer PR behavior.
+   - Never silently change an existing PR's branch/base or merge another PR just to make the new feature work.
+5. **Re-check during longer tasks.** Before major edits and before opening/updating a PR, refresh the open-PR list and relevant head/base SHAs. Another PR may have merged or received new commits while implementation was in progress.
+6. **Verify integration, not just isolated code.** Review the complete diff against the intended base, check for overlapping changes and duplicated logic, inspect the saved files, and run the available lint/build/tests. If local validation is unavailable, disclose that and require Vercel Preview success for the exact final PR head. A green Preview for an earlier SHA does not validate later commits.
+7. **Preserve Owner-controlled operations.** Use a dedicated branch and PR. Do not push directly to `main`, merge/rebase branches, delete branches, or deploy Production unless the Owner explicitly authorizes that operation.
+
+A concise pre-development note should identify: latest `main` SHA; open PRs and their head/base SHAs; relevant branches/dependencies; overlapping files/features; chosen base branch and reason. If there are no open PRs, state that explicitly. This checklist is mandatory for every new feature request, not only when a conflict is already visible.
