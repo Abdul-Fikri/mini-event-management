@@ -20,6 +20,7 @@ export function TextField({
   const describedBy =
     [hint ? hintId : null, error ? errorId : null].filter(Boolean).join(" ") ||
     undefined;
+  const { className = "", ...inputRest } = rest;
 
   const props = {
     id,
@@ -28,8 +29,8 @@ export function TextField({
     required,
     "aria-invalid": error ? "true" : undefined,
     "aria-describedby": describedBy,
-    className: `${BASE} ${error ? INVALID : NORMAL} ${rest.className || ""}`,
-    ...Object.fromEntries(Object.entries(rest).filter(([key]) => key !== "className")),
+    className: className || `${BASE} ${error ? INVALID : NORMAL}`,
+    ...inputRest,
   };
 
   return (

@@ -25,22 +25,22 @@ export default function NavLinks() {
     <nav
       id="primary-navigation"
       aria-label="Navigasi utama"
-      className={`app-sidebar rounded-2xl border p-3 lg:sticky lg:top-20 ${mobileNavOpen ? "block" : "hidden"} md:block`}
+      className={`app-sidebar rounded-2xl border p-3 lg:sticky lg:top-20 ${mobileNavOpen ? "block" : "hidden"} lg:block`}
     >
-      <ul className="flex gap-1 overflow-x-auto md:flex-col">
+      <ul className="flex gap-1 overflow-x-auto lg:flex-col">
         {NAV_ITEMS.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
           const Icon = item.icon;
 
           return (
-            <li key={item.href} className="shrink-0 md:shrink">
+            <li key={item.href} className="shrink-0 lg:shrink">
               <Link
                 prefetch={false}
                 href={item.href}
                 onClick={closeMobileNav}
                 aria-current={active ? "page" : undefined}
-                className={`group flex items-center gap-3 rounded-xl border-l-[3px] px-3 py-2.5 text-sm transition-colors md:w-full ${
+                className={`group flex items-center gap-3 rounded-xl border-l-[3px] px-3 py-2.5 text-sm transition-colors lg:w-full ${
                   active
                     ? "border border-[#DCE8F3] border-l-[#5C98CB] bg-[#EDF4FA] font-semibold text-[#284F73]"
                     : "border-transparent text-[#64748B] hover:bg-[#F7F9FC] hover:text-[#334155]"
@@ -60,7 +60,7 @@ export default function NavLinks() {
                 {active ? (
                   <span
                     aria-hidden="true"
-                    className="ml-auto hidden h-1.5 w-1.5 rounded-full bg-[#5C98CB] md:block"
+                    className="ml-auto hidden h-1.5 w-1.5 rounded-full bg-[#5C98CB] lg:block"
                   />
                 ) : null}
               </Link>
