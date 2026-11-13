@@ -346,3 +346,40 @@ Perubahan status tugas di Kanban menggunakan pola optimistic UI agar kartu tidak
 - Optimistic UI tidak menggantikan validasi server. Server Action tetap memeriksa status allowlist, identitas Owner, group, event, dan task.
 
 UAT: uji drag-and-drop serta dropdown status; pastikan perpindahan langsung terlihat, spinner muncul hanya pada kartu yang sedang disimpan, tugas lain tetap interaktif, kegagalan mengembalikan status lama, dan status tersimpan terlihat setelah membuka ulang halaman atau daftar seluruh tugas.
+
+
+## Pedoman visual Owner — Stitch-inspired soft UI
+
+Mini Event Management menggunakan satu bahasa visual yang konsisten pada seluruh workspace Owner. Referensi utamanya adalah layout Stitch yang menampilkan topbar putih, sidebar sederhana, event header dengan subnavigasi horizontal, dan konten berbasis kartu.
+
+Prinsip desain:
+- **Simple dan clean:** prioritaskan informasi, jarak yang cukup, dan hierarki yang mudah dipindai.
+- **Soft tanpa berlebihan:** gunakan canvas abu-abu kebiruan yang sangat pucat, permukaan putih, dan border tipis. Hindari glow, gradient dekoratif, shadow biru, serta efek hover yang terlalu kuat.
+- **Biru sebagai aksen:** gunakan biru lembut untuk navigasi aktif, tautan penting, focus state, dan tombol utama. Jangan menjadikan setiap panel berwarna biru.
+- **Shadow netral dan minimal:** gunakan hanya bila membantu membedakan permukaan; jangan gunakan colored shadow.
+- **Status tetap bermakna:** warna sukses, peringatan, dan bahaya dipertahankan untuk status semantik, bukan dekorasi.
+
+Token visual dasar:
+| Token | Nilai |
+|---|---|
+| Canvas workspace | `#F5F8FC` |
+| Surface utama | `#FFFFFF` |
+| Surface sekunder | `#F8FAFC` |
+| Active / soft blue | `#EDF4FA` |
+| Border | `#E3ECF5` |
+| Border kuat | `#D7E3EF` |
+| Primary text | `#1E293B` |
+| Secondary text | `#64748B` |
+| Primary accent | `#407BB0` |
+| Accent hover | `#32628E` |
+
+Penerapan layout:
+- **Topbar:** putih, tipis, identitas grup di kiri, informasi Owner dan tombol Keluar di kanan.
+- **Sidebar:** panel putih dengan menu vertikal, ikon ringan, active state soft blue, dan layout horizontal/scrollable saat layar sempit.
+- **Event header:** satu kartu putih yang memuat tautan kembali, nama event, lokasi/status, aksi edit, dan subbar.
+- **Subbar event:** tab horizontal yang dapat digeser pada layar kecil; tab aktif menggunakan latar soft blue dan teks biru gelap.
+- **Content:** kelompokkan data dalam panel/kartu putih dengan border tipis, spacing konsisten, dan record yang jelas terpisah.
+- **Forms and controls:** input putih, border netral, label jelas, focus ring lembut, dan feedback pending/success/error yang tetap terlihat.
+- **Responsive:** jangan memotong navigasi atau aksi utama pada mobile; gunakan wrapping atau horizontal scrolling yang terkontrol.
+
+Pedoman ini berlaku untuk Dashboard, Event dan seluruh subhalaman, Anggota Panitia, Pengaturan Grup, serta komponen navigasi dan UI bersama. Perubahan visual tidak boleh mengubah CRUD, Server Actions, query, authorization, role boundary, routing, cache policy, atau perilaku database.

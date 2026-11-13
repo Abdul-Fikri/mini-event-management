@@ -201,6 +201,24 @@ The Owner-facing event Panitia management pages use a scoped Polar Bear visual t
 - Primary accent: `#3B82F6`; hover/darker accent: `#2563EB`; focus accent: `#BFDBFE`.
 - Borders: `#E2EBF5` or slightly stronger `#D7E6F5` for nested data cards. Primary text: `#0F172A`; secondary text: `#64748B`.
 - Use clear surface hierarchy: separate white sections, tinted filter/form panels, and individually outlined/shadowed data cards. Keep spacing and typography consistent so adjacent records do not visually blend together.
-- Apply this theme only to Owner event Panitia management surfaces (main tab, division management, committee list, and related forms/pagination) until the Owner approves extending it to other management modules.
+- This was the initial PR #29 scope. The Owner subsequently approved extending the same restrained design language across the entire Owner workspace; see `Owner workspace visual design system — Stitch-inspired` below.
 - Keep danger actions visibly distinct with accessible red styling. Preserve keyboard focus, labels, semantic elements, responsive stacking, and pending/error feedback.
 - This is a presentation-only theme. Do not change data contracts, Server Actions, authorization, group/event scoping, RLS, or database schema as part of visual-only work.
+
+
+## Owner workspace visual design system — Stitch-inspired
+
+The Owner workspace follows one consistent visual language based on the Stitch HTML reference supplied by the Owner: a clean white topbar, restrained sidebar, event header with horizontal subnavigation, and well-separated content surfaces.
+
+- Canvas: `#F5F8FC`; primary surface: `#FFFFFF`; subtle surface: `#F8FAFC`.
+- Border: `#E3ECF5`; stronger border: `#D7E3EF`.
+- Primary text: `#1E293B`; secondary text: `#64748B`.
+- Primary accent: `#407BB0`; hover: `#32628E`; active/soft surface: `#EDF4FA`.
+- Topbar is white and compact, with group identity on the left and Owner account/logout on the right.
+- Sidebar is a white panel with light icons and a soft-blue active state; mobile navigation remains accessible and horizontally scrollable when appropriate.
+- Event header and event subnavigation belong in one surface. Tabs are horizontal, scrollable on small screens, and use a soft background for the active route.
+- Cards and records use white surfaces, neutral thin borders, consistent spacing, and clear separation. Avoid blue shadows, glow, strong gradients, and excessive decoration.
+- Shared controls use the same radius, border, typography, focus, pending, and feedback patterns. Semantic success/warning/danger colors remain distinct.
+- Apply across Dashboard, Event and nested management pages, Anggota Panitia, Pengaturan Grup, and shared Owner navigation/components.
+
+Visual-only work must preserve data contracts, Server Actions, CRUD, route/query/return-path behavior, authorization, group/event scoping, role boundaries, RLS, cache policy, and database schema.

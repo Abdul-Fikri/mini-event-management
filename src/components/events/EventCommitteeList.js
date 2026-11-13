@@ -9,7 +9,7 @@ import ListPagination from "@/components/ui/ListPagination";
 
 const PAGE_SIZE = 5;
 const INPUT_CLASS =
-  "block w-full rounded-xl border border-[#D7E3F0] bg-white px-3.5 py-2.5 text-sm text-[#0F172A] shadow-sm placeholder:text-[#94A3B8] focus:border-[#3B82F6] focus:outline-none focus:ring-4 focus:ring-[#3B82F6]/10";
+  "block w-full rounded-xl border border-[#D7E3F0] bg-white px-3.5 py-2.5 text-sm text-[#0F172A] shadow-sm placeholder:text-[#94A3B8] focus:border-[#5C98CB] focus:outline-none focus:ring-4 focus:ring-[#5C98CB]/10";
 
 function getInitials(name = "") {
   return name
@@ -73,7 +73,7 @@ export default function EventCommitteeList({
     <div className="space-y-5">
       {standalone ? (
         <div>
-          <Link href={basePath} className="text-sm font-semibold text-[#2563EB] hover:text-[#1D4ED8] hover:underline">
+          <Link href={basePath} className="text-sm font-semibold text-[#407BB0] hover:text-[#32628E] hover:underline">
             ← Kembali ke Panitia
           </Link>
           <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
@@ -84,7 +84,7 @@ export default function EventCommitteeList({
                 Cari anggota, filter divisi, lalu kelola penugasan pada halaman khusus ini.
               </p>
             </div>
-            <span className="rounded-full bg-[#EBF3FC] px-3 py-1.5 text-sm font-semibold text-[#1D4ED8]">
+            <span className="rounded-full bg-[#EBF3FC] px-3 py-1.5 text-sm font-semibold text-[#32628E]">
               {committee.length} anggota
             </span>
           </div>
@@ -156,7 +156,7 @@ export default function EventCommitteeList({
                     setDivisionFilter("all");
                     setPage(1);
                   }}
-                  className="text-sm font-semibold text-[#2563EB] transition-colors hover:text-[#1D4ED8]"
+                  className="text-sm font-semibold text-[#407BB0] transition-colors hover:text-[#32628E]"
                 >
                   Reset pencarian dan filter
                 </button>
@@ -164,7 +164,7 @@ export default function EventCommitteeList({
               {!standalone ? (
                 <Link
                   href={viewAllHref}
-                  className="inline-flex items-center gap-1 rounded-xl border border-[#D7E6F5] bg-white px-3.5 py-2 text-sm font-semibold text-[#2563EB] shadow-sm transition-colors hover:bg-[#F0F5FA]"
+                  className="inline-flex items-center gap-1 rounded-xl border border-[#D7E6F5] bg-white px-3.5 py-2 text-sm font-semibold text-[#407BB0] shadow-sm transition-colors hover:bg-[#F0F5FA]"
                 >
                   Lihat semua susunan panitia <span aria-hidden="true">→</span>
                 </Link>
@@ -177,13 +177,13 @@ export default function EventCommitteeList({
               {visibleCommittee.map((item) => (
                 <article
                   key={item.id}
-                  className="rounded-2xl border border-[#DCE8F4] bg-white p-4 shadow-[0_2px_8px_rgba(148,163,184,0.06)] transition-all hover:border-[#BFD6EE] hover:shadow-[0_4px_12px_rgba(148,163,184,0.10)] sm:p-5"
+                  className="rounded-2xl border border-[#DCE8F4] bg-white p-4 shadow-none transition-all hover:border-[#D2E0ED] hover:shadow-none sm:p-5"
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div className="flex min-w-0 items-start gap-3.5">
                       <div
                         aria-hidden="true"
-                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EBF3FC] text-sm font-bold text-[#2563EB]"
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EBF3FC] text-sm font-bold text-[#407BB0]"
                       >
                         {getInitials(item.member?.full_name ?? "")}
                       </div>
@@ -193,7 +193,7 @@ export default function EventCommitteeList({
                             {item.member?.full_name ?? "Anggota tidak ditemukan"}
                           </h3>
                           {item.division ? (
-                            <span className="rounded-full bg-[#EBF3FC] px-2.5 py-1 text-xs font-semibold text-[#1D4ED8]">
+                            <span className="rounded-full bg-[#EBF3FC] px-2.5 py-1 text-xs font-semibold text-[#32628E]">
                               {item.division}
                             </span>
                           ) : (
@@ -232,7 +232,7 @@ export default function EventCommitteeList({
                   </div>
 
                   <details className="mt-4 border-t border-[#EAF0F7] pt-3">
-                    <summary className="cursor-pointer rounded-xl bg-[#F8FBFF] px-3.5 py-2.5 text-sm font-semibold text-[#2563EB] transition-colors hover:bg-[#F0F5FA]">
+                    <summary className="cursor-pointer rounded-xl bg-[#F8FBFF] px-3.5 py-2.5 text-sm font-semibold text-[#407BB0] transition-colors hover:bg-[#F0F5FA]">
                       Edit penugasan
                     </summary>
                     <div className="mt-4">
@@ -249,7 +249,7 @@ export default function EventCommitteeList({
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-[#C8DDF2] bg-[#F8FBFF] px-5 py-8 text-center">
+            <div className="rounded-2xl border border-dashed border-[#D2E0ED] bg-[#F8FBFF] px-5 py-8 text-center">
               <p className="font-semibold text-[#334155]">Tidak ada anggota yang cocok.</p>
               <p className="mt-1 text-sm text-[#64748B]">Coba ubah kata kunci atau reset filter divisi.</p>
             </div>
@@ -263,7 +263,7 @@ export default function EventCommitteeList({
           />
         </>
       ) : (
-        <div className="rounded-2xl border border-dashed border-[#C8DDF2] bg-[#F8FBFF] px-5 py-8 text-center">
+        <div className="rounded-2xl border border-dashed border-[#D2E0ED] bg-[#F8FBFF] px-5 py-8 text-center">
           <p className="font-semibold text-[#334155]">Belum ada anggota dalam susunan panitia.</p>
           <p className="mt-1 text-sm text-[#64748B]">Tambahkan anggota grup ke event ini melalui formulir di bawah.</p>
         </div>

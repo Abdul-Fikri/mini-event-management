@@ -13,7 +13,7 @@ export default function NavMenuToggle() {
       aria-label={mobileNavOpen ? "Tutup navigasi" : "Buka navigasi"}
       aria-expanded={mobileNavOpen}
       aria-controls="primary-navigation"
-      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-300 text-zinc-700 hover:bg-zinc-100 md:hidden"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[#DCE5EE] bg-white text-[#526579] transition-colors hover:bg-[#F7F9FC] lg:hidden"
     >
       {mobileNavOpen ? <X size={18} /> : <Menu size={18} />}
     </button>

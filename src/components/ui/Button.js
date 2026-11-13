@@ -6,13 +6,13 @@ import { useAppLoading } from "@/components/layout/AppLoadingProvider";
 
 const VARIANTS = {
   primary:
-    "bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:outline-indigo-600",
+    "bg-[#407BB0] text-white hover:bg-[#32628E] focus-visible:outline-[#407BB0]",
   secondary:
-    "border border-zinc-300 bg-white text-zinc-800 hover:bg-zinc-50 focus-visible:outline-indigo-600",
+    "border border-[#DCE5EE] bg-white text-[#475569] hover:bg-[#F7F9FC] focus-visible:outline-[#9AB7D0]",
   ice:
-    "bg-[#3B82F6] text-white shadow-sm hover:bg-[#2563EB] focus-visible:outline-[#3B82F6]",
+    "bg-[#407BB0] text-white hover:bg-[#32628E] focus-visible:outline-[#407BB0]",
   iceSecondary:
-    "border border-[#D7E6F5] bg-white text-[#1D4ED8] hover:bg-[#F5F9FE] focus-visible:outline-[#3B82F6]",
+    "border border-[#DCE5EE] bg-white text-[#456B8E] hover:bg-[#F5F8FC] focus-visible:outline-[#9AB7D0]",
 };
 
 export function Button({
@@ -38,7 +38,7 @@ export function Button({
       {...rest}
       disabled={isPending || rest.disabled}
       aria-busy={isPending || undefined}
-      className={`inline-flex cursor-pointer items-center justify-center rounded-md px-4 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${VARIANTS[variant]} ${className}`}
+      className={`inline-flex cursor-pointer items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${VARIANTS[variant] || VARIANTS.primary} ${className}`}
     >
       {isPending ? pendingText : children}
     </button>

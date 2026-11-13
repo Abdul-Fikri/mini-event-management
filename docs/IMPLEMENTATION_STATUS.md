@@ -2,7 +2,7 @@
 
 Last reviewed: 13 November 2026
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source reviewed: `main` baseline after PR #28 merge (commit `ed00f75ec0beda51f20c8b407f7b95721ef70253`) and feature branch `feat/polar-blue-panitia-ui`.
+Source reviewed: `main` after PR #29 merge (commit `5634b23a1538b36db2bf2c1fdbc1b5df607b8704`) and feature branch `feat/stitch-soft-ui-refresh`.
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -59,7 +59,7 @@ Source reviewed: `main` baseline after PR #28 merge (commit `ed00f75ec0beda51f20
 
 ## 3. Panitia visual refinement
 
-The Owner-facing event Panitia tab and its dedicated division/committee management views use a scoped Polar Bear theme. The UI separates Divisi event and Susunan panitia into distinct white surfaces, places search/filter and forms on soft-blue panels, and presents each committee member in an individual card with clear hierarchy for name, division, position, contact, and responsibility. Buttons and pagination use soft ice-blue accents. The theme is intentionally not applied globally to other management modules. This is a UI-only change; existing data fetching, CRUD, search/filter, pagination, routes, authorization, and database behavior remain unchanged. PR #29: https://github.com/Abdul-Fikri/mini-event-management/pull/29 (open, not merged); Vercel Preview succeeded for UI implementation commit `83d6374592b9cb1b904cde12ab62b3f29f505188` (Preview only, not Production). Owner UAT remains pending; recheck the exact latest head after any subsequent documentation commit.
+The Owner-facing event Panitia tab and its dedicated division/committee management views use a scoped Polar Bear theme. The UI separates Divisi event and Susunan panitia into distinct white surfaces, places search/filter and forms on soft-blue panels, and presents each committee member in an individual card with clear hierarchy for name, division, position, contact, and responsibility. Buttons and pagination use soft ice-blue accents. The theme is intentionally not applied globally to other management modules. This is a UI-only change; existing data fetching, CRUD, search/filter, pagination, routes, authorization, and database behavior remain unchanged. PR #29: https://github.com/Abdul-Fikri/mini-event-management/pull/29 — merged to `main` at `5634b23a1538b36db2bf2c1fdbc1b5df607b8704`. The earlier Preview deployment later returned a runtime error because Preview Supabase environment configuration was incomplete; do not treat the earlier successful deployment status as proof of working runtime.
 
 ## 4. Pagination and dedicated list views
 
@@ -325,3 +325,36 @@ PR #23 was merged to `main` at `5a2c2824623f5e2f12d4c668642511898d945c80`. The O
 - The dedicated Kelola divisi page retains the full division CRUD, search by name/description, five-record pagination, and return link.
 - This is a UI/layout and route-navigation refinement only. No database schema, migration, RLS, Server Action authorization, or production data changes.
 - An earlier PR #28 head received a successful Vercel Preview status. The latest PR #28 Preview check is rate-limited with `Deployment rate limited — retry in 24 hours` (`build-rate-limit`); this is a Preview quota limit, not an application compile result. Local lint/build and browser E2E have not been run by the assistant; complete Owner UAT after a usable Preview is available.
+
+
+## Stitch-inspired soft UI refresh — in progress
+
+A global visual refresh is being implemented on branch `feat/stitch-soft-ui-refresh` from `main` commit `5634b23a1538b36db2bf2c1fdbc1b5df607b8704`.
+
+Scope:
+- Shared Owner topbar, profile area, sidebar, mobile navigation, and event subnavigation.
+- Event workspace header and subbar grouped into one clean surface.
+- Shared buttons, inputs, alerts, and pagination.
+- Dashboard, Event, Rundown, Tugas, Pengadaan, Keuangan, Panitia, Anggota Panitia, and Pengaturan inherit the same soft neutral palette and surface hierarchy.
+- Member records are displayed as separate cards for clearer scanning.
+- The Panitia Polar Bear styling is softened to remove exaggerated/colored shadows and keep blue as a restrained accent.
+
+Visual direction:
+- Canvas `#F5F8FC`, white surfaces, neutral borders `#E3ECF5`, muted text `#64748B`.
+- Primary accent `#407BB0`; hover `#32628E`; active surface `#EDF4FA`.
+- No blue shadows, glow, or decorative gradients.
+
+This is presentation-only. No schema, migration, RLS, Supabase environment, production data, or deployment changes are included. Local lint/build and browser E2E remain unrun in this environment; verify the exact final PR head with Vercel Preview and Owner UAT before merge.
+
+
+## Current follow-up — global Stitch-inspired UI
+
+PR #29 is merged. The Owner then supplied the full Stitch HTML reference and approved extending its clean, restrained visual language beyond Panitia. The follow-up branch `feat/stitch-soft-ui-refresh` updates the shared Owner shell (topbar/sidebar/mobile navigation), event header/subnavigation, shared controls, global workspace palette, member record cards, and the softened Panitia surfaces. It is presentation-only and preserves existing CRUD, data access, authorization, routes, and database behavior. Vercel Preview and Owner UAT for the exact final PR head are still required; local lint/build/browser E2E have not been run in this environment.
+
+
+### PR #30 — Stitch-inspired global Owner UI
+
+- PR #30: https://github.com/Abdul-Fikri/mini-event-management/pull/30 — open, base `main`, branch `feat/stitch-soft-ui-refresh`.
+- Implements the shared topbar/sidebar/mobile navigation, event header/subbar, global soft palette, shared controls, separate Member cards, and toned-down Panitia styling.
+- The UI is presentation-only; no database, migration, RLS, auth, or production data changes.
+- Latest Preview status must be checked for the exact final PR head. Local lint/build/browser E2E have not been run in this environment; Owner visual and functional UAT remains required.

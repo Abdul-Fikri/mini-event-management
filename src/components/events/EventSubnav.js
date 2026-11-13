@@ -20,7 +20,7 @@ export default function EventSubnav({ eventId }) {
   return (
     <nav
       aria-label="Navigasi event"
-      className="-mx-1 flex gap-1 overflow-x-auto border-b border-zinc-200 px-1"
+      className="app-event-subnav flex items-center gap-1 overflow-x-auto"
     >
       {SECTIONS.map((item) => {
         const href = `${basePath}${item.href}`;
@@ -34,10 +34,10 @@ export default function EventSubnav({ eventId }) {
             key={item.href || "overview"}
             href={href}
             aria-current={active ? "page" : undefined}
-            className={`shrink-0 border-b-2 px-3 py-2 text-sm font-medium transition-colors ${
+            className={`shrink-0 rounded-lg px-3.5 py-2 text-xs font-semibold whitespace-nowrap transition-colors sm:text-sm ${
               active
-                ? "border-indigo-600 bg-indigo-50 text-indigo-900"
-                : "border-transparent text-zinc-600 hover:border-indigo-300 hover:bg-zinc-50 hover:text-indigo-800"
+                ? "bg-[#EDF4FA] text-[#284F73]"
+                : "text-[#64748B] hover:bg-[#F7F9FC] hover:text-[#334155]"
             }`}
           >
             {item.label}

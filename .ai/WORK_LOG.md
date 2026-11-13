@@ -167,3 +167,28 @@ Update this file after substantial work. Keep public product/engineering documen
 - Vercel Preview status for PR #29 head `46ebbcb3129623bf8665717d4b35314558d08299`: `success`, description `Deployment has completed`. This is a Preview result only, not Production. Recheck the exact latest SHA after this status/documentation commit; local lint/build and browser UAT remain unverified.
 
 - Latest UI implementation commit `83d6374592b9cb1b904cde12ab62b3f29f505188` received Vercel Preview `success` (`Deployment has completed`). PR #29 is mergeable/clean at that check, still open and unmerged. The status/work-log synchronization that follows is documentation-only; recheck Vercel for the resulting exact final head before merge. Owner browser UAT remains pending.
+
+
+## 13 November 2026 — Stitch-inspired soft UI refresh
+
+- Owner supplied the Stitch HTML reference for a clean event workspace and requested that the same design language be applied across the Owner app: topbar, sidebar, event subbar, and management content.
+- Owner clarified that the visual treatment must remain restrained: no exaggerated blue shadows, glow, or decorative effects; keep the interface simple, clean, soft, and easy to scan.
+- GitHub preflight: latest `main` was `5634b23a1538b36db2bf2c1fdbc1b5df607b8704`; PR #29 is merged; no open PRs. Relevant historical branches for shared layout/UI, loading, Kanban, Panitia, and Dashboard performance are behind main with zero unique commits ahead.
+- Created `feat/stitch-soft-ui-refresh` from the latest main.
+- Scope: Owner AppShell/topbar/sidebar/mobile navigation, event workspace header/subnav, global Owner palette, shared Button/TextField/Alert/ListPagination, clearer separate member cards, and toned-down Panitia styling. Existing feature behavior and server-side boundaries are preserved.
+- No database, migration, RLS, production data, environment, or deployment changes.
+- Local lint/build/browser E2E not run; exact final PR Preview and Owner UAT required. Merge and Production deployment remain Owner-controlled.
+
+
+### PR #29 merge confirmation
+
+- Owner merged PR #29 on 13 November 2026. GitHub confirms merge commit `5634b23a1538b36db2bf2c1fdbc1b5df607b8704` is current `main`.
+- The Stitch-inspired global refresh is a separate follow-up branch and PR; it does not alter Production or merge automatically.
+
+
+### PR #30 opened — Stitch-inspired global UI
+
+- Opened PR #30: https://github.com/Abdul-Fikri/mini-event-management/pull/30, base `main`, branch `feat/stitch-soft-ui-refresh`.
+- Latest source/documentation head before this follow-up documentation commit: `206b23802dbe4470d898b8003a01791232f46f7d`; 19 files changed.
+- Vercel Preview status on that head was pending at the time of this note. Recheck the exact final head after documentation changes.
+- PR is open and unmerged. No Production deployment or merge was performed.
