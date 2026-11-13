@@ -59,7 +59,7 @@ Source reviewed: `main` baseline after PR #28 merge (commit `ed00f75ec0beda51f20
 
 ## 3. Panitia visual refinement
 
-The Owner-facing event Panitia tab and its dedicated division/committee management views use a scoped Polar Bear theme. The UI separates Divisi event and Susunan panitia into distinct white surfaces, places search/filter and forms on soft-blue panels, and presents each committee member in an individual card with clear hierarchy for name, division, position, contact, and responsibility. Buttons and pagination use soft ice-blue accents. The theme is intentionally not applied globally to other management modules. This is a UI-only change; existing data fetching, CRUD, search/filter, pagination, routes, authorization, and database behavior remain unchanged. PR #29 is in progress; Preview and Owner UAT are pending.
+The Owner-facing event Panitia tab and its dedicated division/committee management views use a scoped Polar Bear theme. The UI separates Divisi event and Susunan panitia into distinct white surfaces, places search/filter and forms on soft-blue panels, and presents each committee member in an individual card with clear hierarchy for name, division, position, contact, and responsibility. Buttons and pagination use soft ice-blue accents. The theme is intentionally not applied globally to other management modules. This is a UI-only change; existing data fetching, CRUD, search/filter, pagination, routes, authorization, and database behavior remain unchanged. PR #29: https://github.com/Abdul-Fikri/mini-event-management/pull/29 (open, not merged); Preview and Owner UAT are pending.
 
 ## 4. Pagination and dedicated list views
 
