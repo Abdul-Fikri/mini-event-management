@@ -75,6 +75,7 @@ export default function EventDivisionManager({
 }) {
   const [search, setSearch] = useState(initialSearch);
   const [page, setPage] = useState(1);
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
   const normalizedSearch = search.trim().toLowerCase();
   const filteredDivisions = divisions.filter((division) => {
     const searchableText = [division.name, division.description]
@@ -91,6 +92,47 @@ export default function EventDivisionManager({
   const basePath = `/events/${eventId}/panitia`;
   const returnTo = standalone ? `${basePath}/divisions` : basePath;
   const viewAllHref = `${basePath}/divisions${search.trim() ? `?q=${encodeURIComponent(search.trim())}` : ""}`;
+
+  if (!standalone) {
+    return (
+      <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold">Divisi event</h2>
+            <p className="mt-1 text-sm text-zinc-600">
+              Tambahkan divisi dengan cepat atau buka halaman Kelola divisi untuk melihat dan mengatur seluruh daftar.
+            </p>
+            <p className="mt-1 text-xs text-zinc-500">
+              {divisions.length} divisi tersedia.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setShowQuickAdd((open) => !open)}
+              aria-expanded={showQuickAdd}
+              aria-controls="quick-add-event-division"
+            >
+              {showQuickAdd ? "Tutup form" : "Tambah divisi"}
+            </Button>
+            <Link
+              href={`${basePath}/divisions`}
+              className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Kelola divisi
+            </Link>
+          </div>
+        </div>
+
+        {showQuickAdd ? (
+          <div id="quick-add-event-division" className="border-t border-zinc-100 pt-4">
+            <DivisionForm eventId={eventId} returnTo={returnTo} />
+          </div>
+        ) : null}
+      </section>
+    );
+  }
 
   return (
     <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
