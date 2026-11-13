@@ -191,3 +191,16 @@ Before starting any new feature, refactor, or hotfix that changes application so
 7. **Preserve Owner-controlled operations.** Use a dedicated branch and PR. Do not push directly to `main`, merge/rebase branches, delete branches, or deploy Production unless the Owner explicitly authorizes that operation.
 
 A concise pre-development note should identify: latest `main` SHA; open PRs and their head/base SHAs; relevant branches/dependencies; overlapping files/features; chosen base branch and reason. If there are no open PRs, state that explicitly. This checklist is mandatory for every new feature request, not only when a conflict is already visible.
+
+
+## Panitia event visual design — Polar Bear
+
+The Owner-facing event Panitia management pages use a scoped Polar Bear visual theme inspired by soft ice blue and white:
+
+- App canvas/surface references: `#F5F8FC` (ice canvas), `#FFFFFF` (card surface), `#F0F5FA` (soft tinted panels), and `#EBF3FC` (active/soft blue highlights).
+- Primary accent: `#3B82F6`; hover/darker accent: `#2563EB`; focus accent: `#BFDBFE`.
+- Borders: `#E2EBF5` or slightly stronger `#D7E6F5` for nested data cards. Primary text: `#0F172A`; secondary text: `#64748B`.
+- Use clear surface hierarchy: separate white sections, tinted filter/form panels, and individually outlined/shadowed data cards. Keep spacing and typography consistent so adjacent records do not visually blend together.
+- Apply this theme only to Owner event Panitia management surfaces (main tab, division management, committee list, and related forms/pagination) until the Owner approves extending it to other management modules.
+- Keep danger actions visibly distinct with accessible red styling. Preserve keyboard focus, labels, semantic elements, responsive stacking, and pending/error feedback.
+- This is a presentation-only theme. Do not change data contracts, Server Actions, authorization, group/event scoping, RLS, or database schema as part of visual-only work.
