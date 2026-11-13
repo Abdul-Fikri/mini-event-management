@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 13 November 2026 — PR #23, #24, and #25 merged; PR #26 Kanban optimistic update in progress
+Last updated: 13 November 2026 — PR #23, #24, and #25 merged; PR #26 optimistic Kanban update open, initial Preview passed
 
 ## Owner-reported verification
 
@@ -92,4 +92,4 @@ Last updated: 13 November 2026 — PR #23, #24, and #25 merged; PR #26 Kanban op
 - Pending state is tracked per task so other cards remain usable during another task's save.
 - Removed active Kanban route revalidation from the status-only Server Action; event overview and dedicated `/tugas/all` are still revalidated for fresh server-rendered data.
 - No schema, migration, RLS, database, or production data changes.
-- Branch: `feat/instant-optimistic-task-kanban`; PR #26 will track the change. Preview and real-device/browser UAT remain pending.
+- Branch: `feat/instant-optimistic-task-kanban`; PR #26 is open. Vercel status for initial PR head `4379df45902c55699ceb4cf279e25cf84c35c0f5` reports `success` and deployment completed. Owner browser UAT remains pending; any later docs-only commit must be checked at the exact latest head.
