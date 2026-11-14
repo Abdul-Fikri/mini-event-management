@@ -32,15 +32,15 @@ export default function ProcurementSection({ eventId, items, members, categories
   const returnTo = standalone ? `${basePath}/all` : basePath;
 
   return (
-    <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
+    <section className="management-panel space-y-5 p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          {standalone ? <Link href={basePath} className="text-sm font-medium text-indigo-700 hover:underline">← Kembali ke Pengadaan</Link> : null}
+          {standalone ? <Link href={basePath} className="management-link text-sm hover:underline">← Kembali ke Pengadaan</Link> : null}
           <h2 className={standalone ? "mt-2 text-xl font-semibold" : "text-lg font-semibold"}>{standalone ? "Semua kebutuhan pengadaan" : "Manajemen perlengkapan"}</h2>
           <p className="text-sm text-zinc-600">Kelola kebutuhan dan progres pembelian. Item berstatus Dipesan menjadi komitmen anggaran; item Sudah dibeli otomatis masuk ke pengeluaran Keuangan.</p>
         </div>
         {!standalone && items.length > 0 ? (
-          <Link href={`${basePath}/all`} className="shrink-0 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-800 hover:bg-indigo-100">Lihat semua pengadaan</Link>
+          <Link href={`${basePath}/all`} className="shrink-0 rounded-xl border border-[#D7E5F1] bg-[#EDF4FA] px-3.5 py-2.5 text-sm font-semibold text-[#32628E] transition-colors hover:bg-[#E5EFF8]">Lihat semua pengadaan</Link>
         ) : null}
       </div>
 
@@ -53,12 +53,12 @@ export default function ProcurementSection({ eventId, items, members, categories
       {!standalone ? (
         <>
           <div className="grid gap-2 sm:grid-cols-3">
-            <div className="rounded-md bg-zinc-50 p-3"><p className="text-xs text-zinc-500">Total estimasi kebutuhan</p><p className="mt-1 text-lg font-semibold">{currency(estimate)}</p></div>
-            <div className="rounded-md bg-amber-50 p-3"><p className="text-xs text-amber-800">Komitmen (status Dipesan)</p><p className="mt-1 text-lg font-semibold">{currency(commitment)}</p></div>
-            <div className="rounded-md bg-zinc-50 p-3"><p className="text-xs text-zinc-500">Pengeluaran pembelian</p><p className="mt-1 text-lg font-semibold">{currency(actual)}</p></div>
+            <div className="management-stat p-3"><p className="text-xs text-zinc-500">Total estimasi kebutuhan</p><p className="mt-1 text-lg font-semibold">{currency(estimate)}</p></div>
+            <div className="rounded-xl border border-amber-100 bg-amber-50/60 p-3"><p className="text-xs text-amber-800">Komitmen (status Dipesan)</p><p className="mt-1 text-lg font-semibold">{currency(commitment)}</p></div>
+            <div className="management-stat p-3"><p className="text-xs text-zinc-500">Pengeluaran pembelian</p><p className="mt-1 text-lg font-semibold">{currency(actual)}</p></div>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-            {Object.entries(statusLabel).map(([key, label]) => <div key={key} className="rounded-md border border-zinc-100 p-2"><p className="text-xs text-zinc-500">{label}</p><p className="mt-1 text-lg font-semibold tabular-nums">{count[key]}</p></div>)}
+            {Object.entries(statusLabel).map(([key, label]) => <div key={key} className="management-stat p-2.5"><p className="text-xs text-zinc-500">{label}</p><p className="mt-1 text-lg font-semibold tabular-nums">{count[key]}</p></div>)}
           </div>
         </>
       ) : null}
@@ -71,7 +71,7 @@ export default function ProcurementSection({ eventId, items, members, categories
               const isPurchased = ["purchased", "ready"].includes(item.status);
               const isLinked = linkedIds.has(item.id);
               return (
-                <article key={item.id} className="rounded-lg border border-zinc-200 p-4">
+                <article key={item.id} className="management-card p-4 sm:p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
@@ -90,16 +90,16 @@ export default function ProcurementSection({ eventId, items, members, categories
                         <div><dt className="text-zinc-500">Tanggal pembelian</dt><dd>{dateFmt(item.purchased_date)}</dd></div>
                       </dl>
                       {item.notes ? <p className="mt-2 whitespace-pre-wrap text-xs text-zinc-500">Catatan: {item.notes}</p> : null}
-                      {item.status === "ordered" ? <Link className="mt-2 inline-block text-xs font-medium text-indigo-700 hover:underline" href={`/events/${eventId}/keuangan`}>Lihat komitmen di Keuangan →</Link> : null}
-                      {isPurchased && isLinked ? <Link className="mt-2 inline-block text-xs font-medium text-indigo-700 hover:underline" href={`/events/${eventId}/keuangan`}>Lihat transaksi di Keuangan →</Link> : null}
+                      {item.status === "ordered" ? <Link className="mt-2 inline-block text-xs font-semibold text-[#407BB0] hover:text-[#32628E] hover:underline" href={`/events/${eventId}/keuangan`}>Lihat komitmen di Keuangan →</Link> : null}
+                      {isPurchased && isLinked ? <Link className="mt-2 inline-block text-xs font-semibold text-[#407BB0] hover:text-[#32628E] hover:underline" href={`/events/${eventId}/keuangan`}>Lihat transaksi di Keuangan →</Link> : null}
                       {isPurchased && !isLinked ? (
-                        <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3">
+                        <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50/60 p-3">
                           <p className="text-sm text-amber-900">Item pembelian ini belum terhubung ke transaksi Keuangan. Jika ini data lama, pastikan pembeliannya belum pernah dicatat manual agar tidak terjadi pencatatan ganda.</p>
                           <form action={syncProcurementItemToFinance} className="mt-2">
                             <input type="hidden" name="event_id" value={eventId} />
                             <input type="hidden" name="item_id" value={item.id} />
                             <input type="hidden" name="return_to" value={returnTo} />
-                            <button type="submit" className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700">Catat ke Keuangan</button>
+                            <button type="submit" className="rounded-xl bg-[#407BB0] px-3.5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">Catat ke Keuangan</button>
                           </form>
                         </div>
                       ) : null}
@@ -112,7 +112,7 @@ export default function ProcurementSection({ eventId, items, members, categories
                     </form>
                   </div>
                   <details className="mt-3">
-                    <summary className="cursor-pointer text-sm font-medium text-indigo-700">Edit kebutuhan / perbarui status</summary>
+                    <summary className="cursor-pointer text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit kebutuhan / perbarui status</summary>
                     <div className="mt-3"><ProcurementForm eventId={eventId} members={members} categories={categories} item={item} returnTo={returnTo} /></div>
                   </details>
                 </article>
@@ -122,11 +122,11 @@ export default function ProcurementSection({ eventId, items, members, categories
           <ListPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
         </>
       ) : (
-        <p className="rounded-md border border-dashed border-zinc-300 p-4 text-center text-sm text-zinc-600">Belum ada kebutuhan perlengkapan untuk event ini.</p>
+        <p className="management-empty p-5 text-center text-sm text-[#64748B]">Belum ada kebutuhan perlengkapan untuk event ini.</p>
       )}
 
       {!standalone ? (
-        <div className="border-t border-zinc-100 pt-4">
+        <div className="border-t border-[#EEF2F6] pt-5">
           <h3 className="mb-3 font-medium">Tambah kebutuhan</h3>
           <ProcurementForm eventId={eventId} members={members} categories={categories} returnTo={returnTo} />
         </div>

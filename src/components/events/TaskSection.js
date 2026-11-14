@@ -25,16 +25,16 @@ export default function TaskSection({ eventId, tasks, members }) {
   const returnTo = `${basePath}/all`;
 
   return (
-    <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5">
+    <section className="management-panel space-y-5 p-5 sm:p-6">
       <div>
-        <Link href={basePath} className="text-sm font-medium text-indigo-700 hover:underline">← Kembali ke Kanban Tugas</Link>
+        <Link href={basePath} className="management-link text-sm hover:underline">← Kembali ke Kanban Tugas</Link>
         <h2 className="mt-2 text-xl font-semibold">Detail seluruh tugas</h2>
         <p className="text-sm text-zinc-600">Daftar lengkap, detail, dan pengelolaan tugas event. Maksimal lima tugas ditampilkan pada setiap halaman.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {Object.entries(statusLabel).map(([key, label]) => (
-          <div key={key} className="rounded-md bg-zinc-50 p-3">
+          <div key={key} className="management-stat p-3">
             <p className="text-xs text-zinc-500">{label}</p>
             <p className="mt-1 text-xl font-semibold tabular-nums">{counts[key]}</p>
           </div>
@@ -48,7 +48,7 @@ export default function TaskSection({ eventId, tasks, members }) {
           </p>
           <div className="space-y-3">
             {visibleTasks.map((task) => (
-              <article key={task.id} className="rounded-lg border border-zinc-200 p-4">
+              <article key={task.id} className="management-card p-4 sm:p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <h3 className="font-semibold">{task.title}</h3>
@@ -65,7 +65,7 @@ export default function TaskSection({ eventId, tasks, members }) {
                   </form>
                 </div>
                 <details className="mt-3">
-                  <summary className="cursor-pointer text-sm font-medium text-indigo-700">Edit tugas / perbarui status</summary>
+                  <summary className="cursor-pointer text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit tugas / perbarui status</summary>
                   <div className="mt-3"><TaskForm eventId={eventId} members={members} task={task} returnTo={returnTo} /></div>
                 </details>
               </article>
@@ -74,10 +74,10 @@ export default function TaskSection({ eventId, tasks, members }) {
           <ListPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
         </>
       ) : (
-        <p className="rounded-md border border-dashed border-zinc-300 p-4 text-center text-sm text-zinc-600">Belum ada tugas untuk event ini.</p>
+        <p className="management-empty p-5 text-center text-sm text-[#64748B]">Belum ada tugas untuk event ini.</p>
       )}
 
-      <div className="border-t border-zinc-100 pt-4">
+      <div className="border-t border-[#EEF2F6] pt-5">
         <h3 className="mb-3 font-medium">Tambah tugas</h3>
         <TaskForm eventId={eventId} members={members} returnTo={returnTo} />
       </div>

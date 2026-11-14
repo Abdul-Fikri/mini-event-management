@@ -11,7 +11,7 @@ const dateFormatter = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", ti
 const currency = value => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value ?? 0);
 
 function StatCard({ label, value, detail, href, tone = "default" }) {
-  return <Link prefetch={false} href={href} className="rounded-lg border border-zinc-200 bg-white p-4 transition hover:border-indigo-300 hover:shadow-sm">
+  return <Link prefetch={false} href={href} className="management-card p-4">
     <p className="text-sm text-zinc-600">{label}</p>
     <p className={"mt-2 text-2xl font-semibold tabular-nums " + (tone === "warning" ? "text-amber-700" : tone === "success" ? "text-emerald-700" : "")}>{value}</p>
     <p className="mt-1 text-xs text-zinc-500">{detail}</p>
@@ -19,7 +19,7 @@ function StatCard({ label, value, detail, href, tone = "default" }) {
 }
 
 function SectionHeading({ title, href, linkLabel }) {
-  return <div className="flex items-center justify-between gap-3"><h2 className="font-semibold">{title}</h2><Link prefetch={false} href={href} className="text-sm font-medium text-indigo-700 hover:text-indigo-900">{linkLabel} →</Link></div>;
+  return <div className="flex items-center justify-between gap-3"><h2 className="font-semibold">{title}</h2><Link prefetch={false} href={href} className="management-link text-sm hover:underline">{linkLabel} →</Link></div>;
 }
 
 export default async function DashboardPage() {
@@ -68,10 +68,10 @@ export default async function DashboardPage() {
   return <div className="space-y-6">
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div><p className="text-sm text-zinc-500">Ringkasan aktivitas grup</p><h1 className="text-2xl font-semibold">Dashboard</h1><p className="mt-1 text-sm text-zinc-600">Halo, Owner. Berikut gambaran kondisi event dan pekerjaan grup saat ini.</p></div>
-      <Link prefetch={false} href="/events/new" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">+ Buat event</Link>
+      <Link prefetch={false} href="/events/new" className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">+ Buat event</Link>
     </div>
 
-    <section aria-labelledby="group-heading" className="rounded-lg border border-zinc-200 bg-white p-5">
+    <section aria-labelledby="group-heading" className="management-panel p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0"><p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Grup aktif</p><h2 id="group-heading" className="mt-1 text-lg font-semibold">{group.name}</h2><p className="mt-1 text-sm text-zinc-600">{group.description ?? "Belum ada deskripsi grup."}</p></div>
         {group.category ? <span className="rounded-full border border-zinc-300 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-700">{group.category}</span> : null}
@@ -87,24 +87,24 @@ export default async function DashboardPage() {
     </section>
 
     <section className="grid gap-3 sm:grid-cols-2">
-      <div className="rounded-lg border border-zinc-200 bg-white p-4"><p className="text-sm text-zinc-500">Total pemasukan tercatat</p><p className="mt-1 text-xl font-semibold text-emerald-700">{currency(income)}</p></div>
-      <div className="rounded-lg border border-zinc-200 bg-white p-4"><p className="text-sm text-zinc-500">Total pengeluaran tercatat</p><p className="mt-1 text-xl font-semibold">{currency(expense)}</p></div>
-      <div className="rounded-lg border border-zinc-200 bg-white p-4"><p className="text-sm text-zinc-500">Saldo kas seluruh event</p><p className={"mt-1 text-xl font-semibold " + (income - expense < 0 ? "text-red-700" : "text-zinc-900")}>{currency(income - expense)}</p><p className="mt-1 text-xs text-zinc-500">Pemasukan dikurangi pengeluaran</p></div>
-      <div className="rounded-lg border border-zinc-200 bg-white p-4"><p className="text-sm text-zinc-500">Total rencana anggaran kategori</p><p className="mt-1 text-xl font-semibold">{currency(plannedBudget)}</p><p className="mt-1 text-xs text-zinc-500">Akumulasi seluruh event</p></div>
+      <div className="management-panel p-4"><p className="text-sm text-zinc-500">Total pemasukan tercatat</p><p className="mt-1 text-xl font-semibold text-emerald-700">{currency(income)}</p></div>
+      <div className="management-panel p-4"><p className="text-sm text-zinc-500">Total pengeluaran tercatat</p><p className="mt-1 text-xl font-semibold">{currency(expense)}</p></div>
+      <div className="management-panel p-4"><p className="text-sm text-zinc-500">Saldo kas seluruh event</p><p className={"mt-1 text-xl font-semibold " + (income - expense < 0 ? "text-red-700" : "text-zinc-900")}>{currency(income - expense)}</p><p className="mt-1 text-xs text-zinc-500">Pemasukan dikurangi pengeluaran</p></div>
+      <div className="management-panel p-4"><p className="text-sm text-zinc-500">Total rencana anggaran kategori</p><p className="mt-1 text-xl font-semibold">{currency(plannedBudget)}</p><p className="mt-1 text-xs text-zinc-500">Akumulasi seluruh event</p></div>
     </section>
 
-    <section className="rounded-lg border border-zinc-200 bg-white p-5">
+    <section className="management-panel p-5">
       <SectionHeading title="Event mendatang" href="/events" linkLabel="Semua event"/>
-      {upcoming.length ? <div className="mt-3 divide-y divide-zinc-100">{upcoming.map(event => <Link prefetch={false} key={event.id} href={"/events/" + event.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-1 last:pb-1 hover:text-indigo-800"><div className="min-w-0"><p className="font-medium">{event.name}</p><p className="mt-1 text-xs text-zinc-500">{event.location || "Lokasi belum ditentukan"} · {EVENT_STATUS_LABELS[event.effectiveStatus]}</p></div><div className="shrink-0 text-right"><p className="text-sm font-medium">{dateFormatter.format(new Date(event.start_date + "T00:00:00"))}</p>{event.end_date && event.end_date !== event.start_date ? <p className="text-xs text-zinc-500">s.d. {dateFormatter.format(new Date(event.end_date + "T00:00:00"))}</p> : null}</div></Link>)}</div> : <div className="mt-3 rounded-md border border-dashed border-zinc-300 p-5 text-center"><p className="text-sm text-zinc-600">{eventCount ? "Tidak ada event mendatang yang aktif." : "Belum ada event di grup ini."}</p><Link prefetch={false} href="/events/new" className="mt-2 inline-block text-sm font-medium text-indigo-700">Buat event →</Link></div>}
+      {upcoming.length ? <div className="mt-3 divide-y divide-zinc-100">{upcoming.map(event => <Link prefetch={false} key={event.id} href={"/events/" + event.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-1 last:pb-1 hover:text-[#32628E]"><div className="min-w-0"><p className="font-medium">{event.name}</p><p className="mt-1 text-xs text-zinc-500">{event.location || "Lokasi belum ditentukan"} · {EVENT_STATUS_LABELS[event.effectiveStatus]}</p></div><div className="shrink-0 text-right"><p className="text-sm font-medium">{dateFormatter.format(new Date(event.start_date + "T00:00:00"))}</p>{event.end_date && event.end_date !== event.start_date ? <p className="text-xs text-zinc-500">s.d. {dateFormatter.format(new Date(event.end_date + "T00:00:00"))}</p> : null}</div></Link>)}</div> : <div className="mt-3 management-empty p-5 text-center"><p className="text-sm text-zinc-600">{eventCount ? "Tidak ada event mendatang yang aktif." : "Belum ada event di grup ini."}</p><Link prefetch={false} href="/events/new" className="mt-2 inline-block text-sm font-medium text-indigo-700">Buat event →</Link></div>}
     </section>
 
     <section className="grid gap-4 lg:grid-cols-2">
-      <div className="rounded-lg border border-zinc-200 bg-white p-5">
+      <div className="management-panel p-5">
         <SectionHeading title="Pantauan tugas" href="/events" linkLabel="Kelola tugas"/>
-        <div className="mt-4 grid grid-cols-2 gap-3"><div className="rounded-md bg-zinc-50 p-3"><p className="text-xs text-zinc-500">Belum selesai</p><p className="mt-1 text-2xl font-semibold">{openTasks.length}</p></div><div className="rounded-md bg-amber-50 p-3"><p className="text-xs text-amber-800">Terlambat</p><p className="mt-1 text-2xl font-semibold text-amber-800">{overdueTasks.length}</p></div></div>
-        {overdueTasks.length ? <div className="mt-3 space-y-2">{overdueTasks.slice(0, 3).map(task => { const event = eventRows.find(item => item.id === task.event_id); return <Link prefetch={false} key={task.id} href={"/events/" + task.event_id} className="block rounded-md border border-amber-100 p-3 hover:bg-amber-50"><p className="text-sm font-medium">{task.title}</p><p className="mt-1 text-xs text-zinc-500">{event?.name ?? "Event"} · Deadline {dateFormatter.format(new Date(task.due_date + "T00:00:00"))}</p></Link>; })}</div> : <p className="mt-3 text-sm text-zinc-500">Tidak ada tugas yang melewati deadline. Mantap!</p>}
+        <div className="mt-4 grid grid-cols-2 gap-3"><div className="management-stat p-3"><p className="text-xs text-zinc-500">Belum selesai</p><p className="mt-1 text-2xl font-semibold">{openTasks.length}</p></div><div className="rounded-md bg-amber-50 p-3"><p className="text-xs text-amber-800">Terlambat</p><p className="mt-1 text-2xl font-semibold text-amber-800">{overdueTasks.length}</p></div></div>
+        {overdueTasks.length ? <div className="mt-3 space-y-2">{overdueTasks.slice(0, 3).map(task => { const event = eventRows.find(item => item.id === task.event_id); return <Link prefetch={false} key={task.id} href={"/events/" + task.event_id} className="block management-card p-3 transition-colors hover:bg-[#FFFBEB]"><p className="text-sm font-medium">{task.title}</p><p className="mt-1 text-xs text-zinc-500">{event?.name ?? "Event"} · Deadline {dateFormatter.format(new Date(task.due_date + "T00:00:00"))}</p></Link>; })}</div> : <p className="mt-3 text-sm text-zinc-500">Tidak ada tugas yang melewati deadline. Mantap!</p>}
       </div>
-      <div className="rounded-lg border border-zinc-200 bg-white p-5">
+      <div className="management-panel p-5">
         <SectionHeading title="Status event" href="/events" linkLabel="Lihat daftar"/>
         <div className="mt-4 space-y-3">{Object.entries(EVENT_STATUS_LABELS).map(([status, label]) => { const count = eventRows.filter(event => event.effectiveStatus === status).length; const percent = eventCount ? (count / eventCount) * 100 : 0; return <div key={status}><div className="mb-1 flex justify-between text-sm"><span className="text-zinc-600">{label}</span><strong className="tabular-nums">{count}</strong></div><div className="h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-indigo-500" style={{ width: percent + "%" }}/></div></div>; })}</div>
       </div>

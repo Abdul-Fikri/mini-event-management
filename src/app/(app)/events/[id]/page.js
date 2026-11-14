@@ -35,7 +35,7 @@ export default async function EventOverviewPage({ params }) {
 
   return (
     <div className="space-y-5">
-      <section className="rounded-lg border border-zinc-200 bg-white p-5">
+      <section className="management-panel p-5 sm:p-6">
         <h2 className="font-semibold">Informasi event</h2>
         <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
           {details.map(([label, value]) => (
@@ -46,7 +46,7 @@ export default async function EventOverviewPage({ params }) {
           ))}
         </dl>
         {event.description ? (
-          <div className="mt-5 border-t border-zinc-100 pt-4">
+          <div className="mt-5 border-t border-[#EEF2F6] pt-4">
             <h3 className="text-sm font-medium">Deskripsi</h3>
             <p className="mt-1 whitespace-pre-wrap text-sm text-zinc-700">
               {event.description}
@@ -55,7 +55,7 @@ export default async function EventOverviewPage({ params }) {
         ) : null}
       </section>
 
-      <section className="rounded-lg border border-zinc-200 bg-white p-5">
+      <section className="management-panel p-5 sm:p-6">
         <h2 className="font-semibold">Mulai kelola event</h2>
         <p className="mt-1 text-sm text-zinc-600">
           Gunakan navigasi di atas untuk mengatur susunan panitia, rundown, tugas,

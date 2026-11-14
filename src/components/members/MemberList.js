@@ -32,7 +32,7 @@ export default function MemberList({ members, standalone = false }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           {standalone ? (
-            <Link href="/members" className="text-sm font-medium text-indigo-700 hover:underline">
+            <Link href="/members" className="management-link text-sm hover:underline">
               ← Kembali ke anggota
             </Link>
           ) : null}
@@ -62,7 +62,7 @@ export default function MemberList({ members, standalone = false }) {
             {visibleMembers.map((member) => (
               <article
                 key={member.id}
-                className="flex flex-col justify-between gap-4 rounded-2xl border border-zinc-200 bg-white p-4 sm:flex-row sm:items-center sm:p-5"
+                className="management-card flex flex-col justify-between gap-4 p-4 sm:flex-row sm:items-center sm:p-5"
               >
                 <div className="flex min-w-0 items-start gap-3">
                   <span
@@ -103,13 +103,13 @@ export default function MemberList({ members, standalone = false }) {
           <ListPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
         </>
       ) : (
-        <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-8 text-center">
+        <div className="management-empty p-8 text-center">
           <h2 className="font-semibold">Belum ada anggota</h2>
           <p className="mt-1 text-sm text-zinc-600">
             Tambahkan anggota agar dapat dipilih sebagai koordinator event.
           </p>
           {!standalone ? (
-            <Link href="/members/new" className="mt-4 inline-block text-sm font-medium text-indigo-700">
+            <Link href="/members/new" className="mt-4 inline-block text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">
               Tambah anggota pertama →
             </Link>
           ) : null}

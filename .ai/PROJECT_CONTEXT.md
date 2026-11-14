@@ -1,6 +1,6 @@
 # Project Context — Mini Event Management System
 
-Last reviewed: 13 November 2026
+Last reviewed: 14 November 2026
 
 Repository: https://github.com/Abdul-Fikri/mini-event-management
 Production URL reported by owner: https://mini-event-management-gules.vercel.app
@@ -197,9 +197,9 @@ A concise pre-development note should identify: latest `main` SHA; open PRs and 
 
 The Owner-facing event Panitia management pages use a scoped Polar Bear visual theme inspired by soft ice blue and white:
 
-- App canvas/surface references: `#F5F8FC` (ice canvas), `#FFFFFF` (card surface), `#F0F5FA` (soft tinted panels), and `#EBF3FC` (active/soft blue highlights).
-- Primary accent: `#3B82F6`; hover/darker accent: `#2563EB`; focus accent: `#BFDBFE`.
-- Borders: `#E2EBF5` or slightly stronger `#D7E6F5` for nested data cards. Primary text: `#0F172A`; secondary text: `#64748B`.
+- App canvas/surface references: `#F5F8FC` (canvas), `#FFFFFF` (card surface), `#F8FAFC` (soft panel), and `#EDF4FA` (active/soft blue highlights).
+- Primary accent: `#407BB0`; hover/darker accent: `#32628E`; focus accent: `#8FB0CE`.
+- Borders: `#E3ECF5` or slightly stronger `#D7E3EF` for nested data cards. Primary text: `#1E293B`; secondary text: `#64748B`.
 - Use clear surface hierarchy: separate white sections, tinted filter/form panels, and individually outlined/shadowed data cards. Keep spacing and typography consistent so adjacent records do not visually blend together.
 - This was the initial PR #29 scope. The Owner subsequently approved extending the same restrained design language across the entire Owner workspace; see `Owner workspace visual design system — Stitch-inspired` below.
 - Keep danger actions visibly distinct with accessible red styling. Preserve keyboard focus, labels, semantic elements, responsive stacking, and pending/error feedback.
@@ -219,6 +219,8 @@ The Owner workspace follows one consistent visual language based on the Stitch H
 - Event header and event subnavigation belong in one surface. Tabs are horizontal, scrollable on small screens, and use a soft background for the active route.
 - Cards and records use white surfaces, neutral thin borders, consistent spacing, and clear separation. Avoid blue shadows, glow, strong gradients, and excessive decoration.
 - Shared controls use the same radius, border, typography, focus, pending, and feedback patterns. Semantic success/warning/danger colors remain distinct.
-- Apply across Dashboard, Event and nested management pages, Anggota Panitia, Pengaturan Grup, and shared Owner navigation/components.
-
-Visual-only work must preserve data contracts, Server Actions, CRUD, route/query/return-path behavior, authorization, group/event scoping, role boundaries, RLS, cache policy, and database schema.
+- PR #30 merged the shared Owner shell and base visual palette at `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`.
+- PR #31 (`feat/stitch-management-ui-polish`) extends the design to Dashboard, Event/Member lists and forms, Rundown, Tugas Kanban/full list, Pengadaan, Keuangan, Ekspor, event overview, and Pengaturan Grup. It also removes the decorative `01` tile beside the Divisi event heading.
+- Reusable presentation classes in `src/app/globals.css`: `management-panel`, `management-card`, `management-stat`, `management-form`, `management-empty`, and `management-link`.
+- Visual-only work must preserve data contracts, Server Actions, CRUD, invitations, route/query/return-path behavior, search/filter, pagination, authorization, group/event scoping, role boundaries, RLS, cache policy, and database schema. No schema, migration, environment, production data, or deployment changes are included in PR #31.
+- Local lint/build and browser E2E have not been run in this environment. Verify Vercel Preview for the exact final PR head and complete Owner UAT; a Preview deployment does not prove Production deployment.

@@ -139,3 +139,51 @@ body {
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Shared, restrained surfaces for Owner management pages. */
+.app-shell .management-panel {
+  border: 1px solid var(--app-border);
+  border-radius: 1rem;
+  background: var(--app-surface);
+  box-shadow: 0 1px 3px rgb(15 23 42 / 3%);
+}
+
+.app-shell .management-card {
+  border: 1px solid var(--app-border);
+  border-radius: 0.9rem;
+  background: var(--app-surface);
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.app-shell .management-card:hover {
+  border-color: var(--app-border-strong);
+}
+
+.app-shell .management-stat {
+  border: 1px solid #E8EEF5;
+  border-radius: 0.85rem;
+  background: #F8FAFC;
+}
+
+.app-shell .management-form {
+  border: 1px solid var(--app-border);
+  border-radius: 1rem;
+  background: #F8FAFC;
+}
+
+.app-shell .management-empty {
+  border: 1px dashed #D6E1EB;
+  border-radius: 1rem;
+  background: #F8FAFC;
+}
+
+.app-shell .management-link {
+  color: var(--app-accent);
+  font-weight: 600;
+  transition: color 160ms ease;
+}
+
+.app-shell .management-link:hover {
+  color: var(--app-accent-hover);
+}

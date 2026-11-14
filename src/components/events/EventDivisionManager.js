@@ -104,11 +104,7 @@ export default function EventDivisionManager({
     return (
       <section className="overflow-hidden rounded-2xl border border-[#E2EBF5] bg-white shadow-none">
         <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:p-6">
-          <div className="flex min-w-0 items-start gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EBF3FC] text-sm font-bold text-[#407BB0]">
-              01
-            </div>
-            <div className="min-w-0">
+          <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-lg font-bold tracking-tight text-[#0F172A]">Divisi event</h2>
                 <span className="rounded-full bg-[#F0F5FA] px-2.5 py-1 text-xs font-semibold text-[#64748B]">
@@ -118,7 +114,6 @@ export default function EventDivisionManager({
               <p className="mt-1 max-w-2xl text-sm leading-6 text-[#64748B]">
                 Atur kelompok kerja untuk event ini. Divisi yang dibuat akan tersedia saat menambahkan anggota panitia.
               </p>
-            </div>
           </div>
 
           <div className="flex w-full flex-wrap gap-2 sm:w-auto">

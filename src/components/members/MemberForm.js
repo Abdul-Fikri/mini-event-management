@@ -24,7 +24,7 @@ export default function MemberForm({ member = null, returnTo = "/members" }) {
       <TextField id="contact" name="contact" label="Kontak (opsional)" hint="Nomor telepon atau email." defaultValue={value("contact")} error={state.errors?.contact} />
       <div className="flex gap-2">
         <Button type="submit" pending={pending} pendingText="Menyimpan…">Simpan anggota</Button>
-        <Link href={returnTo} className="rounded-md border border-zinc-300 px-4 py-2 text-sm">Batal</Link>
+        <Link href={returnTo} className="rounded-xl border border-[#D8E3ED] px-4 py-2.5 text-sm font-medium text-[#475569] transition-colors hover:bg-[#F8FAFC]">Batal</Link>
       </div>
     </form>
   );

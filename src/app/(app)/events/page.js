@@ -25,7 +25,7 @@ export default async function EventsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div><h1 className="text-2xl font-semibold">Event</h1><p className="text-sm text-zinc-600">Kelola seluruh acara grup.</p></div>
-        <Link href="/events/new" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">+ Buat event</Link>
+        <Link href="/events/new" className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">+ Buat event</Link>
       </div>
       <EventList events={rows} />
     </div>

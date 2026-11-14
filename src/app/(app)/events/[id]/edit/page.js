@@ -11,5 +11,5 @@ export default async function EditEventPage({ params }) {
     supabase.from("members").select("id,full_name").eq("group_id", group.id).order("full_name"),
   ]);
   if (!event) notFound();
-  return <div className="space-y-5"><div><Link href={`/events/${id}`} className="text-sm text-indigo-700">← Kembali ke detail</Link><h1 className="mt-2 text-2xl font-semibold">Edit event</h1></div><div className="rounded-lg border border-zinc-200 bg-white p-5"><EventForm event={event} members={members ?? []}/></div></div>;
+  return <div className="space-y-5"><div><Link href={`/events/${id}`} className="management-link text-sm hover:underline">← Kembali ke detail</Link><h1 className="mt-2 text-2xl font-semibold">Edit event</h1></div><div className="management-panel p-5 sm:p-6"><EventForm event={event} members={members ?? []}/></div></div>;
 }
