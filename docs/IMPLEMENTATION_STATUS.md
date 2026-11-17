@@ -389,7 +389,7 @@ Owner requested a focused modal interaction for create/edit actions on the Panit
 - Reuse existing `EventMemberForm`, `DivisionForm`, Server Actions, Zod validation, and validated `return_to` behavior. Success continues through the existing redirect/revalidation; validation feedback stays in the open dialog.
 - Scope is Panitia and its dedicated division/committee views only. No other Owner management pages are changed in this iteration.
 - No database/schema/migration/RLS, authorization, query, or production-data changes.
-- PR #32: https://github.com/Abdul-Fikri/mini-event-management/pull/32 (open, unmerged). Branch: `feat/panitia-modal-forms`, based on current `main` `465dd8a529e58a607ea6886086aeff6747480e51`. Initial PR head `d0359bb8896cc08e2ebad40a2491318160cb62de` received Vercel Preview `success`; local lint/build, browser E2E, and Owner UAT remain pending.
+- PR #32: https://github.com/Abdul-Fikri/mini-event-management/pull/32 (open, unmerged). Branch: `feat/panitia-modal-forms`, based on current `main` `465dd8a529e58a607ea6886086aeff6747480e51`. Latest expanded PR head `830a0f60d16ae7ef45a6461d8685213aee4a184f` received Vercel Preview `success`; local lint/build, browser E2E, and Owner UAT remain pending.
 
 
 ## 6. Modal UX rollout — other management pages (PR #32)

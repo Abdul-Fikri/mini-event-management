@@ -242,3 +242,5 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Reused existing forms, Server Actions, validation, and return paths. No database/schema/migration/RLS, authorization, role boundary, business rules, or production data changes.
 - Dedicated full-page forms for Event creation/edit, group onboarding, and group-logo settings remain dedicated pages/panels because they are not inline forms inside data lists.
 - Local lint/build and browser E2E have not been run; Owner local UAT and latest Vercel Preview verification remain pending.
+
+- Latest expanded PR #32 head `830a0f60d16ae7ef45a6461d8685213aee4a184f` received Vercel Preview status `success`; this confirms the Preview deployment only. Local lint/build and browser E2E remain unrun, and Owner UAT is still required.

@@ -154,7 +154,7 @@ Last updated: 14 November 2026 — PR #30 merged; management UI consistency foll
 - Reuse existing forms, Server Actions, validation, and return paths. No schema/migration/RLS or business-flow changes.
 - Modal includes responsive layout, close button, Escape/backdrop dismissal, scroll lock, focus containment/restoration.
 - Updated the implementation handbook, Panitia requirements, and AI project notes alongside code.
-- Initial PR head `d0359bb8896cc08e2ebad40a2491318160cb62de` received Vercel Preview `success`; verify Preview again for the exact latest head after any further changes. Local lint/build/browser E2E and Owner UAT remain pending. Do not merge or deploy Production without Owner approval.
+- Initial PR head `d0359bb8896cc08e2ebad40a2491318160cb62de` received Vercel Preview `success`; verify Preview again for the exact latest head after any further changes. Latest PR head `830a0f60d16ae7ef45a6461d8685213aee4a184f` received Vercel Preview `success`. Local lint/build/browser E2E and Owner UAT remain pending. Do not merge or deploy Production without Owner approval.
 
 
 ## PR #32 — modal UX rollout ke modul management lain
