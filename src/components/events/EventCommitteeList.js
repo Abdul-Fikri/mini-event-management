@@ -5,6 +5,7 @@ import { useState } from "react";
 import { deleteEventMember } from "@/actions/event-members";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import EventMemberForm from "@/components/events/EventMemberForm";
+import Modal from "@/components/ui/Modal";
 import ListPagination from "@/components/ui/ListPagination";
 
 const PAGE_SIZE = 5;
@@ -33,6 +34,8 @@ export default function EventCommitteeList({
   const [search, setSearch] = useState(initialSearch);
   const [divisionFilter, setDivisionFilter] = useState(initialDivisionFilter);
   const [page, setPage] = useState(1);
+  const [activeForm, setActiveForm] = useState(null);
+  const availableMembers = members.filter((member) => !member.assigned);
   const normalizedSearch = search.trim().toLowerCase();
 
   const filteredCommittee = committee.filter((item) => {
@@ -161,6 +164,15 @@ export default function EventCommitteeList({
                   Reset pencarian dan filter
                 </button>
               ) : null}
+              {!standalone && availableMembers.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setActiveForm({ mode: "add" })}
+                  className="inline-flex items-center justify-center rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#407BB0]"
+                >
+                  + Tambah anggota
+                </button>
+              ) : null}
               {!standalone ? (
                 <Link
                   href={viewAllHref}
@@ -231,20 +243,15 @@ export default function EventCommitteeList({
                     </form>
                   </div>
 
-                  <details className="mt-4 border-t border-[#EAF0F7] pt-3">
-                    <summary className="cursor-pointer rounded-xl bg-[#F8FBFF] px-3.5 py-2.5 text-sm font-semibold text-[#407BB0] transition-colors hover:bg-[#F0F5FA]">
+                  <div className="mt-4 border-t border-[#EAF0F7] pt-3">
+                    <button
+                      type="button"
+                      onClick={() => setActiveForm({ mode: "edit", assignment: item })}
+                      className="w-full rounded-xl bg-[#F8FBFF] px-3.5 py-2.5 text-left text-sm font-semibold text-[#407BB0] transition-colors hover:bg-[#F0F5FA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#407BB0]"
+                    >
                       Edit penugasan
-                    </summary>
-                    <div className="mt-4">
-                      <EventMemberForm
-                        eventId={eventId}
-                        members={members}
-                        divisions={divisions}
-                        assignment={item}
-                        returnTo={returnTo}
-                      />
-                    </div>
-                  </details>
+                    </button>
+                  </div>
                 </article>
               ))}
             </div>
@@ -265,9 +272,37 @@ export default function EventCommitteeList({
       ) : (
         <div className="rounded-2xl border border-dashed border-[#D2E0ED] bg-[#F8FBFF] px-5 py-8 text-center">
           <p className="font-semibold text-[#334155]">Belum ada anggota dalam susunan panitia.</p>
-          <p className="mt-1 text-sm text-[#64748B]">Tambahkan anggota grup ke event ini melalui formulir di bawah.</p>
+          <p className="mt-1 text-sm text-[#64748B]">Tambahkan anggota grup ke event ini untuk mulai menyusun kepanitiaan.</p>
+          {!standalone && availableMembers.length > 0 ? (
+            <button
+              type="button"
+              onClick={() => setActiveForm({ mode: "add" })}
+              className="mt-4 inline-flex items-center justify-center rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]"
+            >
+              + Tambah anggota
+            </button>
+          ) : null}
         </div>
       )}
+      <Modal
+        open={Boolean(activeForm)}
+        onClose={() => setActiveForm(null)}
+        title={activeForm?.mode === "edit" ? "Edit penugasan panitia" : "Tambah anggota panitia"}
+        description={activeForm?.mode === "edit"
+          ? "Perbarui divisi, jabatan, dan tanggung jawab anggota ini."
+          : "Pilih anggota grup, lalu tentukan divisi, jabatan, dan tanggung jawabnya."}
+      >
+        {activeForm ? (
+          <EventMemberForm
+            key={activeForm.mode === "edit" ? activeForm.assignment.id : "new-assignment"}
+            eventId={eventId}
+            members={activeForm.mode === "edit" ? members : availableMembers}
+            divisions={divisions}
+            assignment={activeForm.assignment ?? null}
+            returnTo={returnTo}
+          />
+        ) : null}
+      </Modal>
     </div>
   );
 }

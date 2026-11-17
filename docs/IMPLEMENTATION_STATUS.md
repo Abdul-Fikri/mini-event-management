@@ -375,3 +375,18 @@ Verification:
 - [ ] Shared topbar, sidebar/mobile navigation, event header/subnavigation, button, input, alert, and pagination remain consistent.
 - [ ] No excessive blue shadow, glow, saturated decorative background, or cramped record layout.
 - [ ] Search/filter, return paths, authorization boundaries, and Owner/Panitia role access show no regressions.
+
+
+## 5. Panitia add/edit modal UX — in progress
+
+Owner requested a focused modal interaction for create/edit actions on the Panitia module so forms do not expand inline among the data cards.
+
+- Add committee member: open modal from the Susunan panitia section action; show only members not yet assigned.
+- Edit committee assignment: open modal from the corresponding member card.
+- Quick-add division on main Panitia page: open modal.
+- Add/edit division on dedicated Kelola divisi page: open modal; no expandable forms inside division cards.
+- Keep the list/cards visible and unchanged behind the overlay. Use responsive dialog sizing, scrollable modal content, close button, Escape/backdrop dismissal, focus containment/restoration, and body scroll lock.
+- Reuse existing `EventMemberForm`, `DivisionForm`, Server Actions, Zod validation, and validated `return_to` behavior. Success continues through the existing redirect/revalidation; validation feedback stays in the open dialog.
+- Scope is Panitia and its dedicated division/committee views only. No other Owner management pages are changed in this iteration.
+- No database/schema/migration/RLS, authorization, query, or production-data changes.
+- Branch: `feat/panitia-modal-forms`, based on current `main` `465dd8a529e58a607ea6886086aeff6747480e51`. Preview and Owner UAT pending.

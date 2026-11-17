@@ -224,3 +224,13 @@ The Owner workspace follows one consistent visual language based on the Stitch H
 - Reusable presentation classes in `src/app/globals.css`: `management-panel`, `management-card`, `management-stat`, `management-form`, `management-empty`, and `management-link`.
 - Visual-only work must preserve data contracts, Server Actions, CRUD, invitations, route/query/return-path behavior, search/filter, pagination, authorization, group/event scoping, role boundaries, RLS, cache policy, and database schema. No schema, migration, environment, production data, or deployment changes are included in PR #31.
 - Local lint/build and browser E2E have not been run in this environment. Verify Vercel Preview for the exact final PR head and complete Owner UAT; a Preview deployment does not prove Production deployment.
+
+
+## Panitia modal form UX
+
+- Owner requested all add/edit forms in the Panitia module to open in a dedicated modal, not inline between data cards or inside expandable record accordions.
+- Apply to add committee member, edit committee assignment, quick-add division on the main Panitia page, and create/edit division on the dedicated Kelola divisi page.
+- Preserve existing forms, Server Actions, validation, group/event scoping, authorization, RLS, and validated return paths. Success redirects/revalidates as before; validation errors remain visible in the open modal.
+- Modal requirements: responsive width/height, scrollable content, close button, Escape and backdrop dismissal, body scroll lock, keyboard focus containment, and focus restoration.
+- Scope only the Owner Panitia module and its dedicated committee/division management views. Do not expand this iteration to other modules or introduce new domain behavior.
+- Current branch: `feat/panitia-modal-forms`, based on main commit `465dd8a529e58a607ea6886086aeff6747480e51`.

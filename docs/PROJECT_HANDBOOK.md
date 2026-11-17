@@ -385,3 +385,16 @@ Penerapan layout:
 - **Responsive:** jangan memotong navigasi atau aksi utama pada mobile; gunakan wrapping atau horizontal scrolling yang terkontrol.
 
 Pedoman ini berlaku untuk Dashboard, Event dan seluruh subhalaman, Anggota Panitia, Pengaturan Grup, serta komponen navigasi dan UI bersama. Perubahan visual tidak boleh mengubah CRUD, Server Actions, query, authorization, role boundary, routing, cache policy, atau perilaku database.
+
+
+### Pola interaksi form Panitia — modal
+
+Pada modul Panitia, formulir tambah dan edit tidak boleh melebar di antara kartu data atau terbuka melalui accordion di dalam record. Gunakan modal terpisah agar daftar anggota/divisi tetap menjadi fokus halaman.
+
+Cakupan:
+- Tambah anggota ke susunan panitia.
+- Edit penugasan anggota.
+- Tambah divisi dari halaman utama Panitia.
+- Tambah/edit divisi dari halaman Kelola divisi.
+
+Modal harus responsif, memiliki judul dan deskripsi yang jelas, tombol tutup, dukungan Escape dan klik backdrop, penguncian scroll halaman saat terbuka, fokus keyboard yang terjaga dan dikembalikan setelah modal ditutup, serta area konten yang dapat di-scroll pada layar kecil. Gunakan kembali form, Server Actions, validasi, dan return path yang sudah ada. Jangan mengubah aturan bisnis atau database.

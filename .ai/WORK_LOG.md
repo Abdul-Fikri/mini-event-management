@@ -212,3 +212,18 @@ Update this file after substantial work. Keep public product/engineering documen
 - Softened the Kanban drag-target and pending-card focus rings to the muted blue accent; behavior is unchanged.
 - The latest reviewed implementation/documentation head `8504173e158c6eb82b352640e29543fa6a5381ee` received Vercel Preview status `success`. This is a Preview result, not Production. Local lint/build/browser E2E remain unrun.
 - PR remains open and unmerged. Local lint/build/browser E2E have not been run in this environment. No database, migration, RLS, production data, or deployment configuration changes.
+
+
+## 17 November 2026 — Panitia modal form UX
+
+- Confirmed PR #31 had been merged by the Owner; current main HEAD before this work: `465dd8a529e58a607ea6886086aeff6747480e51`.
+- Owner requested a focused UX change: all add/edit forms on the Panitia page should open in dedicated modal dialogs instead of expanding inline among committee/division data.
+- Created branch `feat/panitia-modal-forms` from that main commit.
+- Added reusable `src/components/ui/Modal.js` with responsive dialog layout, scrollable content, close button, Escape/backdrop dismissal, body scroll lock, keyboard focus containment, and focus restoration.
+- Updated `EventCommitteeList`: add-member and edit-assignment forms now open in modals; removed inline edit accordion and moved add-member action into the list section. Existing filters, pagination, member availability, and delete action are retained.
+- Updated main Panitia page to remove the embedded add-member form panel. The list owns the add-member modal trigger; empty/all-assigned guidance remains.
+- Updated `EventDivisionManager`: quick-add division and create/edit forms on the dedicated Kelola divisi page now open in modals; removed inline create/edit accordions/forms from data cards.
+- Existing `EventMemberForm`, `DivisionForm`, Server Actions, validation, return paths, redirects, and revalidation remain in use.
+- No database/schema/migration/RLS, authorization, business rules, production data, or deployment configuration changes.
+- Updated `docs/EVENT_DIVISIONS_REQUIREMENTS.md`, `docs/IMPLEMENTATION_STATUS.md`, `docs/PROJECT_HANDBOOK.md`, `.ai/PROJECT_CONTEXT.md`, `.ai/PROJECT_STATUS.md`, and `.ai/WORK_LOG.md` in this branch.
+- Preview, local lint/build, browser E2E, and Owner UAT remain pending. PR and Production deployment have not been created/performed yet.
