@@ -245,12 +245,9 @@ export default function EventDivisionManager({
       )}
 
       {divisions.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-[#D2E0ED] bg-[#F8FBFF] p-5 text-center">
-          <p className="text-sm text-[#64748B]">Belum ada divisi untuk event ini.</p>
-          <Button type="button" variant="ice" onClick={() => setActiveDivision({ mode: "add" })} className="mt-3">
-            + Tambah divisi
-          </Button>
-        </div>
+        <p className="rounded-2xl border border-dashed border-[#D2E0ED] bg-[#F8FBFF] p-5 text-center text-sm text-[#64748B]">
+          Belum ada divisi untuk event ini. Gunakan tombol Tambah divisi di atas untuk membuat divisi pertama.
+        </p>
       ) : null}
       <Modal
         open={Boolean(activeDivision)}

@@ -269,7 +269,7 @@ export default function EventCommitteeList({
             tone="polar"
           />
         </>
-      ) : (
+      ) : !standalone && members.length === 0 ? null : (
         <div className="rounded-2xl border border-dashed border-[#D2E0ED] bg-[#F8FBFF] px-5 py-8 text-center">
           <p className="font-semibold text-[#334155]">Belum ada anggota dalam susunan panitia.</p>
           <p className="mt-1 text-sm text-[#64748B]">Tambahkan anggota grup ke event ini untuk mulai menyusun kepanitiaan.</p>
