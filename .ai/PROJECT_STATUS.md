@@ -149,9 +149,9 @@ Last updated: 14 November 2026 — PR #30 merged; management UI consistency foll
 
 - PR #31 (Stitch management UI consistency) is now merged by the Owner. Current base `main`: `465dd8a529e58a607ea6886086aeff6747480e51`.
 - Owner requested that add/edit forms on Panitia no longer appear inline between data cards; use separate modal dialogs.
-- Created branch `feat/panitia-modal-forms` from the current main commit.
+- Created branch `feat/panitia-modal-forms` from the current main commit and opened PR #32: https://github.com/Abdul-Fikri/mini-event-management/pull/32.
 - Scope: add committee member, edit committee assignment, quick-add division, and add/edit division on the dedicated division page.
 - Reuse existing forms, Server Actions, validation, and return paths. No schema/migration/RLS or business-flow changes.
 - Modal includes responsive layout, close button, Escape/backdrop dismissal, scroll lock, focus containment/restoration.
 - Updated the implementation handbook, Panitia requirements, and AI project notes alongside code.
-- Preview, lint/build, and Owner UAT are pending. Do not merge or deploy Production without Owner approval.
+- Initial PR head `d0359bb8896cc08e2ebad40a2491318160cb62de` received Vercel Preview `success`; verify Preview again for the exact latest head after any further changes. Local lint/build/browser E2E and Owner UAT remain pending. Do not merge or deploy Production without Owner approval.

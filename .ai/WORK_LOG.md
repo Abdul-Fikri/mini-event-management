@@ -226,4 +226,4 @@ Update this file after substantial work. Keep public product/engineering documen
 - Existing `EventMemberForm`, `DivisionForm`, Server Actions, validation, return paths, redirects, and revalidation remain in use.
 - No database/schema/migration/RLS, authorization, business rules, production data, or deployment configuration changes.
 - Updated `docs/EVENT_DIVISIONS_REQUIREMENTS.md`, `docs/IMPLEMENTATION_STATUS.md`, `docs/PROJECT_HANDBOOK.md`, `.ai/PROJECT_CONTEXT.md`, `.ai/PROJECT_STATUS.md`, and `.ai/WORK_LOG.md` in this branch.
-- Preview, local lint/build, browser E2E, and Owner UAT remain pending. PR and Production deployment have not been created/performed yet.
+- Opened PR #32: https://github.com/Abdul-Fikri/mini-event-management/pull/32 (open, unmerged). Initial PR head `d0359bb8896cc08e2ebad40a2491318160cb62de` received Vercel Preview `success`. Local lint/build, browser E2E, and Owner UAT remain pending. No Production deployment.
