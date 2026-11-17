@@ -234,3 +234,19 @@ The Owner workspace follows one consistent visual language based on the Stitch H
 - Modal requirements: responsive width/height, scrollable content, close button, Escape and backdrop dismissal, body scroll lock, keyboard focus containment, and focus restoration.
 - Scope only the Owner Panitia module and its dedicated committee/division management views. Do not expand this iteration to other modules or introduce new domain behavior.
 - Current branch: `feat/panitia-modal-forms`, based on main commit `465dd8a529e58a607ea6886086aeff6747480e51`.
+
+
+## Modal UX rollout — PR #32
+
+Owner requested a gradual rollout of the dedicated modal pattern to other management pages, within the same existing PR #32 (do not create another PR or merge).
+
+Use the shared `src/components/ui/Modal.js` and keep list/card surfaces focused on data. Reuse current forms and server actions; do not alter business rules, permissions, group/event scoping, validation, or return paths.
+
+Implemented in the same branch:
+- Rundown: create and edit schedule items via modal.
+- Tasks: create/edit from Kanban and the all-tasks list via modal; preserve drag-and-drop and optimistic status updates.
+- Procurement: create/edit needs via modal; preserve finance sync actions and restrictions.
+- Finance: create/edit budget categories and manual transactions via modal; linked procurement transactions remain managed from Procurement.
+- Members: add/edit members and create invitation links via modal.
+
+Keep dedicated standalone workflows (event form routes, group onboarding, group logo settings) as standalone pages/panels; they are not inline forms between data records and should not be converted solely for consistency. No schema/migration/RLS/auth/business-rule changes.

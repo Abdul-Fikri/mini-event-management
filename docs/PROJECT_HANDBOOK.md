@@ -398,3 +398,17 @@ Cakupan:
 - Tambah/edit divisi dari halaman Kelola divisi.
 
 Modal harus responsif, memiliki judul dan deskripsi yang jelas, tombol tutup, dukungan Escape dan klik backdrop, penguncian scroll halaman saat terbuka, fokus keyboard yang terjaga dan dikembalikan setelah modal ditutup, serta area konten yang dapat di-scroll pada layar kecil. Gunakan kembali form, Server Actions, validasi, dan return path yang sudah ada. Jangan mengubah aturan bisnis atau database.
+
+
+### Pola interaksi form pada modul management — modal
+
+Setelah pola modal diterapkan pada Panitia, gunakan pola interaksi yang sama pada modul management lain ketika formulir tambah/edit sebelumnya muncul menyatu dengan daftar atau kartu data.
+
+Cakupan implementasi lanjutan pada PR #32:
+- **Rundown:** tambah kegiatan dan edit kegiatan melalui modal.
+- **Tugas:** tambah/edit dari papan Kanban dan daftar seluruh tugas melalui modal. Perpindahan status Kanban, drag-and-drop, dan penyimpanan status tetap berjalan seperti sebelumnya.
+- **Pengadaan:** tambah kebutuhan dan edit kebutuhan/perbarui status melalui modal.
+- **Keuangan:** tambah/edit kategori anggaran dan transaksi manual melalui modal. Transaksi yang berasal dari Pengadaan tetap dikelola dari Pengadaan.
+- **Anggota Panitia:** tambah/edit anggota dan pembuatan tautan undangan melalui modal.
+
+Jangan mengubah form yang memang merupakan halaman khusus yang berdiri sendiri (misalnya onboarding pembuatan grup atau halaman form event) hanya untuk memaksakan modal. Fokus perubahan ini adalah menghilangkan form inline yang mengganggu pemindaian daftar/kartu. Gunakan kembali form, Server Actions, validasi, authorization, dan return path yang sudah ada.

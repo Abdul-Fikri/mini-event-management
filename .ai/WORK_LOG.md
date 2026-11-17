@@ -227,3 +227,18 @@ Update this file after substantial work. Keep public product/engineering documen
 - No database/schema/migration/RLS, authorization, business rules, production data, or deployment configuration changes.
 - Updated `docs/EVENT_DIVISIONS_REQUIREMENTS.md`, `docs/IMPLEMENTATION_STATUS.md`, `docs/PROJECT_HANDBOOK.md`, `.ai/PROJECT_CONTEXT.md`, `.ai/PROJECT_STATUS.md`, and `.ai/WORK_LOG.md` in this branch.
 - Opened PR #32: https://github.com/Abdul-Fikri/mini-event-management/pull/32 (open, unmerged). Initial PR head `d0359bb8896cc08e2ebad40a2491318160cb62de` received Vercel Preview `success`. Local lint/build, browser E2E, and Owner UAT remain pending. No Production deployment.
+
+
+## 17 November 2026 — PR #32 modal UX rollout, phase 2
+
+Owner asked to extend the Panitia modal interaction to other management pages while keeping all changes in the same open PR #32.
+
+- Added modal create/edit interactions to Rundown schedule items (`ScheduleSection`).
+- Added modal create/edit interactions to the all-tasks list (`TaskSection`) and Kanban (`TaskKanbanBoard`). Existing drag-and-drop, optimistic status update, pending feedback, and delete actions are preserved.
+- Added modal create/edit interactions to Procurement items (`ProcurementSection`). Existing purchase-to-finance synchronization, status labels, and delete behavior are preserved.
+- Added modal create/edit interactions to budget categories and manual transactions (`FinanceSection`). Linked procurement transactions remain managed from Procurement. Existing commitment details accordion is informational, not a form, and remains unchanged.
+- Added modal add/edit member flows (`MemberList`) and modal invitation-link creation (`MemberInvitationForm`).
+- Updated the shared Modal to keep the latest close callback without restarting focus/scroll effects on every parent render.
+- Reused existing forms, Server Actions, validation, and return paths. No database/schema/migration/RLS, authorization, role boundary, business rules, or production data changes.
+- Dedicated full-page forms for Event creation/edit, group onboarding, and group-logo settings remain dedicated pages/panels because they are not inline forms inside data lists.
+- Local lint/build and browser E2E have not been run; Owner local UAT and latest Vercel Preview verification remain pending.

@@ -8,6 +8,7 @@ import { Alert } from "@/components/ui/Alert";
 import BudgetCategoryForm from "@/components/events/BudgetCategoryForm";
 import TransactionForm from "@/components/events/TransactionForm";
 import ListPagination from "@/components/ui/ListPagination";
+import Modal from "@/components/ui/Modal";
 
 const PAGE_SIZE = 5;
 const currency = (value) => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(Number(value ?? 0));
@@ -31,6 +32,7 @@ export default function FinanceSection({
   const [categoryPage, setCategoryPage] = useState(1);
   const [transactionPage, setTransactionPage] = useState(1);
   const [commitmentPage, setCommitmentPage] = useState(1);
+  const [activeForm, setActiveForm] = useState(null);
 
   const income = transactions.filter((item) => item.type === "income").reduce((sum, item) => sum + Number(item.amount), 0);
   const expense = transactions.filter((item) => item.type === "expense").reduce((sum, item) => sum + Number(item.amount), 0);
@@ -94,10 +96,9 @@ export default function FinanceSection({
             <ConfirmDeleteButton message={deleteMessage}>Hapus</ConfirmDeleteButton>
           </form>
         </div>
-        <details className="mt-3">
-          <summary className="cursor-pointer text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit kategori</summary>
-          <div className="mt-3"><BudgetCategoryForm eventId={eventId} category={category} returnTo={returnTo} /></div>
-        </details>
+        <div className="mt-3 border-t border-[#EEF2F6] pt-3">
+          <button type="button" onClick={() => setActiveForm({ type: "category", mode: "edit", data: category })} className="text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit kategori</button>
+        </div>
       </article>
     );
   });
@@ -131,14 +132,33 @@ export default function FinanceSection({
           ) : <span className="self-start text-xs text-zinc-500">Dikelola dari Pengadaan</span>}
         </div>
         {!linkedToProcurement ? (
-          <details className="mt-3">
-            <summary className="cursor-pointer text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit transaksi</summary>
-            <div className="mt-3"><TransactionForm eventId={eventId} categories={categories} members={members} transaction={transaction} returnTo={returnTo} /></div>
-          </details>
+          <div className="mt-3 border-t border-[#EEF2F6] pt-3">
+            <button type="button" onClick={() => setActiveForm({ type: "transaction", mode: "edit", data: transaction })} className="text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit transaksi</button>
+          </div>
         ) : null}
       </article>
     );
   });
+
+  const formModal = (
+    <Modal
+      open={Boolean(activeForm)}
+      onClose={() => setActiveForm(null)}
+      title={activeForm?.type === "category"
+        ? activeForm.mode === "edit" ? "Edit kategori anggaran" : "Tambah kategori anggaran"
+        : activeForm?.mode === "edit" ? "Edit transaksi keuangan" : "Tambah transaksi manual"}
+      description={activeForm?.type === "category"
+        ? "Atur nama kategori dan rencana anggaran event."
+        : "Catat pemasukan atau pengeluaran aktual event."}
+      size="md"
+    >
+      {activeForm?.type === "category" ? (
+        <BudgetCategoryForm key={activeForm.data?.id ?? "new-budget-category"} eventId={eventId} category={activeForm.data ?? null} returnTo={returnTo} />
+      ) : activeForm?.type === "transaction" ? (
+        <TransactionForm key={activeForm.data?.id ?? "new-finance-transaction"} eventId={eventId} categories={categories} members={members} transaction={activeForm.data ?? null} returnTo={returnTo} />
+      ) : null}
+    </Modal>
+  );
 
   const commitmentCards = (rows) => rows.map((item) => (
     <div key={item.id} className="flex flex-wrap items-start justify-between gap-3 border-t border-amber-100 pt-3 text-sm">
@@ -161,6 +181,7 @@ export default function FinanceSection({
         </div>
         {financeError === "category_in_use" ? <Alert>Kategori tidak dapat dihapus karena masih digunakan oleh transaksi. Ubah atau hapus transaksi terkait terlebih dahulu.</Alert> : null}
         {categories.length ? <><PageSummary startIndex={categoryStart} visibleCount={visibleCategories.length} total={categories.length} label="kategori" /><div className="space-y-3">{categoryCards(visibleCategories)}</div><ListPagination currentPage={currentCategoryPage} totalPages={categoryTotalPages} onPageChange={setCategoryPage} /></> : <p className="management-empty p-5 text-center text-sm text-[#64748B]">Belum ada kategori anggaran.</p>}
+        {formModal}
       </section>
     );
   }
@@ -175,6 +196,7 @@ export default function FinanceSection({
         </div>
         {financeError === "procurement_managed" ? <Alert>Transaksi ini dibuat dari Pengadaan dan dikelola dari sana. Edit atau hapus item Pengadaan terkait agar pencatatan tetap sinkron.</Alert> : null}
         {transactions.length ? <><PageSummary startIndex={transactionStart} visibleCount={visibleTransactions.length} total={transactions.length} label="transaksi" /><div className="space-y-3">{transactionCards(visibleTransactions)}</div><ListPagination currentPage={currentTransactionPage} totalPages={transactionTotalPages} onPageChange={setTransactionPage} /></> : <p className="management-empty p-5 text-center text-sm text-[#64748B]">Belum ada transaksi keuangan.</p>}
+        {formModal}
       </section>
     );
   }
@@ -228,7 +250,7 @@ export default function FinanceSection({
           {categories.length > 0 ? <Link href={`${basePath}/categories`} className="shrink-0 management-link text-sm hover:underline">Lihat semua kategori</Link> : null}
         </div>
         {categories.length ? <><PageSummary startIndex={categoryStart} visibleCount={visibleCategories.length} total={categories.length} label="kategori" /><div className="space-y-3">{categoryCards(visibleCategories)}</div><ListPagination currentPage={currentCategoryPage} totalPages={categoryTotalPages} onPageChange={setCategoryPage} /></> : <p className="management-empty p-5 text-center text-sm text-[#64748B]">Belum ada kategori anggaran.</p>}
-        <details><summary className="cursor-pointer text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Tambah kategori anggaran</summary><div className="mt-3"><BudgetCategoryForm eventId={eventId} returnTo={returnTo} /></div></details>
+        <button type="button" onClick={() => setActiveForm({ type: "category", mode: "add" })} className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">+ Tambah kategori anggaran</button>
       </div>
 
       <div className="space-y-4 border-t border-[#EEF2F6] pt-5">
@@ -237,8 +259,9 @@ export default function FinanceSection({
           {transactions.length > 0 ? <Link href={`${basePath}/transactions`} className="shrink-0 management-link text-sm hover:underline">Lihat semua transaksi</Link> : null}
         </div>
         {transactions.length ? <><PageSummary startIndex={transactionStart} visibleCount={visibleTransactions.length} total={transactions.length} label="transaksi" /><div className="space-y-3">{transactionCards(visibleTransactions)}</div><ListPagination currentPage={currentTransactionPage} totalPages={transactionTotalPages} onPageChange={setTransactionPage} /></> : <p className="management-empty p-5 text-center text-sm text-[#64748B]">Belum ada transaksi keuangan.</p>}
-        <details><summary className="cursor-pointer text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Tambah transaksi manual</summary><div className="mt-3"><TransactionForm eventId={eventId} categories={categories} members={members} returnTo={returnTo} /></div></details>
+        <button type="button" onClick={() => setActiveForm({ type: "transaction", mode: "add" })} className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">+ Tambah transaksi manual</button>
       </div>
+      {formModal}
     </section>
   );
 }

@@ -390,3 +390,16 @@ Owner requested a focused modal interaction for create/edit actions on the Panit
 - Scope is Panitia and its dedicated division/committee views only. No other Owner management pages are changed in this iteration.
 - No database/schema/migration/RLS, authorization, query, or production-data changes.
 - PR #32: https://github.com/Abdul-Fikri/mini-event-management/pull/32 (open, unmerged). Branch: `feat/panitia-modal-forms`, based on current `main` `465dd8a529e58a607ea6886086aeff6747480e51`. Initial PR head `d0359bb8896cc08e2ebad40a2491318160cb62de` received Vercel Preview `success`; local lint/build, browser E2E, and Owner UAT remain pending.
+
+
+## 6. Modal UX rollout — other management pages (PR #32)
+
+- [ ] Rundown: create/edit schedule item opens a modal; date, PIC, time, and return path remain correct.
+- [ ] Tasks: create/edit from Kanban and all-tasks list opens a modal; drag-and-drop, optimistic status update, pending indicator, rollback, delete, and pagination remain correct.
+- [ ] Procurement: create/edit need opens a modal; status changes, purchase date/actual price validation, finance synchronization, linked transaction restriction, and delete remain correct.
+- [ ] Finance: create/edit category and manual transaction opens a modal; linked procurement transactions remain non-editable here; commitments remain informational and are not mistaken for forms.
+- [ ] Members: add/edit member and invitation-link creation open modals; invitation copy link and account-connected state remain correct.
+- [ ] Shared modal close button, Escape, backdrop, focus handling, scroll lock, and mobile scrolling work across each module.
+- [ ] Dedicated EventForm, GroupForm onboarding, and group logo settings remain standalone workflows.
+- [ ] No change to Server Actions, authorization, group/event scope, validation, database/schema/migration/RLS, or return paths.
+- [ ] Run local lint/build and browser E2E, then Owner UAT against latest PR Preview before merge.

@@ -155,3 +155,19 @@ Last updated: 14 November 2026 — PR #30 merged; management UI consistency foll
 - Modal includes responsive layout, close button, Escape/backdrop dismissal, scroll lock, focus containment/restoration.
 - Updated the implementation handbook, Panitia requirements, and AI project notes alongside code.
 - Initial PR head `d0359bb8896cc08e2ebad40a2491318160cb62de` received Vercel Preview `success`; verify Preview again for the exact latest head after any further changes. Local lint/build/browser E2E and Owner UAT remain pending. Do not merge or deploy Production without Owner approval.
+
+
+## PR #32 — modal UX rollout ke modul management lain
+
+Owner meminta pola modal yang sudah diterapkan pada Panitia dilanjutkan secara bertahap ke halaman management lain, tetap dalam PR #32 yang sama.
+
+Implementasi lanjutan pada branch yang sama:
+- Rundown: tambah dan edit kegiatan memakai modal.
+- Tugas: tambah/edit dari Kanban dan daftar semua tugas memakai modal. Drag-and-drop dan optimistic status update tidak diubah.
+- Pengadaan: tambah dan edit kebutuhan memakai modal; aksi sinkronisasi pembelian ke Keuangan tetap terpisah.
+- Keuangan: tambah/edit kategori dan transaksi manual memakai modal; transaksi terhubung ke Pengadaan tetap read-only dari Keuangan.
+- Anggota Panitia: tambah/edit anggota dan undangan akun memakai modal.
+
+Form khusus yang memang berada pada route tersendiri (EventForm, onboarding GroupForm, dan pengaturan logo) tetap menjadi halaman/panel khusus, bukan dipindahkan paksa ke modal. Tidak ada perubahan database, migration, RLS, authorization, atau aturan bisnis.
+
+PR #32 tetap open/unmerged. Verifikasi local lint/build, browser E2E, dan UAT Owner masih menunggu tes lokal Owner pada Preview terbaru.

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { deleteScheduleItem } from "@/actions/schedule";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import ScheduleItemForm from "@/components/events/ScheduleItemForm";
+import Modal from "@/components/ui/Modal";
 import ListPagination from "@/components/ui/ListPagination";
 
 const PAGE_SIZE = 5;
@@ -13,6 +14,7 @@ const timeFmt = (value) => value ? value.slice(0, 5) : "—";
 
 export default function ScheduleSection({ eventId, eventStartDate, schedule, members, standalone = false }) {
   const [page, setPage] = useState(1);
+  const [activeItem, setActiveItem] = useState(null);
   const memberById = new Map(members.map((member) => [member.id, member]));
   const totalPages = Math.max(1, Math.ceil(schedule.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -29,11 +31,18 @@ export default function ScheduleSection({ eventId, eventStartDate, schedule, mem
           <h2 className={standalone ? "mt-2 text-xl font-semibold" : "text-lg font-semibold"}>{standalone ? "Semua kegiatan rundown" : "Rundown acara"}</h2>
           <p className="text-sm text-zinc-600">Susun kegiatan berdasarkan tanggal dan jam, lalu tentukan penanggung jawabnya.</p>
         </div>
-        {!standalone && schedule.length > 0 ? (
-          <Link href={`${basePath}/all`} className="shrink-0 rounded-xl border border-[#D7E5F1] bg-[#EDF4FA] px-3.5 py-2.5 text-sm font-semibold text-[#32628E] transition-colors hover:bg-[#E5EFF8]">
-            Lihat semua rundown
-          </Link>
-        ) : null}
+        <div className="flex flex-wrap gap-2">
+          {!standalone ? (
+            <button type="button" onClick={() => setActiveItem({ mode: "add" })} className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">
+              + Tambah kegiatan
+            </button>
+          ) : null}
+          {!standalone && schedule.length > 0 ? (
+            <Link href={`${basePath}/all`} className="shrink-0 rounded-xl border border-[#D7E5F1] bg-[#EDF4FA] px-3.5 py-2.5 text-sm font-semibold text-[#32628E] transition-colors hover:bg-[#E5EFF8]">
+              Lihat semua rundown
+            </Link>
+          ) : null}
+        </div>
       </div>
 
       {schedule.length ? (
@@ -59,12 +68,9 @@ export default function ScheduleSection({ eventId, eventStartDate, schedule, mem
                     <ConfirmDeleteButton message={`Hapus kegiatan "${item.title}" dari rundown?`}>Hapus</ConfirmDeleteButton>
                   </form>
                 </div>
-                <details className="mt-3">
-                  <summary className="cursor-pointer text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit kegiatan</summary>
-                  <div className="mt-3">
-                    <ScheduleItemForm eventId={eventId} members={members} item={item} eventStartDate={eventStartDate} returnTo={returnTo} />
-                  </div>
-                </details>
+                <div className="mt-3 border-t border-[#EEF2F6] pt-3">
+                  <button type="button" onClick={() => setActiveItem({ mode: "edit", item })} className="text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit kegiatan</button>
+                </div>
               </article>
             ))}
           </div>
@@ -74,12 +80,14 @@ export default function ScheduleSection({ eventId, eventStartDate, schedule, mem
         <p className="management-empty p-5 text-center text-sm text-[#64748B]">Belum ada kegiatan dalam rundown event ini.</p>
       )}
 
-      {!standalone ? (
-        <div className="border-t border-[#EEF2F6] pt-5">
-          <h3 className="mb-3 font-medium">Tambah kegiatan</h3>
-          <ScheduleItemForm eventId={eventId} members={members} eventStartDate={eventStartDate} returnTo={returnTo} />
-        </div>
-      ) : null}
+      <Modal
+        open={Boolean(activeItem)}
+        onClose={() => setActiveItem(null)}
+        title={activeItem?.mode === "edit" ? "Edit kegiatan rundown" : "Tambah kegiatan rundown"}
+        description={activeItem?.mode === "edit" ? "Perbarui detail kegiatan dan penanggung jawabnya." : "Lengkapi detail kegiatan dan penanggung jawab dalam rundown event."}
+      >
+        {activeItem ? <ScheduleItemForm key={activeItem.mode === "edit" ? activeItem.item.id : "new-schedule-item"} eventId={eventId} members={members} item={activeItem.item ?? null} eventStartDate={eventStartDate} returnTo={returnTo} /> : null}
+      </Modal>
     </section>
   );
 }
