@@ -11,12 +11,13 @@
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
+    "lottie-react": "^3.1.2",
     "lucide-react": "^1.69.0",
+    "mysql2": "^3.24.6",
     "next": "16.4.5",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "zod": "^4.6.7",
-    "lottie-react": "^3.1.2"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
