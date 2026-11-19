@@ -250,3 +250,6 @@ Implemented in the same branch:
 - Members: add/edit members and create invitation links via modal.
 
 Keep dedicated standalone workflows (event form routes, group onboarding, group logo settings) as standalone pages/panels; they are not inline forms between data records and should not be converted solely for consistency. No schema/migration/RLS/auth/business-rule changes.
+
+
+Panitia card action layout: keep **Edit** beside **Keluarkan** in the card's top-right action row. Do not render a full-width edit control beneath the record content; that creates unnecessary card height and visual separation from the record.
