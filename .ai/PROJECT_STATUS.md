@@ -174,3 +174,6 @@ PR #32 tetap open/unmerged. Verifikasi local lint/build, browser E2E, dan UAT Ow
 
 
 Polishing lanjutan berdasarkan UAT Owner: tombol **Edit** pada kartu susunan panitia dipindahkan ke area aksi kanan atas dan disejajarkan dengan tombol **Keluarkan**. Tombol edit full-width di bawah kartu dihapus. Perubahan hanya presentasi; modal dan aksi hapus tetap menggunakan alur yang sama.
+
+
+Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest verified head before this documentation refresh: `ba45793345ca773a3de244b522042aa5048510ed`. Modal implementation covers Panitia, Rundown, Tugas, Pengadaan, Keuangan, and Anggota Panitia. The source-level changes are present; latest-head Preview, local lint/build, browser E2E, and Owner UAT are not yet verified. No merge or Production deployment.
