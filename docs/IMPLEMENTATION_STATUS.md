@@ -403,3 +403,5 @@ Owner requested a focused modal interaction for create/edit actions on the Panit
 - [ ] Dedicated EventForm, GroupForm onboarding, and group logo settings remain standalone workflows.
 - [ ] No change to Server Actions, authorization, group/event scope, validation, database/schema/migration/RLS, or return paths.
 - [ ] Run local lint/build and browser E2E, then Owner UAT against latest PR Preview before merge.
+
+- [ ] Panitia: tombol Edit penugasan tampil ringkas sejajar dengan Keluarkan di area aksi kartu; tidak ada lagi tombol full-width di bawah konten record.
