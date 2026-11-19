@@ -232,7 +232,7 @@ The Owner workspace follows one consistent visual language based on the Stitch H
 - Apply to add committee member, edit committee assignment, quick-add division on the main Panitia page, and create/edit division on the dedicated Kelola divisi page.
 - Preserve existing forms, Server Actions, validation, group/event scoping, authorization, RLS, and validated return paths. Success redirects/revalidates as before; validation errors remain visible in the open modal.
 - Modal requirements: responsive width/height, scrollable content, close button, Escape and backdrop dismissal, body scroll lock, keyboard focus containment, and focus restoration.
-- Scope only the Owner Panitia module and its dedicated committee/division management views. Do not expand this iteration to other modules or introduce new domain behavior.
+- The initial phase covered Owner Panitia and its dedicated committee/division views. PR #32 subsequently extended the same modal interaction to Rundown, Tasks, Procurement, Finance, and Members; see the rollout section below.
 - Current branch: `feat/panitia-modal-forms`, based on main commit `465dd8a529e58a607ea6886086aeff6747480e51`.
 
 
