@@ -171,3 +171,6 @@ Implementasi lanjutan pada branch yang sama:
 Form khusus yang memang berada pada route tersendiri (EventForm, onboarding GroupForm, dan pengaturan logo) tetap menjadi halaman/panel khusus, bukan dipindahkan paksa ke modal. Tidak ada perubahan database, migration, RLS, authorization, atau aturan bisnis.
 
 PR #32 tetap open/unmerged. Verifikasi local lint/build, browser E2E, dan UAT Owner masih menunggu tes lokal Owner pada Preview terbaru.
+
+
+Polishing lanjutan berdasarkan UAT Owner: tombol **Edit** pada kartu susunan panitia dipindahkan ke area aksi kanan atas dan disejajarkan dengan tombol **Keluarkan**. Tombol edit full-width di bawah kartu dihapus. Perubahan hanya presentasi; modal dan aksi hapus tetap menggunakan alur yang sama.
