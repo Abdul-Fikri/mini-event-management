@@ -252,3 +252,11 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Edit still opens the existing modal; delete confirmation and Server Action are unchanged.
 - Documentation updated in the same PR. No database, authorization, or business-logic changes.
 - Local lint/build and browser E2E remain unverified; Owner should test the latest Preview/local branch.
+
+
+## 19 November 2026 — PR #32 modal rollout status/documentation reconciliation
+- Re-reviewed live PR #32 and confirmed the branch contains modal add/edit flows for Rundown, Tasks (Kanban and all-tasks list), Procurement, Finance (categories and manual transactions), and Members (add/edit and invitation creation), in addition to the Panitia flows.
+- Reconciled stale scope/status statements in `.ai/PROJECT_CONTEXT.md` and `docs/IMPLEMENTATION_STATUS.md`; marked source-level implementation complete while keeping runtime verification explicitly pending.
+- Refreshed `.ai/PROJECT_STATUS.md` with the current PR state and verification caveat. Updated the project handbook alongside the same PR.
+- No database/schema/migration/RLS, authorization, business-rule, production-data, or deployment changes.
+- PR #32 remains open/unmerged. Latest application Preview success known is for commit `830a0f60d16ae7ef45a6461d8685213aee4a184f`; later commits require Preview verification. Local lint/build, browser E2E, and Owner UAT remain pending.
