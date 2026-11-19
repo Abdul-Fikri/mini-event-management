@@ -244,3 +244,11 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Local lint/build and browser E2E have not been run; Owner local UAT and latest Vercel Preview verification remain pending.
 
 - Latest expanded PR #32 head `830a0f60d16ae7ef45a6461d8685213aee4a184f` received Vercel Preview status `success`; this confirms the Preview deployment only. Local lint/build and browser E2E remain unrun, and Owner UAT is still required.
+
+
+## Panitia card action refinement
+- Moved the assignment **Edit** action into the top-right action row beside **Keluarkan**.
+- Removed the full-width edit strip below the card content to reduce visual height and keep actions grouped with their record.
+- Edit still opens the existing modal; delete confirmation and Server Action are unchanged.
+- Documentation updated in the same PR. No database, authorization, or business-logic changes.
+- Local lint/build and browser E2E remain unverified; Owner should test the latest Preview/local branch.
