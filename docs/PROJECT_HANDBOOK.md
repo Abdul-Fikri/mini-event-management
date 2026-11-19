@@ -412,3 +412,6 @@ Cakupan implementasi lanjutan pada PR #32:
 - **Anggota Panitia:** tambah/edit anggota dan pembuatan tautan undangan melalui modal.
 
 Jangan mengubah form yang memang merupakan halaman khusus yang berdiri sendiri (misalnya onboarding pembuatan grup atau halaman form event) hanya untuk memaksakan modal. Fokus perubahan ini adalah menghilangkan form inline yang mengganggu pemindaian daftar/kartu. Gunakan kembali form, Server Actions, validasi, authorization, dan return path yang sudah ada.
+
+
+Penyempurnaan kartu susunan panitia: aksi **Edit** ditempatkan sejajar dengan aksi **Keluarkan** di area aksi kanan atas kartu. Hindari tombol edit full-width di bawah konten kartu karena menambah tinggi visual dan membuat aksi terasa terpisah dari record yang diedit.
