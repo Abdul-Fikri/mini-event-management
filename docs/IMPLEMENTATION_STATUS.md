@@ -377,7 +377,7 @@ Verification:
 - [ ] Search/filter, return paths, authorization boundaries, and Owner/Panitia role access show no regressions.
 
 
-## 5. Panitia add/edit modal UX — in progress
+## 5. Panitia add/edit modal UX — implemented in PR #32
 
 Owner requested a focused modal interaction for create/edit actions on the Panitia module so forms do not expand inline among the data cards.
 
@@ -387,21 +387,24 @@ Owner requested a focused modal interaction for create/edit actions on the Panit
 - Add/edit division on dedicated Kelola divisi page: open modal; no expandable forms inside division cards.
 - Keep the list/cards visible and unchanged behind the overlay. Use responsive dialog sizing, scrollable modal content, close button, Escape/backdrop dismissal, focus containment/restoration, and body scroll lock.
 - Reuse existing `EventMemberForm`, `DivisionForm`, Server Actions, Zod validation, and validated `return_to` behavior. Success continues through the existing redirect/revalidation; validation feedback stays in the open dialog.
-- Scope is Panitia and its dedicated division/committee views only. No other Owner management pages are changed in this iteration.
+- The initial Panitia phase was extended in the same PR #32 to Rundown, Tasks, Procurement, Finance, and Members; see section 6.
 - No database/schema/migration/RLS, authorization, query, or production-data changes.
 - PR #32: https://github.com/Abdul-Fikri/mini-event-management/pull/32 (open, unmerged). Branch: `feat/panitia-modal-forms`, based on current `main` `465dd8a529e58a607ea6886086aeff6747480e51`. Latest expanded PR head `830a0f60d16ae7ef45a6461d8685213aee4a184f` received Vercel Preview `success`; local lint/build, browser E2E, and Owner UAT remain pending.
 
 
 ## 6. Modal UX rollout — other management pages (PR #32)
 
-- [ ] Rundown: create/edit schedule item opens a modal; date, PIC, time, and return path remain correct.
-- [ ] Tasks: create/edit from Kanban and all-tasks list opens a modal; drag-and-drop, optimistic status update, pending indicator, rollback, delete, and pagination remain correct.
-- [ ] Procurement: create/edit need opens a modal; status changes, purchase date/actual price validation, finance synchronization, linked transaction restriction, and delete remain correct.
-- [ ] Finance: create/edit category and manual transaction opens a modal; linked procurement transactions remain non-editable here; commitments remain informational and are not mistaken for forms.
-- [ ] Members: add/edit member and invitation-link creation open modals; invitation copy link and account-connected state remain correct.
-- [ ] Shared modal close button, Escape, backdrop, focus handling, scroll lock, and mobile scrolling work across each module.
-- [ ] Dedicated EventForm, GroupForm onboarding, and group logo settings remain standalone workflows.
-- [ ] No change to Server Actions, authorization, group/event scope, validation, database/schema/migration/RLS, or return paths.
+Implementation is present in the current PR branch; the following items are source-level implemented, not yet independently runtime-verified:
+
+- [x] Rundown: create/edit schedule item opens a modal; existing date, PIC, time, and return path fields are reused.
+- [x] Tasks: create/edit from Kanban and all-tasks list opens a modal; drag-and-drop, optimistic status update, pending indicator, rollback, delete, and pagination logic are retained.
+- [x] Procurement: create/edit need opens a modal; status, purchase-date/actual-price validation, finance synchronization, linked transaction restriction, and delete flow are retained.
+- [x] Finance: create/edit category and manual transaction opens a modal; linked procurement transactions remain managed from Procurement; commitment details remain informational.
+- [x] Members: add/edit member and invitation-link creation open modals; invitation copy link and connected-account state remain in the existing flow.
+- [x] Shared modal is reused across modules with close button, Escape/backdrop dismissal, focus handling, body scroll lock, and scrollable responsive content.
+- [x] Dedicated EventForm, GroupForm onboarding, and group logo settings remain standalone workflows.
+- [x] Existing Server Actions, authorization, group/event scope, validation, database/schema/migration/RLS, and return paths were not intentionally changed by this UI rollout.
+- [x] Panitia: tombol Edit penugasan berada sejajar dengan Keluarkan di area aksi kartu; tombol full-width di bawah record dihapus.
 - [ ] Run local lint/build and browser E2E, then Owner UAT against latest PR Preview before merge.
 
-- [ ] Panitia: tombol Edit penugasan tampil ringkas sejajar dengan Keluarkan di area aksi kartu; tidak ada lagi tombol full-width di bawah konten record.
+Latest PR head at documentation update: `ba45793345ca773a3de244b522042aa5048510ed`. The earlier application commit `830a0f60d16ae7ef45a6461d8685213aee4a184f` had a successful Vercel Preview; that result does not verify the latest head. Local lint/build, browser E2E, and Owner UAT remain pending.
