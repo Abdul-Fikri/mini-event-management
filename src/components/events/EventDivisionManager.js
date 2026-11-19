@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import ListPagination from "@/components/ui/ListPagination";
 import { TextField } from "@/components/ui/TextField";
+import Modal from "@/components/ui/Modal";
 
 const PAGE_SIZE = 5;
 const initial = { message: "", errors: {}, values: {} };
@@ -83,7 +84,7 @@ export default function EventDivisionManager({
 }) {
   const [search, setSearch] = useState(initialSearch);
   const [page, setPage] = useState(1);
-  const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [activeDivision, setActiveDivision] = useState(null);
   const normalizedSearch = search.trim().toLowerCase();
   const filteredDivisions = divisions.filter((division) => {
     const searchableText = [division.name, division.description]
@@ -120,12 +121,10 @@ export default function EventDivisionManager({
             <Button
               type="button"
               variant="iceSecondary"
-              onClick={() => setShowQuickAdd((open) => !open)}
-              aria-expanded={showQuickAdd}
-              aria-controls="quick-add-event-division"
+              onClick={() => setActiveDivision({ mode: "add" })}
               className="rounded-xl px-4 py-2.5"
             >
-              {showQuickAdd ? "Tutup form" : "Tambah divisi"}
+              Tambah divisi
             </Button>
             <Link
               href={`${basePath}/divisions`}
@@ -136,15 +135,15 @@ export default function EventDivisionManager({
           </div>
         </div>
 
-        {showQuickAdd ? (
-          <div id="quick-add-event-division" className="border-t border-[#E2EBF5] bg-[#F8FBFF] px-5 py-5 sm:px-6">
-            <div className="mb-4">
-              <h3 className="font-semibold text-[#0F172A]">Tambah divisi baru</h3>
-              <p className="mt-1 text-sm text-[#64748B]">Isi nama dan deskripsi singkat agar mudah dikenali.</p>
-            </div>
-            <DivisionForm eventId={eventId} returnTo={returnTo} />
-          </div>
-        ) : null}
+        <Modal
+          open={Boolean(activeDivision)}
+          onClose={() => setActiveDivision(null)}
+          title="Tambah divisi"
+          description="Isi nama dan deskripsi singkat agar divisi mudah dikenali saat menyusun panitia."
+          size="md"
+        >
+          {activeDivision ? <DivisionForm eventId={eventId} returnTo={returnTo} /> : null}
+        </Modal>
       </section>
     );
   }
@@ -163,9 +162,14 @@ export default function EventDivisionManager({
               Buat daftar divisi khusus untuk event ini. Saat menyusun panitia, pilih divisi dari daftar agar penamaannya konsisten.
             </p>
           </div>
-          <span className="rounded-full bg-[#EBF3FC] px-3 py-1.5 text-sm font-semibold text-[#32628E]">
-            {divisions.length} divisi
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-[#EBF3FC] px-3 py-1.5 text-sm font-semibold text-[#32628E]">
+              {divisions.length} divisi
+            </span>
+            <Button type="button" variant="ice" onClick={() => setActiveDivision({ mode: "add" })}>
+              + Tambah divisi
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -209,14 +213,15 @@ export default function EventDivisionManager({
                     </div>
                     <DivisionDeleteForm eventId={eventId} division={division} returnTo={returnTo} />
                   </div>
-                  <details className="mt-4">
-                    <summary className="cursor-pointer rounded-xl border border-[#E2EBF5] bg-[#F8FBFF] px-3.5 py-2.5 text-sm font-semibold text-[#407BB0] transition-colors hover:bg-[#F0F5FA]">
+                  <div className="mt-4 border-t border-[#EAF0F7] pt-3">
+                    <Button
+                      type="button"
+                      variant="iceSecondary"
+                      onClick={() => setActiveDivision({ mode: "edit", division })}
+                    >
                       Edit divisi
-                    </summary>
-                    <div className="mt-4 border-t border-[#E2EBF5] pt-4">
-                      <DivisionForm eventId={eventId} division={division} returnTo={returnTo} />
-                    </div>
-                  </details>
+                    </Button>
+                  </div>
                 </article>
               ))}
             </div>
@@ -239,14 +244,29 @@ export default function EventDivisionManager({
         </p>
       )}
 
-      <details className="rounded-2xl border border-[#E2EBF5] bg-[#F8FBFF] p-4" open={divisions.length === 0}>
-        <summary className="cursor-pointer text-sm font-semibold text-[#407BB0]">
-          Tambah divisi baru
-        </summary>
-        <div className="mt-4 border-t border-[#E2EBF5] pt-4">
-          <DivisionForm eventId={eventId} returnTo={returnTo} />
-        </div>
-      </details>
+      {divisions.length === 0 ? (
+        <p className="rounded-2xl border border-dashed border-[#D2E0ED] bg-[#F8FBFF] p-5 text-center text-sm text-[#64748B]">
+          Belum ada divisi untuk event ini. Gunakan tombol Tambah divisi di atas untuk membuat divisi pertama.
+        </p>
+      ) : null}
+      <Modal
+        open={Boolean(activeDivision)}
+        onClose={() => setActiveDivision(null)}
+        title={activeDivision?.mode === "edit" ? "Edit divisi" : "Tambah divisi"}
+        description={activeDivision?.mode === "edit"
+          ? "Perbarui nama atau deskripsi divisi event ini."
+          : "Isi nama dan deskripsi singkat agar divisi mudah dikenali."}
+        size="md"
+      >
+        {activeDivision ? (
+          <DivisionForm
+            key={activeDivision.mode === "edit" ? activeDivision.division.id : "new-division"}
+            eventId={eventId}
+            division={activeDivision.division ?? null}
+            returnTo={returnTo}
+          />
+        ) : null}
+      </Modal>
     </section>
   );
 }

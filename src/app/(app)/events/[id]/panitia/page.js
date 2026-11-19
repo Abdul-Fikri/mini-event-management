@@ -1,7 +1,6 @@
 import { getEventContext } from "@/lib/events/get-event-context";
 import EventDivisionManager from "@/components/events/EventDivisionManager";
 import EventCommitteeList from "@/components/events/EventCommitteeList";
-import EventMemberForm from "@/components/events/EventMemberForm";
 
 export const metadata = { title: "Panitia Event" };
 
@@ -77,38 +76,22 @@ export default async function EventCommitteePage({ params }) {
             divisions={divisions ?? []}
           />
 
-          {availableCount > 0 ? (
-            <section className="rounded-2xl border border-[#DCEAF8] bg-[#F5F9FE] p-4 sm:p-5">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#64748B]">TAMBAH ANGGOTA</p>
-                  <h3 className="mt-1 text-lg font-bold text-[#0F172A]">Tambahkan anggota ke event</h3>
-                  <p className="mt-1 text-sm leading-6 text-[#64748B]">
-                    Pilih anggota grup yang belum ditugaskan, lalu lengkapi divisi dan tanggung jawabnya.
-                  </p>
-                </div>
-                <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#1D4ED8] shadow-sm ring-1 ring-[#DCEAF8]">
-                  {availableCount} tersedia
-                </span>
+          {availableCount === 0 ? (
+            (members ?? []).length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-[#C8DDF2] bg-[#F8FBFF] p-5">
+                <p className="font-semibold text-[#334155]">Belum ada anggota grup.</p>
+                <p className="mt-1 text-sm leading-6 text-[#64748B]">
+                  Tambahkan data anggota melalui menu Anggota Panitia terlebih dahulu, lalu kembali ke halaman ini untuk menyusun kepanitiaan.
+                </p>
               </div>
-              <div className="mt-4">
-                <EventMemberForm eventId={id} members={selectable} divisions={divisions ?? []} />
+            ) : (
+              <div className="rounded-2xl border border-[#DCEAF8] bg-[#F8FBFF] px-4 py-3">
+                <p className="text-sm font-medium text-[#475569]">
+                  Semua anggota grup sudah masuk dalam susunan panitia event ini.
+                </p>
               </div>
-            </section>
-          ) : (members ?? []).length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-[#C8DDF2] bg-[#F8FBFF] p-5">
-              <p className="font-semibold text-[#334155]">Belum ada anggota grup.</p>
-              <p className="mt-1 text-sm leading-6 text-[#64748B]">
-                Tambahkan data anggota melalui menu Anggota Panitia terlebih dahulu, lalu kembali ke halaman ini untuk menyusun kepanitiaan.
-              </p>
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-[#DCEAF8] bg-[#F8FBFF] px-4 py-3">
-              <p className="text-sm font-medium text-[#475569]">
-                Semua anggota grup sudah masuk dalam susunan panitia event ini.
-              </p>
-            </div>
-          )}
+            )
+          ) : null}
         </div>
       </section>
     </div>

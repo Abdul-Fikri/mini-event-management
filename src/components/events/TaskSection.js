@@ -6,6 +6,7 @@ import { deleteTask } from "@/actions/tasks";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import TaskForm from "@/components/events/TaskForm";
 import ListPagination from "@/components/ui/ListPagination";
+import Modal from "@/components/ui/Modal";
 
 const PAGE_SIZE = 5;
 const dateFmt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" });
@@ -14,6 +15,7 @@ const priorityLabel = { low: "Rendah", medium: "Sedang", high: "Tinggi" };
 
 export default function TaskSection({ eventId, tasks, members }) {
   const [page, setPage] = useState(1);
+  const [activeTask, setActiveTask] = useState(null);
   const memberById = new Map(members.map((member) => [member.id, member]));
   const counts = { todo: 0, in_progress: 0, done: 0, blocked: 0 };
   tasks.forEach((task) => { counts[task.status] = (counts[task.status] ?? 0) + 1; });
@@ -64,10 +66,9 @@ export default function TaskSection({ eventId, tasks, members }) {
                     <ConfirmDeleteButton message={`Hapus tugas "${task.title}"?`}>Hapus</ConfirmDeleteButton>
                   </form>
                 </div>
-                <details className="mt-3">
-                  <summary className="cursor-pointer text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit tugas / perbarui status</summary>
-                  <div className="mt-3"><TaskForm eventId={eventId} members={members} task={task} returnTo={returnTo} /></div>
-                </details>
+                <div className="mt-3 border-t border-[#EEF2F6] pt-3">
+                  <button type="button" onClick={() => setActiveTask({ mode: "edit", task })} className="text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit tugas / perbarui status</button>
+                </div>
               </article>
             ))}
           </div>
@@ -77,10 +78,14 @@ export default function TaskSection({ eventId, tasks, members }) {
         <p className="management-empty p-5 text-center text-sm text-[#64748B]">Belum ada tugas untuk event ini.</p>
       )}
 
-      <div className="border-t border-[#EEF2F6] pt-5">
-        <h3 className="mb-3 font-medium">Tambah tugas</h3>
-        <TaskForm eventId={eventId} members={members} returnTo={returnTo} />
-      </div>
+      <Modal
+        open={Boolean(activeTask)}
+        onClose={() => setActiveTask(null)}
+        title={activeTask?.mode === "edit" ? "Edit tugas" : "Tambah tugas"}
+        description={activeTask?.mode === "edit" ? "Perbarui informasi, penanggung jawab, atau status tugas." : "Tambahkan tugas baru dan tentukan penanggung jawabnya."}
+      >
+        {activeTask ? <TaskForm key={activeTask.mode === "edit" ? activeTask.task.id : "new-task"} eventId={eventId} members={members} task={activeTask.task ?? null} returnTo={returnTo} /> : null}
+      </Modal>
     </section>
   );
 }

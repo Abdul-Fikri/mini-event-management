@@ -212,3 +212,51 @@ Update this file after substantial work. Keep public product/engineering documen
 - Softened the Kanban drag-target and pending-card focus rings to the muted blue accent; behavior is unchanged.
 - The latest reviewed implementation/documentation head `8504173e158c6eb82b352640e29543fa6a5381ee` received Vercel Preview status `success`. This is a Preview result, not Production. Local lint/build/browser E2E remain unrun.
 - PR remains open and unmerged. Local lint/build/browser E2E have not been run in this environment. No database, migration, RLS, production data, or deployment configuration changes.
+
+
+## 17 November 2026 — Panitia modal form UX
+
+- Confirmed PR #31 had been merged by the Owner; current main HEAD before this work: `465dd8a529e58a607ea6886086aeff6747480e51`.
+- Owner requested a focused UX change: all add/edit forms on the Panitia page should open in dedicated modal dialogs instead of expanding inline among committee/division data.
+- Created branch `feat/panitia-modal-forms` from that main commit.
+- Added reusable `src/components/ui/Modal.js` with responsive dialog layout, scrollable content, close button, Escape/backdrop dismissal, body scroll lock, keyboard focus containment, and focus restoration.
+- Updated `EventCommitteeList`: add-member and edit-assignment forms now open in modals; removed inline edit accordion and moved add-member action into the list section. Existing filters, pagination, member availability, and delete action are retained.
+- Updated main Panitia page to remove the embedded add-member form panel. The list owns the add-member modal trigger; empty/all-assigned guidance remains.
+- Updated `EventDivisionManager`: quick-add division and create/edit forms on the dedicated Kelola divisi page now open in modals; removed inline create/edit accordions/forms from data cards.
+- Existing `EventMemberForm`, `DivisionForm`, Server Actions, validation, return paths, redirects, and revalidation remain in use.
+- No database/schema/migration/RLS, authorization, business rules, production data, or deployment configuration changes.
+- Updated `docs/EVENT_DIVISIONS_REQUIREMENTS.md`, `docs/IMPLEMENTATION_STATUS.md`, `docs/PROJECT_HANDBOOK.md`, `.ai/PROJECT_CONTEXT.md`, `.ai/PROJECT_STATUS.md`, and `.ai/WORK_LOG.md` in this branch.
+- Opened PR #32: https://github.com/Abdul-Fikri/mini-event-management/pull/32 (open, unmerged). Initial PR head `d0359bb8896cc08e2ebad40a2491318160cb62de` received Vercel Preview `success`. Local lint/build, browser E2E, and Owner UAT remain pending. No Production deployment.
+
+
+## 17 November 2026 — PR #32 modal UX rollout, phase 2
+
+Owner asked to extend the Panitia modal interaction to other management pages while keeping all changes in the same open PR #32.
+
+- Added modal create/edit interactions to Rundown schedule items (`ScheduleSection`).
+- Added modal create/edit interactions to the all-tasks list (`TaskSection`) and Kanban (`TaskKanbanBoard`). Existing drag-and-drop, optimistic status update, pending feedback, and delete actions are preserved.
+- Added modal create/edit interactions to Procurement items (`ProcurementSection`). Existing purchase-to-finance synchronization, status labels, and delete behavior are preserved.
+- Added modal create/edit interactions to budget categories and manual transactions (`FinanceSection`). Linked procurement transactions remain managed from Procurement. Existing commitment details accordion is informational, not a form, and remains unchanged.
+- Added modal add/edit member flows (`MemberList`) and modal invitation-link creation (`MemberInvitationForm`).
+- Updated the shared Modal to keep the latest close callback without restarting focus/scroll effects on every parent render.
+- Reused existing forms, Server Actions, validation, and return paths. No database/schema/migration/RLS, authorization, role boundary, business rules, or production data changes.
+- Dedicated full-page forms for Event creation/edit, group onboarding, and group-logo settings remain dedicated pages/panels because they are not inline forms inside data lists.
+- Local lint/build and browser E2E have not been run; Owner local UAT and latest Vercel Preview verification remain pending.
+
+- Latest expanded PR #32 head `830a0f60d16ae7ef45a6461d8685213aee4a184f` received Vercel Preview status `success`; this confirms the Preview deployment only. Local lint/build and browser E2E remain unrun, and Owner UAT is still required.
+
+
+## Panitia card action refinement
+- Moved the assignment **Edit** action into the top-right action row beside **Keluarkan**.
+- Removed the full-width edit strip below the card content to reduce visual height and keep actions grouped with their record.
+- Edit still opens the existing modal; delete confirmation and Server Action are unchanged.
+- Documentation updated in the same PR. No database, authorization, or business-logic changes.
+- Local lint/build and browser E2E remain unverified; Owner should test the latest Preview/local branch.
+
+
+## 19 November 2026 — PR #32 modal rollout status/documentation reconciliation
+- Re-reviewed live PR #32 and confirmed the branch contains modal add/edit flows for Rundown, Tasks (Kanban and all-tasks list), Procurement, Finance (categories and manual transactions), and Members (add/edit and invitation creation), in addition to the Panitia flows.
+- Reconciled stale scope/status statements in `.ai/PROJECT_CONTEXT.md` and `docs/IMPLEMENTATION_STATUS.md`; marked source-level implementation complete while keeping runtime verification explicitly pending.
+- Refreshed `.ai/PROJECT_STATUS.md` with the current PR state and verification caveat. Updated the project handbook alongside the same PR.
+- No database/schema/migration/RLS, authorization, business-rule, production-data, or deployment changes.
+- PR #32 remains open/unmerged. Latest application Preview success known is for commit `830a0f60d16ae7ef45a6461d8685213aee4a184f`; later commits require Preview verification. Local lint/build, browser E2E, and Owner UAT remain pending.

@@ -121,7 +121,7 @@ Last updated: 14 November 2026 — PR #30 merged; management UI consistency foll
 - This is a documentation-only process update; no application source, database, schema, migration, RLS, production data, or deployment changed.
 
 
-## Current work — Stitch-inspired soft UI refresh
+## Completed work — Stitch-inspired soft UI refresh
 
 - Owner supplied a Stitch HTML reference and requested a simple, clean, soft, restrained visual system across the Owner workspace, including topbar, sidebar, event subbar, and content pages.
 - Preflight: latest `main` SHA `5634b23a1538b36db2bf2c1fdbc1b5df607b8704`; PR #29 is closed/merged; no open PRs. Relevant historical branches checked (global loading, Lottie, Kanban, Polar Bear, Dashboard performance, and auth/dashboard); all are behind `main` with zero unique commits ahead.
@@ -133,7 +133,7 @@ Last updated: 14 November 2026 — PR #30 merged; management UI consistency foll
 - No merge or Production deployment authorization has been given.
 
 
-## Current work — Stitch management UI consistency follow-up
+## Completed work — Stitch management UI consistency follow-up
 
 - PR #30 is merged. Current `main`: `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`.
 - Preflight checked live PR #30 state and open PR list; PR #30 is merged and there were no other open PRs.
@@ -143,3 +143,37 @@ Last updated: 14 November 2026 — PR #30 merged; management UI consistency foll
 - Extended the approved Stitch/Panitia visual language to Dashboard, Event/Member lists and forms, Rundown, Tugas Kanban/full list, Pengadaan, Keuangan, Ekspor, event overview, and group settings.
 - Keep the work presentation-only: no database/schema/migration/RLS, authorization, server-query, or production-data changes.
 - Documentation is updated in this same branch. Local lint/build/browser E2E are not run in this environment; check Vercel Preview on the exact final head and complete Owner UAT.
+
+
+## Current work — Panitia modal form UX
+
+- PR #31 (Stitch management UI consistency) is now merged by the Owner. Current base `main`: `465dd8a529e58a607ea6886086aeff6747480e51`.
+- Owner requested that add/edit forms on Panitia no longer appear inline between data cards; use separate modal dialogs.
+- Created branch `feat/panitia-modal-forms` from the current main commit and opened PR #32: https://github.com/Abdul-Fikri/mini-event-management/pull/32.
+- Scope: add committee member, edit committee assignment, quick-add division, and add/edit division on the dedicated division page.
+- Reuse existing forms, Server Actions, validation, and return paths. No schema/migration/RLS or business-flow changes.
+- Modal includes responsive layout, close button, Escape/backdrop dismissal, scroll lock, focus containment/restoration.
+- Updated the implementation handbook, Panitia requirements, and AI project notes alongside code.
+- Initial PR head `d0359bb8896cc08e2ebad40a2491318160cb62de` received Vercel Preview `success`; verify Preview again for the exact latest head after any further changes. Latest PR head `830a0f60d16ae7ef45a6461d8685213aee4a184f` received Vercel Preview `success`. Local lint/build/browser E2E and Owner UAT remain pending. Do not merge or deploy Production without Owner approval.
+
+
+## PR #32 — modal UX rollout ke modul management lain
+
+Owner meminta pola modal yang sudah diterapkan pada Panitia dilanjutkan secara bertahap ke halaman management lain, tetap dalam PR #32 yang sama.
+
+Implementasi lanjutan pada branch yang sama:
+- Rundown: tambah dan edit kegiatan memakai modal.
+- Tugas: tambah/edit dari Kanban dan daftar semua tugas memakai modal. Drag-and-drop dan optimistic status update tidak diubah.
+- Pengadaan: tambah dan edit kebutuhan memakai modal; aksi sinkronisasi pembelian ke Keuangan tetap terpisah.
+- Keuangan: tambah/edit kategori dan transaksi manual memakai modal; transaksi terhubung ke Pengadaan tetap read-only dari Keuangan.
+- Anggota Panitia: tambah/edit anggota dan undangan akun memakai modal.
+
+Form khusus yang memang berada pada route tersendiri (EventForm, onboarding GroupForm, dan pengaturan logo) tetap menjadi halaman/panel khusus, bukan dipindahkan paksa ke modal. Tidak ada perubahan database, migration, RLS, authorization, atau aturan bisnis.
+
+PR #32 tetap open/unmerged. Verifikasi local lint/build, browser E2E, dan UAT Owner masih menunggu tes lokal Owner pada Preview terbaru.
+
+
+Polishing lanjutan berdasarkan UAT Owner: tombol **Edit** pada kartu susunan panitia dipindahkan ke area aksi kanan atas dan disejajarkan dengan tombol **Keluarkan**. Tombol edit full-width di bawah kartu dihapus. Perubahan hanya presentasi; modal dan aksi hapus tetap menggunakan alur yang sama.
+
+
+Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest verified head before this documentation refresh: `ba45793345ca773a3de244b522042aa5048510ed`. Modal implementation covers Panitia, Rundown, Tugas, Pengadaan, Keuangan, and Anggota Panitia. The source-level changes are present; latest-head Preview, local lint/build, browser E2E, and Owner UAT are not yet verified. No merge or Production deployment.

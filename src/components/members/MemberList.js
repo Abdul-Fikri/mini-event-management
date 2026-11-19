@@ -5,6 +5,8 @@ import { useState } from "react";
 import { deleteMember } from "@/actions/members";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import MemberInvitationForm from "@/components/members/MemberInvitationForm";
+import MemberForm from "@/components/members/MemberForm";
+import Modal from "@/components/ui/Modal";
 import ListPagination from "@/components/ui/ListPagination";
 
 const PAGE_SIZE = 5;
@@ -21,6 +23,7 @@ function getInitials(name = "") {
 
 export default function MemberList({ members, standalone = false }) {
   const [page, setPage] = useState(1);
+  const [activeMember, setActiveMember] = useState(null);
   const totalPages = Math.max(1, Math.ceil(members.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
   const startIndex = (currentPage - 1) * PAGE_SIZE;
@@ -43,14 +46,19 @@ export default function MemberList({ members, standalone = false }) {
               : "Daftar orang yang dapat ditugaskan ke event."}
           </p>
         </div>
-        {!standalone && members.length > 0 ? (
-          <Link
-            href="/members/all"
-            className="shrink-0 rounded-xl border border-[#D7E5F1] bg-[#EDF4FA] px-3.5 py-2 text-sm font-semibold text-[#32628E] transition-colors hover:bg-[#E5EFF8]"
-          >
-            Lihat semua anggota
-          </Link>
-        ) : null}
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={() => setActiveMember({ mode: "add" })} className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">
+            + Tambah anggota
+          </button>
+          {!standalone && members.length > 0 ? (
+            <Link
+              href="/members/all"
+              className="shrink-0 rounded-xl border border-[#D7E5F1] bg-[#EDF4FA] px-3.5 py-2 text-sm font-semibold text-[#32628E] transition-colors hover:bg-[#E5EFF8]"
+            >
+              Lihat semua anggota
+            </Link>
+          ) : null}
+        </div>
       </div>
 
       {members.length ? (
@@ -85,12 +93,13 @@ export default function MemberList({ members, standalone = false }) {
                   </div>
                 </div>
                 <div className="flex shrink-0 items-center gap-2 pl-[52px] sm:pl-0">
-                  <Link
-                    href={`/members/${member.id}/edit${standalone ? "?returnTo=%2Fmembers%2Fall" : ""}`}
+                  <button
+                    type="button"
+                    onClick={() => setActiveMember({ mode: "edit", member })}
                     className="rounded-xl border border-[#DCE5EE] bg-white px-3.5 py-2 text-sm font-medium text-[#475569] transition-colors hover:bg-[#F7F9FC]"
                   >
                     Edit
-                  </Link>
+                  </button>
                   <form action={deleteMember}>
                     <input type="hidden" name="id" value={member.id} />
                     <input type="hidden" name="return_to" value={returnTo} />
@@ -108,13 +117,20 @@ export default function MemberList({ members, standalone = false }) {
           <p className="mt-1 text-sm text-zinc-600">
             Tambahkan anggota agar dapat dipilih sebagai koordinator event.
           </p>
-          {!standalone ? (
-            <Link href="/members/new" className="mt-4 inline-block text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">
-              Tambah anggota pertama →
-            </Link>
-          ) : null}
+          <button type="button" onClick={() => setActiveMember({ mode: "add" })} className="mt-4 inline-flex text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">
+            Tambah anggota pertama →
+          </button>
         </div>
       )}
+      <Modal
+        open={Boolean(activeMember)}
+        onClose={() => setActiveMember(null)}
+        title={activeMember?.mode === "edit" ? "Edit anggota panitia" : "Tambah anggota panitia"}
+        description={activeMember?.mode === "edit" ? "Perbarui nama dan kontak anggota grup." : "Tambahkan orang yang dapat ditugaskan ke event dalam grup ini."}
+        size="md"
+      >
+        {activeMember ? <MemberForm key={activeMember.member?.id ?? "new-member"} member={activeMember.member ?? null} returnTo={returnTo} /> : null}
+      </Modal>
     </div>
   );
 }

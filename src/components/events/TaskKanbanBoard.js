@@ -16,6 +16,7 @@ import { deleteTask, updateTaskStatus } from "@/actions/tasks";
 import TaskForm from "@/components/events/TaskForm";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import { Button } from "@/components/ui/Button";
+import Modal from "@/components/ui/Modal";
 
 const dateFmt = new Intl.DateTimeFormat("id-ID", {
   dateStyle: "medium",
@@ -69,8 +70,7 @@ const PRIORITIES = {
 
 export default function TaskKanbanBoard({ eventId, tasks, members }) {
   const [boardTasks, setBoardTasks] = useState(tasks);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [activeTask, setActiveTask] = useState(null);
   const [draggedTaskId, setDraggedTaskId] = useState(null);
   const [dropTargetStatus, setDropTargetStatus] = useState(null);
   const [pendingTaskIds, setPendingTaskIds] = useState(() => new Set());
@@ -152,8 +152,8 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
           >
             Detail seluruh tugas
           </Link>
-          <Button type="button" onClick={() => setShowCreateForm((value) => !value)}>
-            {showCreateForm ? "Tutup form" : "+ Tambah tugas"}
+          <Button type="button" onClick={() => setActiveTask({ mode: "add" })}>
+            + Tambah tugas
           </Button>
         </div>
       </div>
@@ -164,12 +164,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
         </p>
       ) : null}
 
-      {showCreateForm ? (
-        <div className="management-form p-4">
-          <h3 className="mb-3 font-semibold text-zinc-900">Tambah tugas baru</h3>
-          <TaskForm eventId={eventId} members={members} returnTo={basePath} />
-        </div>
-      ) : null}
+
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {STATUSES.map((status) => {
@@ -206,7 +201,6 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
                 {statusTasks.map((task) => {
                   const priority = PRIORITIES[task.priority] || PRIORITIES.medium;
                   const isPending = pendingTaskIds.has(task.id);
-                  const isEditing = editingTaskId === task.id;
 
                   return (
                     <article
@@ -259,11 +253,9 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
                         </select>
                         <button
                           type="button"
-                          onClick={() => setEditingTaskId(isEditing ? null : task.id)}
-                          className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#407BB0] transition-colors hover:bg-[#EDF4FA]"
-                          aria-expanded={isEditing}
-                        >
-                          {isEditing ? "Tutup edit" : "Edit"}
+                          onClick={() => setActiveTask({ mode: "edit", task })}
+                          className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#407BB0] transition-colors hover:bg-[#EDF4FA]">
+                          Edit
                         </button>
                         <form action={deleteTask}>
                           <input type="hidden" name="event_id" value={eventId} />
@@ -279,11 +271,7 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
                           Menyimpan status…
                         </p>
                       ) : null}
-                      {isEditing ? (
-                        <div className="mt-3 border-t border-[#EEF2F6] pt-3">
-                          <TaskForm eventId={eventId} members={members} task={task} returnTo={basePath} />
-                        </div>
-                      ) : null}
+
                     </article>
                   );
                 })}
@@ -302,6 +290,14 @@ export default function TaskKanbanBoard({ eventId, tasks, members }) {
       <p className="text-xs text-zinc-500">
         {boardTasks.length} tugas · {boardTasks.filter((task) => task.status === "done").length} selesai · Drag kartu untuk memindahkan status, atau gunakan pilihan status pada kartu.
       </p>
+      <Modal
+        open={Boolean(activeTask)}
+        onClose={() => setActiveTask(null)}
+        title={activeTask?.mode === "edit" ? "Edit tugas" : "Tambah tugas"}
+        description={activeTask?.mode === "edit" ? "Perbarui informasi tugas tanpa meninggalkan papan Kanban." : "Tambahkan tugas baru ke papan Kanban event."}
+      >
+        {activeTask ? <TaskForm key={activeTask.mode === "edit" ? activeTask.task.id : "new-kanban-task"} eventId={eventId} members={members} task={activeTask.task ?? null} returnTo={basePath} /> : null}
+      </Modal>
     </section>
   );
 }
