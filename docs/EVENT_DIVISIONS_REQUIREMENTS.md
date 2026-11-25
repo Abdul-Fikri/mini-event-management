@@ -41,10 +41,10 @@ Provide a consistent, reusable division list for each event. The Owner manages t
 ## Pagination and dedicated list views
 
 - The main Panitia page does not embed the full division list or its search/edit/delete controls. It shows only a quick Tambah divisi button and a Kelola divisi link.
-- The quick-add button opens the create form in place; a successful save returns to the main Panitia page.
+- The quick-add button opens a focused modal dialog; the form never expands inline between the page content. A successful save returns to the main Panitia page.
 - The Kelola divisi link opens `/events/[id]/panitia/divisions`, which contains the complete division list and full CRUD.
-- The dedicated division list provides search by name/description and displays at most five records per page with previous/next pagination.
-- Susunan panitia remains on the main Panitia page with its search/filter and five-record pagination, plus a dedicated `/events/[id]/panitia/committee` view.
+- The dedicated division list provides search by name/description and displays at most five records per page with previous/next pagination. Create and edit forms open in modal dialogs; division cards never expand to contain forms.
+- Susunan panitia remains on the main Panitia page with its search/filter and five-record pagination, plus a dedicated `/events/[id]/panitia/committee` view. Add-member and edit-assignment forms open in modal dialogs; committee cards never expand to contain forms.
 - Dedicated views provide a return link to the main Panitia page. Save/delete actions return to the view where the action was initiated; return paths are validated server-side.
 
 ## Panitia UI visual design
@@ -94,6 +94,8 @@ The Owner-facing Panitia management experience uses a scoped Polar Bear palette 
 - [ ] Lihat semua susunan panitia opens a dedicated view containing only committee assignments, with search, division filter, and pagination.
 - [ ] Current committee search and division filter are preserved when opening the dedicated committee view.
 - [ ] Dedicated views provide a return link to the main Panitia page; create/edit/delete actions return to the same dedicated view.
+- [ ] Add/edit division and committee forms open in modal dialogs, not inline accordions or expanded record cards.
+- [ ] Modal supports close button, Escape, backdrop click, focus containment/restoration, and scrolling on small screens.
 - [ ] A division from another event or group is rejected by Server Action validation and the composite foreign key.
 - [ ] Existing free-text division values are backfilled without losing their labels.
 - [ ] Existing Panitia home/detail pages and committee CSV export continue showing division labels.
@@ -103,4 +105,15 @@ The Owner-facing Panitia management experience uses a scoped Polar Bear palette 
 
 ## Verification notes
 
-Event-specific division CRUD and its database migration were merged in PR #22 (merge commit `20ca806309629eace877536f245409e546824fac`). Division/committee search, filters, five-record pagination, and dedicated list views were merged in PR #23. The compact division quick-add and dedicated management navigation were merged in PR #28 (merge commit `ed00f75ec0beda51f20c8b407f7b95721ef70253`). The Polar Bear styling was merged in PR #29. PR #30 merged the shared Stitch-inspired Owner shell and global palette. The follow-up management UI consistency work is tracked in PR #31: https://github.com/Abdul-Fikri/mini-event-management/pull/31 (`feat/stitch-management-ui-polish`, open and unmerged). Migration application to the target Supabase database is not confirmed. Preview status and Production deployment must be checked separately; local lint/build and browser E2E results must be recorded before claiming runtime verification.
+Event-specific division CRUD and its database migration were merged in PR #22 (merge commit `20ca806309629eace877536f245409e546824fac`). Division/committee search, filters, five-record pagination, and dedicated list views were merged in PR #23. The compact division quick-add and dedicated management navigation were merged in PR #28 (merge commit `ed00f75ec0beda51f20c8b407f7b95721ef70253`). The Polar Bear styling was merged in PR #29. PR #30 merged the shared Stitch-inspired Owner shell and global palette. The management UI consistency work was merged in PR #31. The next focused UX iteration is tracked in `feat/panitia-modal-forms`, which moves Panitia add/edit forms into modal dialogs. Migration application to the target Supabase database is not confirmed. Preview status and Production deployment must be checked separately; local lint/build and browser E2E results must be recorded before claiming runtime verification.
+
+
+## Panitia modal interaction update — in progress
+
+Owner requested that add/edit forms on the Panitia page no longer expand inline within the data list. Use a focused modal dialog for:
+- Add a committee member to the event.
+- Edit an existing committee assignment.
+- Quick-add an event division on the main Panitia page.
+- Add/edit a division on the dedicated Kelola divisi page.
+
+Keep data cards and list layout focused on reading/browsing. Do not place forms inside committee/division cards or inline accordions. The modal uses the existing Server Actions and form validation; successful submissions keep the current validated return route. This is a UI interaction change only—no new domain feature, schema, migration, or authorization change.

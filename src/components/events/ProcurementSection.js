@@ -7,6 +7,7 @@ import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import ProcurementForm from "@/components/events/ProcurementForm";
 import { Alert } from "@/components/ui/Alert";
 import ListPagination from "@/components/ui/ListPagination";
+import Modal from "@/components/ui/Modal";
 
 const PAGE_SIZE = 5;
 const currency = (value) => value == null ? "—" : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
@@ -15,6 +16,7 @@ const dateFmt = (value) => value ? new Intl.DateTimeFormat("id-ID", { dateStyle:
 
 export default function ProcurementSection({ eventId, items, members, categories, linkedProcurementIds = [], procurementError = "", standalone = false }) {
   const [page, setPage] = useState(1);
+  const [activeItem, setActiveItem] = useState(null);
   const memberById = new Map(members.map((member) => [member.id, member]));
   const categoryById = new Map(categories.map((category) => [category.id, category]));
   const linkedIds = new Set(linkedProcurementIds);
@@ -39,9 +41,12 @@ export default function ProcurementSection({ eventId, items, members, categories
           <h2 className={standalone ? "mt-2 text-xl font-semibold" : "text-lg font-semibold"}>{standalone ? "Semua kebutuhan pengadaan" : "Manajemen perlengkapan"}</h2>
           <p className="text-sm text-zinc-600">Kelola kebutuhan dan progres pembelian. Item berstatus Dipesan menjadi komitmen anggaran; item Sudah dibeli otomatis masuk ke pengeluaran Keuangan.</p>
         </div>
-        {!standalone && items.length > 0 ? (
-          <Link href={`${basePath}/all`} className="shrink-0 rounded-xl border border-[#D7E5F1] bg-[#EDF4FA] px-3.5 py-2.5 text-sm font-semibold text-[#32628E] transition-colors hover:bg-[#E5EFF8]">Lihat semua pengadaan</Link>
-        ) : null}
+        <div className="flex flex-wrap gap-2">
+          {!standalone ? <button type="button" onClick={() => setActiveItem({ mode: "add" })} className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">+ Tambah kebutuhan</button> : null}
+          {!standalone && items.length > 0 ? (
+            <Link href={`${basePath}/all`} className="shrink-0 rounded-xl border border-[#D7E5F1] bg-[#EDF4FA] px-3.5 py-2.5 text-sm font-semibold text-[#32628E] transition-colors hover:bg-[#E5EFF8]">Lihat semua pengadaan</Link>
+          ) : null}
+        </div>
       </div>
 
       {procurementError === "missing_actual_price" ? <Alert>Isi harga aktual lebih dari Rp0 sebelum mencatat pembelian ke Keuangan.</Alert> : null}
@@ -111,10 +116,9 @@ export default function ProcurementSection({ eventId, items, members, categories
                       <ConfirmDeleteButton message={`Hapus kebutuhan "${item.name}"? Jika sudah dibeli, transaksi pengeluarannya akan tetap tersimpan di Keuangan.`}>Hapus</ConfirmDeleteButton>
                     </form>
                   </div>
-                  <details className="mt-3">
-                    <summary className="cursor-pointer text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit kebutuhan / perbarui status</summary>
-                    <div className="mt-3"><ProcurementForm eventId={eventId} members={members} categories={categories} item={item} returnTo={returnTo} /></div>
-                  </details>
+                  <div className="mt-3 border-t border-[#EEF2F6] pt-3">
+                    <button type="button" onClick={() => setActiveItem({ mode: "edit", item })} className="text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit kebutuhan / perbarui status</button>
+                  </div>
                 </article>
               );
             })}
@@ -125,12 +129,14 @@ export default function ProcurementSection({ eventId, items, members, categories
         <p className="management-empty p-5 text-center text-sm text-[#64748B]">Belum ada kebutuhan perlengkapan untuk event ini.</p>
       )}
 
-      {!standalone ? (
-        <div className="border-t border-[#EEF2F6] pt-5">
-          <h3 className="mb-3 font-medium">Tambah kebutuhan</h3>
-          <ProcurementForm eventId={eventId} members={members} categories={categories} returnTo={returnTo} />
-        </div>
-      ) : null}
+      <Modal
+        open={Boolean(activeItem)}
+        onClose={() => setActiveItem(null)}
+        title={activeItem?.mode === "edit" ? "Edit kebutuhan pengadaan" : "Tambah kebutuhan pengadaan"}
+        description={activeItem?.mode === "edit" ? "Perbarui kebutuhan, progres pembelian, dan detail pencatatannya." : "Catat kebutuhan perlengkapan event beserta estimasi dan penanggung jawabnya."}
+      >
+        {activeItem ? <ProcurementForm key={activeItem.mode === "edit" ? activeItem.item.id : "new-procurement-item"} eventId={eventId} members={members} categories={categories} item={activeItem.item ?? null} returnTo={returnTo} /> : null}
+      </Modal>
     </section>
   );
 }
