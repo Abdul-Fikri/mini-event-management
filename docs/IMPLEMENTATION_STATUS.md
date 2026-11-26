@@ -465,3 +465,5 @@ PR #35: https://github.com/Abdul-Fikri/mini-event-management/pull/35 (open/unmer
 - Aturan persistence tetap di Server Action: data harga/kategori/tanggal pembelian hanya untuk Pembelian; expected return date hanya untuk Peminjaman.
 - Implemented on branch `fix/procurement-form-preserve-draft` based on the merged PR #35 feature branch commit. No database/schema/migration/RLS changes.
 - Local lint/build/browser E2E and Owner UAT are not yet run.
+
+PR #36: https://github.com/Abdul-Fikri/mini-event-management/pull/36 — open/unmerged to `main`. It includes the Procurement types/loans dependency from PR #35 (which was merged into a non-main branch) and the form draft-preservation fix. GitHub reported the PR clean/mergeable at the checked head; local lint/build/browser E2E and Owner UAT remain pending.
