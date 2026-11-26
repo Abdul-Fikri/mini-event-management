@@ -68,7 +68,7 @@ export async function saveProcurementItem(eventId,itemId,_prev,formData){
    if(existingError.code==="42703"||existingError.code==="PGRST204")return {...empty,message:"Kolom jenis pengadaan belum tersedia. Terapkan migration 20261126_procurement_types_and_loans.sql terlebih dahulu.",values};
    return {...empty,message:"Gagal memuat data pengadaan yang akan diedit.",values};
   }
-  if(!existingItem&& !data)return {...empty,message:"Data pengadaan tidak ditemukan.",values};
+  if(!data)return {...empty,message:"Data pengadaan tidak ditemukan.",values};
   existingItem=data;
   const {data:linked,error:linkedError}=await supabase.from("transactions").select("id").eq("procurement_item_id",itemId).eq("event_id",eventId).eq("group_id",group.id).maybeSingle();
   if(linkedError)return {...empty,message:"Gagal memeriksa hubungan transaksi pengadaan. Pastikan migration integrasi Pengadaan–Keuangan sudah diterapkan.",values};
