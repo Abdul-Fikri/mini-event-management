@@ -196,3 +196,11 @@ Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest ve
 - Group Members and Kanban task cards already use adjacent Edit/Delete actions; Panitia uses Edit beside Keluarkan.
 - Existing modals, delete confirmations, Server Actions, CRUD, pagination, and route/return behavior are retained. Procurement-linked finance transactions remain managed through Procurement.
 - No database/schema/migration/RLS, authorization, or business-rule changes. Local lint/build/browser E2E have not been run. Exact-head Preview and Owner UAT remain pending. PR #33 is open/unmerged; no merge or Production deployment.
+
+## Follow-up — Lottie feedback for Catat ke Keuangan
+
+- Owner reported that the legacy procurement Catat ke Keuangan action looked idle while submitting.
+- Added a form-scoped pending button that displays the existing Lottie animation and text **Mencatat ke Keuangan...**, and disables repeat submission while pending.
+- Existing Server Action and event/item/return hidden inputs are preserved. No finance business logic, schema, migration, RLS, authorization, or production data changes.
+- PR #33 action-row consistency was verified as merged (merge commit 322ee62801a9114987b02e9fa13461efc853e518). The loading feedback is on a separate follow-up branch/PR.
+- Local lint/build/browser E2E and exact-head Preview remain pending.

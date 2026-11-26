@@ -8,6 +8,7 @@ import ProcurementForm from "@/components/events/ProcurementForm";
 import { Alert } from "@/components/ui/Alert";
 import ListPagination from "@/components/ui/ListPagination";
 import Modal from "@/components/ui/Modal";
+import ProcurementFinanceSyncButton from "@/components/events/ProcurementFinanceSyncButton";
 
 const PAGE_SIZE = 5;
 const currency = (value) => value == null ? "—" : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
@@ -104,7 +105,7 @@ export default function ProcurementSection({ eventId, items, members, categories
                             <input type="hidden" name="event_id" value={eventId} />
                             <input type="hidden" name="item_id" value={item.id} />
                             <input type="hidden" name="return_to" value={returnTo} />
-                            <button type="submit" className="rounded-xl bg-[#407BB0] px-3.5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">Catat ke Keuangan</button>
+                            <ProcurementFinanceSyncButton />
                           </form>
                         </div>
                       ) : null}

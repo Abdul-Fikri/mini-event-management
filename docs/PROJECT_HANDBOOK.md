@@ -434,3 +434,9 @@ Penyempurnaan kartu susunan panitia: aksi **Edit** ditempatkan sejajar dengan ak
 - Edit opens the existing modal. Preserve delete confirmation, Server Actions, CRUD, validation, route/query/return-path behavior, pagination, and authorization/scoping.
 - Finance entries generated from Procurement remain managed through Procurement and must not gain independent edit/delete controls.
 - This is presentation-only; no database/schema/migration/RLS or production-data changes. Check exact-head Preview and complete local verification/UAT before merge.
+
+## Procurement finance-sync loading feedback
+
+When an Owner submits **Catat ke Keuangan** for a purchased/ready procurement item that is not yet linked to a finance transaction, the button shows a small Lottie animation using the existing /animations/loading.json asset and the label **Mencatat ke Keuangan...** while the Server Action is pending. The button is disabled during submission.
+
+This feedback is scoped to the form via React useFormStatus. Keep the existing syncProcurementItemToFinance Server Action and hidden event/item/return fields intact. This does not alter transaction synchronization, duplicate safeguards, authorization, or data/schema/migration/RLS.

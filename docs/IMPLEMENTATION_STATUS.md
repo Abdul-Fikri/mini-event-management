@@ -429,3 +429,13 @@ Latest PR head at documentation update: `ba45793345ca773a3de244b522042aa5048510e
 - Edit actions retain existing modals; delete confirmation and Server Actions remain unchanged. Procurement-linked Finance transactions remain controlled from Procurement.
 - No database/schema/migration/RLS, authorization, validation, or business-rule changes.
 - PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33 — open/unmerged. Exact latest-head Preview, local lint/build, browser E2E, and Owner UAT pending. No merge or Production deployment.
+
+## 26 November 2026 — Procurement finance-sync pending feedback
+
+- [x] Added a compact Lottie loading animation and **Mencatat ke Keuangan...** label to the legacy procurement Catat ke Keuangan submit button.
+- [x] Pending state uses useFormStatus, is scoped to the relevant form, and disables the button during submission.
+- [x] Existing Server Action, hidden event/item/return fields, warning content, and sync flow are retained.
+- [x] No database/schema/migration/RLS, authorization, finance business logic, or production data changes.
+- [ ] Run local lint/build and browser E2E; verify Preview for the exact latest PR head and complete Owner UAT.
+
+PR #33 management action consistency is merged at 322ee62801a9114987b02e9fa13461efc853e518. This loading-feedback fix is a separate follow-up branch.

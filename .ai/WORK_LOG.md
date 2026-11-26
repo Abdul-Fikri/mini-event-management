@@ -281,3 +281,11 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Edit continues opening existing modals. Linked procurement-generated finance entries remain read-only/managed through Procurement.
 - Updated project AI and product documentation in this branch. No database/schema/migration/RLS, authorization, validation, business-rule, production-data, or deployment changes.
 - Local lint/build/browser E2E not run; exact-head Preview and Owner UAT pending. PR #33 remains open/unmerged; no merge or Production deployment.
+
+## 26 November 2026 — Lottie feedback for procurement finance sync
+
+- Owner screenshot showed the legacy procurement Catat ke Keuangan button had no visible pending feedback.
+- Added ProcurementFinanceSyncButton using useFormStatus and the project's existing /animations/loading.json Lottie asset. While the form action is pending, the button shows a compact animation and **Mencatat ke Keuangan...**; it is disabled during pending to reduce accidental repeat submissions.
+- Updated ProcurementSection to use the component while preserving syncProcurementItemToFinance, hidden event_id, item_id, return_to, warning copy, and existing server flow.
+- No database/schema/migration/RLS, authorization, finance logic, or production data changes.
+- PR #33 was verified merged at 322ee62801a9114987b02e9fa13461efc853e518; created separate branch fix/procurement-finance-sync-loading for this follow-up. Local lint/build/browser E2E and Preview verification remain pending.

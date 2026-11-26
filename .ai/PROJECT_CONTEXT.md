@@ -272,3 +272,10 @@ Panitia card action layout: keep **Edit** beside **Keluarkan** in the card's top
 - Edit actions continue to open the existing modals. Keep linked procurement finance transactions managed from Procurement; do not expose manual Edit/Delete actions for those linked rows.
 - Preserve forms, Server Actions, confirmation, CRUD, validation, role/access boundaries, group/event scoping, pagination, and validated return destinations. Presentation-only; no schema, migration, RLS, production-data, or deployment changes.
 - PR #33 remains open/unmerged. Verify exact-head Preview, local lint/build, browser E2E, and Owner UAT before merge; Owner controls merge and Production deployment.
+
+## Procurement → Finance sync pending feedback — 26 November 2026
+
+- When an Owner clicks **Catat ke Keuangan** for a purchased/ready legacy procurement item that has no linked finance transaction, the submit button now displays the existing /animations/loading.json Lottie animation beside **Mencatat ke Keuangan...** while the Server Action is pending.
+- Implemented with src/components/events/ProcurementFinanceSyncButton.js, using React form status (useFormStatus) so pending state is scoped to that specific form. The button is disabled while pending to prevent duplicate submissions.
+- Existing syncProcurementItemToFinance Server Action, hidden event/item/return fields, warning text, duplicate-check behavior, and redirect/revalidation remain unchanged. This is feedback-only; no schema/migration/RLS/authorization or finance logic change.
+- PR #33 (management card action consistency) is merged; this small follow-up is on fix/procurement-finance-sync-loading and will be submitted separately for review. Local lint/build/browser E2E and Preview verification are pending.
