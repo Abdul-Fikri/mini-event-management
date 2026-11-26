@@ -419,3 +419,4 @@ Latest PR head at documentation update: `ba45793345ca773a3de244b522042aa5048510e
 - Preserved delete confirmation/action, schedule form, CRUD, pagination, standalone all-rundown route, and validated return path.
 - No database/schema/migration/RLS, authorization, validation, business-rule, or production-data changes.
 - PR #32 is merged. This follow-up is tracked separately; local lint/build/browser E2E and Owner UAT remain pending.
+- PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33 — Rundown card action-row refinement; open/unmerged. Exact-head Preview, local lint/build, browser E2E, and Owner UAT pending.
