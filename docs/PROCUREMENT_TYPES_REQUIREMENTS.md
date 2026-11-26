@@ -38,3 +38,11 @@ Support procurement needs that are purchased, borrowed at no cost, or already av
 
 ## Migration state
 Migration `20261126_procurement_types_and_loans.sql` is authored in the feature branch only. It has not been applied to Supabase. No production data was changed.
+
+## UX: mempertahankan draft saat jenis pengadaan berubah
+
+Saat Owner mengganti jenis pengadaan pada form tambah/edit, nilai yang sudah dimasukkan tidak boleh hilang hanya karena field Pembelian atau tanggal rencana pengembalian disembunyikan. Field khusus jenis tetap mounted dan disembunyikan secara visual, sehingga nilai draft tetap ada ketika pengguna berpindah Pembelian ↔ Peminjaman ↔ Inventaris.
+
+Jika Server Action mengembalikan validasi atau business-rule error, seluruh nilai yang disubmit harus dipulihkan ke form, termasuk jenis/status pilihan dan field yang saat itu tersembunyi. Error tidak boleh membuat form modal menjadi kosong atau kembali ke nilai lama yang tidak sesuai.
+
+Saat disimpan, Server Action tetap menentukan data yang persisten sesuai jenis: harga, kategori, dan tanggal pembelian hanya disimpan untuk Pembelian; tanggal rencana pengembalian hanya disimpan untuk Peminjaman. Tidak ada perubahan schema/migration untuk UX ini.
