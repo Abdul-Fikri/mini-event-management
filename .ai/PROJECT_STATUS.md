@@ -204,3 +204,13 @@ Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest ve
 - Existing Server Action and event/item/return hidden inputs are preserved. No finance business logic, schema, migration, RLS, authorization, or production data changes.
 - PR #33 action-row consistency was verified as merged (merge commit 322ee62801a9114987b02e9fa13461efc853e518). The loading feedback is on a separate follow-up branch/PR.
 - Local lint/build/browser E2E and exact-head Preview remain pending.
+
+## Procurement types and loan-return feature — 26 November 2026
+
+- Implemented in branch `feat/procurement-types-and-loans`: form and list support Pembelian, Peminjaman, and Inventaris tersedia.
+- Borrowing supports optional planned return date and a guarded Owner action to mark returned. Non-purchase items do not create Finance transactions or appear in purchase commitment/expense totals.
+- Existing records are preserved as purchase by migration default. SQL constraints and trigger guard prevent non-purchase finance data/statuses and conversion of linked purchases.
+- Migration `20261126_procurement_types_and_loans.sql` is authored only; Supabase application is not confirmed and no production SQL/data was changed.
+- PR #34 was checked open/unmerged at branch start; this is a stacked/dependent branch from its head to retain the pending Lottie feedback. Recheck PR #34 status and latest main before final merge.
+- Local lint/build/browser E2E, exact-head Preview, migration UAT, and Owner acceptance are pending.
+
