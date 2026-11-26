@@ -220,12 +220,11 @@ Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest ve
 - Head at PR opening: `cafef1ee68d01231bda91a33ad9d99ee98b69d54`; Vercel Preview status pending. Recheck the final head after documentation updates.
 - Before merge: PR #34 must merge first; retarget #35 to main, refresh Preview, review/apply migration in the intended database, and run purchase/borrow/inventory plus return-flow UAT. No merge/deploy has occurred.
 
-## Procurement form draft-preservation follow-up — 26 November 2026
+## Current status — 26 November 2026
 
-- Live GitHub check: `main` HEAD is `f01a28f1e4791075c86701d64062e67e7e293d24` (PR #34 merge).
-- PR #35 is marked merged into `fix/procurement-finance-sync-loading` at `51ae2a30d5c611120e69323d6f55f780e5f1c91e`; it is not present in `main` HEAD. Its procurement-types feature is therefore included as the dependency base for this follow-up rather than assumed to be on main.
-- Created `fix/procurement-form-preserve-draft` from the PR #35 merge commit. The branch adds draft retention for hidden conditional fields and restores submitted values after Server Action errors.
-- Follow-up PR #36: https://github.com/Abdul-Fikri/mini-event-management/pull/36 — open, unmerged, base `main`, head `33725a3ab4abd8b33c3b4bfe54062e67e7e293d24`; it includes PR #35's procurement-types dependency plus draft-preservation fix. GitHub API reports mergeable/clean at this check. Recheck exact-head Preview and all checks after documentation updates.
-- No migration, schema, RLS, production data, or deployment changes in this UX fix. Migration `20261126_procurement_types_and_loans.sql` remains Owner-reviewed/applied status unconfirmed unless Owner reports otherwise.
-- Local lint/build/browser E2E and Owner UAT remain pending.
-- For checked head `33725a3ab4abd8b33c3b4bfe54062e67e7e293d24`, Vercel status is pending; Vercel Preview Comments completed successfully but is not a deployment-success signal. This status-document update advances the branch head, so recheck the exact new head before UAT.
+- Live GitHub check: PR #36 is merged to `main`; current `main` HEAD is `ac8af6fc434cec4e2981f5a706213779f01db9e8`.
+- PR #35 procurement types/borrowing/inventory and PR #36 form draft preservation are now included in `main`. Migration `20261126_procurement_types_and_loans.sql` was authored in the merged change; application to the target Supabase database remains unconfirmed unless Owner confirms.
+- Current follow-up branch: `ui/finance-manual-transaction-action-placement`, created from the verified latest `main`.
+- Scope: move **+ Tambah transaksi manual** to the Riwayat transaksi header, before transaction records. Existing modal and Finance/Procurement behavior remain unchanged.
+- No database/schema/migration/RLS, authorization, production-data, or deployment changes in this UI follow-up.
+- Local lint/build/browser E2E and Owner UAT have not been run in this environment. Recheck exact-head Preview and UAT after the PR is opened.
