@@ -263,3 +263,4 @@ Panitia card action layout: keep **Edit** beside **Keluarkan** in the card's top
 - This is presentation-only. Do not change CRUD contracts, validation, authorization, group/event scope, data/schema, migration, RLS, or business logic.
 - PR #32 has been merged to main at `905677f977233e7b7784a20081ff50419e681423`. Continue this action-layout consistency work on a separate follow-up branch/PR; do not edit the already-merged PR #32 branch.
 - Local lint/build and browser E2E are not verified by this source change. Check Preview for the exact latest head and require Owner UAT before merge.
+- Follow-up PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33. It is open/unmerged; do not merge or deploy until Owner approval and verification.
