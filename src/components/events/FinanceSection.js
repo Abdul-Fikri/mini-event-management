@@ -89,15 +89,21 @@ export default function FinanceSection({
               Rencana: {currency(category.planned_amount)} · Aktual: {currency(actual)} · Komitmen: {currency(categoryCommitment)} · Sisa: <span className={remaining < 0 ? "font-semibold text-red-700" : "font-medium"}>{currency(remaining)}</span>
             </p>
           </div>
-          <form action={deleteBudgetCategory}>
-            <input type="hidden" name="event_id" value={eventId} />
-            <input type="hidden" name="return_to" value={returnTo} />
-            <input type="hidden" name="category_id" value={category.id} />
-            <ConfirmDeleteButton message={deleteMessage}>Hapus</ConfirmDeleteButton>
-          </form>
-        </div>
-        <div className="mt-3 border-t border-[#EEF2F6] pt-3">
-          <button type="button" onClick={() => setActiveForm({ type: "category", mode: "edit", data: category })} className="text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit kategori</button>
+          <div className="flex shrink-0 items-center gap-2 sm:pl-3">
+            <button
+              type="button"
+              onClick={() => setActiveForm({ type: "category", mode: "edit", data: category })}
+              className="inline-flex items-center justify-center rounded-xl border border-[#D7E6F5] bg-white px-3.5 py-2 text-sm font-semibold text-[#407BB0] transition-colors hover:bg-[#F0F5FA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#407BB0]"
+            >
+              Edit
+            </button>
+            <form action={deleteBudgetCategory}>
+              <input type="hidden" name="event_id" value={eventId} />
+              <input type="hidden" name="return_to" value={returnTo} />
+              <input type="hidden" name="category_id" value={category.id} />
+              <ConfirmDeleteButton message={deleteMessage}>Hapus</ConfirmDeleteButton>
+            </form>
+          </div>
         </div>
       </article>
     );
@@ -123,19 +129,23 @@ export default function FinanceSection({
             {linkedToProcurement ? <Link className="mt-2 inline-block text-xs font-semibold text-[#407BB0] hover:text-[#32628E] hover:underline" href={`/events/${eventId}/pengadaan`}>Dikelola dari Pengadaan →</Link> : historicalProcurement ? <p className="mt-2 text-xs text-zinc-500">Item Pengadaan asal sudah dihapus; transaksi tetap dipertahankan sebagai riwayat keuangan.</p> : null}
           </div>
           {!linkedToProcurement ? (
-            <form action={deleteTransaction}>
-              <input type="hidden" name="event_id" value={eventId} />
-              <input type="hidden" name="return_to" value={returnTo} />
-              <input type="hidden" name="transaction_id" value={transaction.id} />
-              <ConfirmDeleteButton message={`Hapus transaksi "${transaction.description}"?`}>Hapus</ConfirmDeleteButton>
-            </form>
+            <div className="flex shrink-0 items-center gap-2 sm:pl-3">
+              <button
+                type="button"
+                onClick={() => setActiveForm({ type: "transaction", mode: "edit", data: transaction })}
+                className="inline-flex items-center justify-center rounded-xl border border-[#D7E6F5] bg-white px-3.5 py-2 text-sm font-semibold text-[#407BB0] transition-colors hover:bg-[#F0F5FA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#407BB0]"
+              >
+                Edit
+              </button>
+              <form action={deleteTransaction}>
+                <input type="hidden" name="event_id" value={eventId} />
+                <input type="hidden" name="return_to" value={returnTo} />
+                <input type="hidden" name="transaction_id" value={transaction.id} />
+                <ConfirmDeleteButton message={`Hapus transaksi "${transaction.description}"?`}>Hapus</ConfirmDeleteButton>
+              </form>
+            </div>
           ) : <span className="self-start text-xs text-zinc-500">Dikelola dari Pengadaan</span>}
         </div>
-        {!linkedToProcurement ? (
-          <div className="mt-3 border-t border-[#EEF2F6] pt-3">
-            <button type="button" onClick={() => setActiveForm({ type: "transaction", mode: "edit", data: transaction })} className="text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit transaksi</button>
-          </div>
-        ) : null}
       </article>
     );
   });
