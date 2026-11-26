@@ -433,6 +433,7 @@ Penyempurnaan kartu susunan panitia: aksi **Edit** ditempatkan sejajar dengan ak
 - PR #33 extends the pattern to detailed Tasks, Procurement, Finance budget categories and manual transactions, and the dedicated Event Division manager. Panitia, Group Members, and Kanban task cards already use the adjacent-action pattern.
 - Edit opens the existing modal. Preserve delete confirmation, Server Actions, CRUD, validation, route/query/return-path behavior, pagination, and authorization/scoping.
 - Finance entries generated from Procurement remain managed through Procurement and must not gain independent edit/delete controls.
+- On the main Finance page, place **+ Tambah transaksi manual** in the Riwayat transaksi header, before the transaction records (including Procurement-linked entries), rather than after the list. The action opens the existing modal; it does not change transaction handling.
 - This is presentation-only; no database/schema/migration/RLS or production-data changes. Check exact-head Preview and complete local verification/UAT before merge.
 
 ## Procurement finance-sync loading feedback
