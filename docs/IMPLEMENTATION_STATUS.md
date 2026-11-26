@@ -1,8 +1,8 @@
 # Implementation Status — Mini Event Management System
 
-Last reviewed: 14 November 2026
+Last reviewed: 26 November 2026
 Repository: https://github.com/Abdul-Fikri/mini-event-management  
-Source reviewed: `main` after PR #30 merge (commit `6ab8e1bccd42edd65f6fef921375f252dc0a64c5`) and follow-up branch `feat/stitch-management-ui-polish`.
+Source reviewed: `main` after PR #32 merge (commit `905677f977233e7b7784a20081ff50419e681423`) and follow-up branch `fix/rundown-card-action-consistency`.
 
 > Status labels describe what was found in source, not proof of production runtime correctness. Distinguish implemented, merged, deployed, and verified.
 
@@ -16,7 +16,7 @@ Source reviewed: `main` after PR #30 merge (commit `6ab8e1bccd42edd65f6fef921375
 | Group members | Create/read/update/delete member directory; five-record pagination and dedicated all-members view | Group-level directory; edit/delete preserve the dedicated view when opened from `/members/all` |
 | Events | Create/read/update/delete events; five-record pagination and dedicated all-events view | Dynamic route `/events/[id]`; event status labels use the effective-status resolver |
 | Event committee | Add/remove member assignment; event-scoped division CRUD; division dropdown; search/filter committee by division and text; search division master list; Polar Bear/Stitch visual refinement | `event_divisions` master data + `event_members` assignment; presentation-only changes in PR #29 and follow-up branch |
-| Rundown | Create/update/delete schedule items; five-record pagination and dedicated all-items view | PIC restricted to current event roster |
+| Rundown | Create/update/delete schedule items; five-record pagination and dedicated all-items view | PIC restricted to current event roster; Edit and Hapus share the card action row, with Edit opening the modal |
 | Tasks | Four-status Kanban with drag-and-drop, alternative status selector, and create/update/delete; full list and five-record pagination at dedicated all-tasks view | Assignee restricted to current event roster; optional deadline accepts past, current, or future dates on create/update |
 | Procurement | Create/update/delete procurement items; five-record pagination and dedicated all-items view; assign budget category; separate requested/ordered/purchased/ready states | PIC restricted to current event roster; ordered items become budget commitments; purchased/ready items automatically create or update one linked finance expense |
 | Finance | Budget categories, manual income/expense transactions, procurement-linked expenses, and ordered-item commitments | Linked procurement expenses are managed from Procurement; manual finance transactions remain editable; historical transaction dates remain allowed |
@@ -101,6 +101,7 @@ PR #23 applies five-record pagination and dedicated **Lihat semua** routes to gr
 | #28 | Keep Panitia division quick-add on the main tab and move full CRUD to a dedicated page | Merged to main at `ed00f75ec0beda51f20c8b407f7b95721ef70253` |
 | #29 | Apply restrained Polar Bear UI to Panitia management | Merged to main at `5634b23a1538b36db2bf2c1fdbc1b5df607b8704` |
 | #30 | Apply Stitch-inspired shared Owner shell, global palette, shared controls, and member cards | Merged to main at `6ab8e1bccd42edd65f6fef921375f252dc0a64c5` |
+| #32 | Move management create/edit forms into modals, including Rundown, Tasks, Procurement, Finance, Members, and Panitia | Merged to main at `905677f977233e7b7784a20081ff50419e681423` |
 
 Confirm PR state on GitHub before assuming any later work is merged/deployed.
 
@@ -408,3 +409,13 @@ Implementation is present in the current PR branch; the following items are sour
 - [ ] Run local lint/build and browser E2E, then Owner UAT against latest PR Preview before merge.
 
 Latest PR head at documentation update: `ba45793345ca773a3de244b522042aa5048510ed`. The earlier application commit `830a0f60d16ae7ef45a6461d8685213aee4a184f` had a successful Vercel Preview; that result does not verify the latest head. Local lint/build, browser E2E, and Owner UAT remain pending.
+
+
+## 26 November 2026 — Rundown action-row refinement
+
+- Current `main` after PR #32 merge: `905677f977233e7b7784a20081ff50419e681423`.
+- Owner requested that Rundown cards follow the approved Panitia pattern: **Edit** beside **Hapus** in the card's upper action row, not a full-width edit strip below the data.
+- Updated `ScheduleSection` to group Edit and Hapus in a compact right-aligned action row. Edit still opens the existing modal.
+- Preserved delete confirmation/action, schedule form, CRUD, pagination, standalone all-rundown route, and validated return path.
+- No database/schema/migration/RLS, authorization, validation, business-rule, or production-data changes.
+- PR #32 is merged. This follow-up is tracked separately; local lint/build/browser E2E and Owner UAT remain pending.
