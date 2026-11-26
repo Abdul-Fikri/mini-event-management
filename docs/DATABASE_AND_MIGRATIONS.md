@@ -231,3 +231,12 @@ Migration `20261112_event_divisions.sql` menambahkan pengelolaan divisi sebagai 
 - Trigger menyinkronkan snapshot teks saat Owner mengubah nama divisi. Jika master divisi dihapus, referensi `division_id` menjadi NULL tetapi label lama tetap disimpan sebagai histori.
 - RLS tetap aktif. Owner dapat CRUD divisi dalam grup miliknya; Panitia hanya mendapat akses baca untuk event yang memang ditugaskan melalui helper `is_event_member`.
 - Migration harus ditinjau dan diterapkan pada database target sebelum fitur CRUD divisi dipakai. Keberadaan file di GitHub tidak membuktikan penerapannya.
+
+## 13. Procurement type and borrowed-item tracking
+
+Migration `20261126_procurement_types_and_loans.sql` adds `procurement_items.procurement_type` (purchase/borrow/inventory), `expected_return_date`, and `returned_at`. Existing rows receive `purchase` as the default so existing procurement-finance links keep their meaning.
+
+Only `purchase` items may have estimate/actual prices, budget category, or purchase date, and only purchase items may use the `ordered`/`purchased` statuses. Borrowed and inventory items cannot generate finance transactions. The finance trigger and upsert routine explicitly guard the type, while linked purchases cannot be converted to non-purchase types. Borrowed items may be marked returned by setting `returned_at`; this is not a finance transaction.
+
+The migration is authored in branch `feat/procurement-types-and-loans` and has not been applied to Supabase. Owner must review and apply it to the intended database before runtime UAT. File existence is not proof of remote application.
+
