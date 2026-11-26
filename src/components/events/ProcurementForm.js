@@ -1,5 +1,5 @@
 "use client";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { saveProcurementItem } from "@/actions/procurement";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
@@ -14,10 +14,6 @@ export default function ProcurementForm({eventId,members,categories,item=null,re
  const value=key=>state.values?.[key]??(item?.[key]??"");
  const [type,setType]=useState(value("procurement_type")||"purchase");
  const [status,setStatus]=useState(value("status")||"not_started");
- useEffect(()=>{
-  if(state.values?.procurement_type)setType(state.values.procurement_type);
-  if(state.values?.status)setStatus(state.values.status);
- },[state.values]);
  const isPurchase=type==="purchase";
  const isBorrow=type==="borrow";
  const statusOptions=isPurchase
