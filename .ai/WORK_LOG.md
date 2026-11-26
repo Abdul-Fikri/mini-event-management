@@ -305,3 +305,10 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - PR opening head `cafef1ee68d01231bda91a33ad9d99ee98b69d54`; GitHub reports PR open/unmerged and mergeable; Vercel status pending.
 - Follow-up: verify latest head/checks after docs sync; wait for PR #34 merge, retarget #35 to main, review/apply migration to test environment, run local lint/build and Owner UAT. No merge or Production deployment.
 
+## 26 November 2026 — Preserve Procurement form draft across type changes
+
+- Owner reported that switching an existing Procurement item from Pembelian to Peminjaman and receiving a business-rule error caused the modal inputs to reset/lose their previous values.
+- Updated `ProcurementForm`: purchase-only controls and expected-return date remain mounted while conditionally hidden; submitted values returned by Server Action errors rehydrate uncontrolled fields, and type/status selectors synchronize to the returned draft.
+- This preserves values only in the unsaved form; Server Action remains responsible for clearing type-inapplicable fields from persisted payloads.
+- Branch: `fix/procurement-form-preserve-draft`, based on PR #35 merge commit `51ae2a30d5c611120e69323d6f55f780e5f1c91e`. PR #35 was merged into its non-main base branch; current `main` is `f01a28f1e4791075c86701d64062e67e7e293d24`, so the follow-up PR must include the feature dependency.
+- No database/schema/migration/RLS, authorization, finance logic, production data, or deployment changes. Local lint/build/browser E2E and Owner UAT not run.
