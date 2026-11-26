@@ -260,3 +260,14 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Refreshed `.ai/PROJECT_STATUS.md` with the current PR state and verification caveat. Updated the project handbook alongside the same PR.
 - No database/schema/migration/RLS, authorization, business-rule, production-data, or deployment changes.
 - PR #32 remains open/unmerged. Latest application Preview success known is for commit `830a0f60d16ae7ef45a6461d8685213aee4a184f`; later commits require Preview verification. Local lint/build, browser E2E, and Owner UAT remain pending.
+
+
+## 26 November 2026 — Rundown card action consistency
+
+- Rechecked PR #32: GitHub reports `merged: true`, merge commit `905677f977233e7b7784a20081ff50419e681423`; comparing that commit to `main` returned identical, confirming it is the current base.
+- Owner asked to apply the Panitia card action pattern to Rundown first: Edit beside Hapus, not a full-width Edit row below the record.
+- Created `fix/rundown-card-action-consistency` from current `main`.
+- Updated `ScheduleSection` so Edit and Hapus share a compact right-side action group. Edit retains the existing modal.
+- Preserved delete confirmation, Server Action, schedule form, CRUD, five-record pagination, dedicated all-rundown view, and validated return path.
+- Updated handbook, implementation status, AI project context/status, and this work log in the same branch.
+- No database/schema/migration/RLS, authorization, validation, business-rule, production-data, or deployment changes. Local lint/build/browser E2E remain unrun; latest-head Preview and Owner UAT are required.
