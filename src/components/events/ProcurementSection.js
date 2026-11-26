@@ -98,7 +98,7 @@ export default function ProcurementSection({ eventId, items, members, categories
                       <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
                         {isPurchase ? <><div><dt className="text-zinc-500">Estimasi total</dt><dd className="font-medium">{currency(item.est_unit_price == null ? null : Number(item.est_unit_price) * Number(item.quantity))}</dd></div><div><dt className="text-zinc-500">Aktual total</dt><dd className="font-medium">{currency(item.actual_unit_price == null ? null : Number(item.actual_unit_price) * Number(item.quantity))}</dd></div></> : null}
                         <div><dt className="text-zinc-500">PIC</dt><dd>{memberById.get(item.pic_member_id)?.full_name ?? "Belum ditentukan"}</dd></div>
-                        <div><dt className="text-zinc-500">Supplier</dt><dd>{item.supplier ?? "—"}</dd></div>
+                        <div><dt className="text-zinc-500">{isPurchase ? "Supplier / toko" : isBorrow ? "Pemilik / pemberi pinjaman" : "Sumber inventaris"}</dt><dd>{item.supplier ?? "—"}</dd></div>
                         {isPurchase ? <div><dt className="text-zinc-500">Tanggal pembelian</dt><dd>{dateFmt(item.purchased_date)}</dd></div> : isBorrow ? <div><dt className="text-zinc-500">Rencana pengembalian</dt><dd>{dateFmt(item.expected_return_date)}</dd></div> : null}
                       </dl>
                       {item.notes ? <p className="mt-2 whitespace-pre-wrap text-xs text-zinc-500">Catatan: {item.notes}</p> : null}
