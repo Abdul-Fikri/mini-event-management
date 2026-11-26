@@ -266,10 +266,13 @@ export default function FinanceSection({
       <div className="space-y-4 border-t border-[#EEF2F6] pt-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div><h3 className="font-semibold">Riwayat transaksi</h3><p className="text-sm text-zinc-600">Semua pemasukan dan pengeluaran aktual tercatat di sini. Pembelian berstatus Sudah dibeli dari Pengadaan masuk otomatis, jadi jangan input ulang secara manual.</p></div>
-          {transactions.length > 0 ? <Link href={`${basePath}/transactions`} className="shrink-0 management-link text-sm hover:underline">Lihat semua transaksi</Link> : null}
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" onClick={() => setActiveForm({ type: "transaction", mode: "add" })} className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">+ Tambah transaksi manual</button>
+            {transactions.length > 0 ? <Link href={`${basePath}/transactions`} className="shrink-0 management-link text-sm hover:underline">Lihat semua transaksi</Link> : null}
+          </div>
         </div>
         {transactions.length ? <><PageSummary startIndex={transactionStart} visibleCount={visibleTransactions.length} total={transactions.length} label="transaksi" /><div className="space-y-3">{transactionCards(visibleTransactions)}</div><ListPagination currentPage={currentTransactionPage} totalPages={transactionTotalPages} onPageChange={setTransactionPage} /></> : <p className="management-empty p-5 text-center text-sm text-[#64748B]">Belum ada transaksi keuangan.</p>}
-        <button type="button" onClick={() => setActiveForm({ type: "transaction", mode: "add" })} className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">+ Tambah transaksi manual</button>
+        
       </div>
       {formModal}
     </section>
