@@ -79,6 +79,9 @@ export async function saveProcurementItem(eventId,itemId,_prev,formData){
   if(existingItem?.returned_at&&parsed.data.procurement_type!=="borrow"){
    return {...empty,message:"Item yang sudah ditandai dikembalikan tidak dapat diubah jenisnya.",values};
   }
+  if(existingItem?.procurement_type==="purchase"&&purchasedStatuses.has(existingItem.status)&&parsed.data.procurement_type!=="purchase"){
+   return {...empty,message:"Pembelian yang sudah berstatus Sudah dibeli/Siap digunakan tidak dapat diubah menjadi Peminjaman atau Inventaris. Buat item baru jika barang lain yang dimaksud.",values};
+  }
  }
 
  const expenseError=validateTypeAndExpense(parsed.data,hasLinkedExpense,values);
