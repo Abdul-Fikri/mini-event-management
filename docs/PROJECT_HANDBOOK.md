@@ -451,3 +451,6 @@ When adding or editing a procurement need, choose one of three types:
 
 The source/owner field is interpreted as supplier for purchases, lender/owner for borrowing, and inventory source for existing stock. Finance totals and the Catat ke Keuangan action include only purchase-type items. Existing procurement rows default to Pembelian after the migration, preserving their existing finance linkage. An item already linked to a finance transaction cannot be changed to borrowing or inventory.
 
+## Pengadaan — mempertahankan draft saat jenis berubah
+
+Pada form tambah/edit Pengadaan, berpindah jenis Pembelian, Peminjaman, atau Inventaris tidak menghapus nilai yang sudah diketik. Field khusus Pembelian dan tanggal rencana pengembalian tetap dipertahankan di form saat disembunyikan, lalu ditampilkan kembali jika jenis dipilih lagi. Jika validasi atau aturan bisnis menolak penyimpanan, form memulihkan nilai yang disubmit agar Owner dapat memperbaiki pilihan tanpa mengisi ulang. Data yang disimpan tetap mengikuti aturan jenis pengadaan; field harga/keuangan hanya berlaku untuk Pembelian dan tanggal pengembalian hanya berlaku untuk Peminjaman.
