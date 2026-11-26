@@ -426,3 +426,11 @@ Penyempurnaan kartu susunan panitia: aksi **Edit** ditempatkan sejajar dengan ak
 - PR #32 modal rollout was merged by Owner on 25 November 2026 at `905677f977233e7b7784a20081ff50419e681423`. This follow-up is on a new branch from that current `main`.
 - Local lint/build and browser E2E have not been run in this environment; verify the exact PR Preview and complete Owner UAT before merge.
 - Follow-up PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33 (branch `fix/rundown-card-action-consistency`, open/unmerged). Owner review and exact-head Preview/UAT are pending.
+
+## 26 November 2026 — Consistent management record actions
+
+- Use the same compact card action pattern across management pages: **Edit** beside **Hapus** in the card's upper action row (or **Keluarkan** for committee assignment). Do not place a separate full-width Edit strip below record content.
+- PR #33 extends the pattern to detailed Tasks, Procurement, Finance budget categories and manual transactions, and the dedicated Event Division manager. Panitia, Group Members, and Kanban task cards already use the adjacent-action pattern.
+- Edit opens the existing modal. Preserve delete confirmation, Server Actions, CRUD, validation, route/query/return-path behavior, pagination, and authorization/scoping.
+- Finance entries generated from Procurement remain managed through Procurement and must not gain independent edit/delete controls.
+- This is presentation-only; no database/schema/migration/RLS or production-data changes. Check exact-head Preview and complete local verification/UAT before merge.
