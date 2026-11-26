@@ -225,6 +225,7 @@ Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest ve
 - Live GitHub check: PR #36 is merged to `main`; current `main` HEAD is `ac8af6fc434cec4e2981f5a706213779f01db9e8`.
 - PR #35 procurement types/borrowing/inventory and PR #36 form draft preservation are now included in `main`. Migration `20261126_procurement_types_and_loans.sql` was authored in the merged change; application to the target Supabase database remains unconfirmed unless Owner confirms.
 - Current follow-up branch: `ui/finance-manual-transaction-action-placement`, created from the verified latest `main`.
+- PR #37: https://github.com/Abdul-Fikri/mini-event-management/pull/37 — open, unmerged, base `main`; source and documentation updates are included. Recheck the exact final head and checks before UAT.
 - Scope: move **+ Tambah transaksi manual** to the Riwayat transaksi header, before transaction records. Existing modal and Finance/Procurement behavior remain unchanged.
 - No database/schema/migration/RLS, authorization, production-data, or deployment changes in this UI follow-up.
 - Local lint/build/browser E2E and Owner UAT have not been run in this environment. Recheck exact-head Preview and UAT after the PR is opened.
