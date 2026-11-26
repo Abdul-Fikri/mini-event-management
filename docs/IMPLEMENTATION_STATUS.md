@@ -420,3 +420,12 @@ Latest PR head at documentation update: `ba45793345ca773a3de244b522042aa5048510e
 - No database/schema/migration/RLS, authorization, validation, business-rule, or production-data changes.
 - PR #32 is merged. This follow-up is tracked separately; local lint/build/browser E2E and Owner UAT remain pending.
 - PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33 — Rundown card action-row refinement; open/unmerged. Exact-head Preview, local lint/build, browser E2E, and Owner UAT pending.
+
+## 26 November 2026 — Management card action consistency (PR #33)
+
+- Owner requested a consistent action placement following Panitia: Edit beside Hapus in the same compact card action row; remove long/full-width Edit strips beneath cards.
+- Updated: detailed Tasks, Procurement, Finance budget categories, Finance manual transactions, and Event Division management cards. Rundown was updated in the preceding commit of this PR.
+- Already consistent: Panitia (Edit/Keluarkan), Group Members (Edit/Hapus), and Kanban task cards (Edit/Hapus).
+- Edit actions retain existing modals; delete confirmation and Server Actions remain unchanged. Procurement-linked Finance transactions remain controlled from Procurement.
+- No database/schema/migration/RLS, authorization, validation, or business-rule changes.
+- PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33 — open/unmerged. Exact latest-head Preview, local lint/build, browser E2E, and Owner UAT pending. No merge or Production deployment.
