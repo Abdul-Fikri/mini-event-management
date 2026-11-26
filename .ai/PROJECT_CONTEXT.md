@@ -295,3 +295,6 @@ Panitia card action layout: keep **Edit** beside **Keluarkan** in the card's top
 - PR #35: https://github.com/Abdul-Fikri/mini-event-management/pull/35; open, unmerged, base `fix/procurement-finance-sync-loading` (stacked on PR #34), head at PR creation `cafef1ee68d01231bda91a33ad9d99ee98b69d54`.
 - Vercel Preview was pending at that head. Local lint/build and browser E2E have not been run. Do not merge until PR #34 is merged, PR #35 is retargeted to `main`, the new migration is reviewed/applied to the intended test DB, and exact-head Preview/UAT are checked.
 
+## Procurement form UX — draft retention
+
+The Procurement create/edit modal must preserve draft values when the Owner switches among purchase, borrow, and inventory types. Keep conditional fields mounted and hide them visually rather than unmounting them; retain purchase-only values and expected-return date while switching. On Server Action validation/business-rule errors, restore submitted values and selected type/status so the modal does not reset. Persistence remains type-specific in the Server Action; this is UI state preservation, not a database change.
