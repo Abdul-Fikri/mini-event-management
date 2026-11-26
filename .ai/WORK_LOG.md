@@ -271,3 +271,4 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Preserved delete confirmation, Server Action, schedule form, CRUD, five-record pagination, dedicated all-rundown view, and validated return path.
 - Updated handbook, implementation status, AI project context/status, and this work log in the same branch.
 - No database/schema/migration/RLS, authorization, validation, business-rule, production-data, or deployment changes. Local lint/build/browser E2E remain unrun; latest-head Preview and Owner UAT are required.
+- Opened PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33, base `main`, branch `fix/rundown-card-action-consistency`. PR remains open/unmerged; no merge or Production deployment.
