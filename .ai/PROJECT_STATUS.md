@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 26 November 2026 — PR #32 merged; Rundown action consistency follow-up
+Last updated: 26 November 2026 — Procurement form draft-preservation follow-up
 
 ## Owner-reported verification
 
@@ -220,3 +220,11 @@ Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest ve
 - Head at PR opening: `cafef1ee68d01231bda91a33ad9d99ee98b69d54`; Vercel Preview status pending. Recheck the final head after documentation updates.
 - Before merge: PR #34 must merge first; retarget #35 to main, refresh Preview, review/apply migration in the intended database, and run purchase/borrow/inventory plus return-flow UAT. No merge/deploy has occurred.
 
+## Procurement form draft-preservation follow-up — 26 November 2026
+
+- Live GitHub check: `main` HEAD is `f01a28f1e4791075c86701d64062e67e7e293d24` (PR #34 merge).
+- PR #35 is marked merged into `fix/procurement-finance-sync-loading` at `51ae2a30d5c611120e69323d6f55f780e5f1c91e`; it is not present in `main` HEAD. Its procurement-types feature is therefore included as the dependency base for this follow-up rather than assumed to be on main.
+- Created `fix/procurement-form-preserve-draft` from the PR #35 merge commit. The branch adds draft retention for hidden conditional fields and restores submitted values after Server Action errors.
+- Follow-up PR targeting `main` will contain PR #35's feature plus this UX fix, since PR #35 was merged into a non-main base branch. Check the resulting PR diff and exact-head Preview.
+- No migration, schema, RLS, production data, or deployment changes in this UX fix. Migration `20261126_procurement_types_and_loans.sql` remains Owner-reviewed/applied status unconfirmed unless Owner reports otherwise.
+- Local lint/build/browser E2E and Owner UAT remain pending.
