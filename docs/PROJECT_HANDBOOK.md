@@ -3,7 +3,7 @@
 Dokumen utama untuk memahami produk, arsitektur, fitur, dan cara kerja aplikasi.
 
 - Repository: https://github.com/Abdul-Fikri/mini-event-management
-- Last reviewed: 14 November 2026
+- Last reviewed: 26 November 2026
 - Active app root: repository root
 - Source directory: \`src/\`
 
@@ -415,3 +415,13 @@ Jangan mengubah form yang memang merupakan halaman khusus yang berdiri sendiri (
 
 
 Penyempurnaan kartu susunan panitia: aksi **Edit** ditempatkan sejajar dengan aksi **Keluarkan** di area aksi kanan atas kartu. Hindari tombol edit full-width di bawah konten kartu karena menambah tinggi visual dan membuat aksi terasa terpisah dari record yang diedit.
+
+
+## 26 November 2026 — Rundown card action consistency
+
+- Owner requested one consistent record-action pattern, starting with Rundown: place **Edit** beside **Hapus** in the card's action row, rather than a separate full-width edit strip below the record.
+- Updated `src/components/events/ScheduleSection.js` so Edit and Hapus share a compact right-side action group. Edit continues to open the existing schedule-item modal.
+- Preserved delete confirmation, `deleteScheduleItem`, create/edit modal, `ScheduleItemForm`, pagination, and validated return destination for `/rundown` and `/rundown/all`.
+- This is a presentation-only change. No data, Server Action, validation, authorization, schema, migration, RLS, or production behavior was intentionally changed.
+- PR #32 modal rollout was merged by Owner on 25 November 2026 at `905677f977233e7b7784a20081ff50419e681423`. This follow-up is on a new branch from that current `main`.
+- Local lint/build and browser E2E have not been run in this environment; verify the exact PR Preview and complete Owner UAT before merge.
