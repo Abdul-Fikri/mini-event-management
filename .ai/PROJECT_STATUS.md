@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 14 November 2026 — PR #30 merged; management UI consistency follow-up in progress
+Last updated: 26 November 2026 — PR #32 merged; Rundown action consistency follow-up
 
 ## Owner-reported verification
 
@@ -177,3 +177,13 @@ Polishing lanjutan berdasarkan UAT Owner: tombol **Edit** pada kartu susunan pan
 
 
 Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest verified head before this documentation refresh: `ba45793345ca773a3de244b522042aa5048510ed`. Modal implementation covers Panitia, Rundown, Tugas, Pengadaan, Keuangan, and Anggota Panitia. The source-level changes are present; latest-head Preview, local lint/build, browser E2E, and Owner UAT are not yet verified. No merge or Production deployment.
+
+
+## Current follow-up — Rundown card action layout (26 November 2026)
+
+- Verified PR #32 is merged. Its merge commit is current `main`: `905677f977233e7b7784a20081ff50419e681423` (comparison with `main` returned identical).
+- Created branch `fix/rundown-card-action-consistency` from `main`.
+- Updated `ScheduleSection`: Edit now sits beside Hapus in the card's compact right-side action row; removed the separate full-width Edit strip below the card.
+- Edit still opens the existing modal. Delete confirmation/action, forms, CRUD, pagination, all-rundown route, and return path remain unchanged.
+- Documentation updated on the same branch. No database/schema/migration/RLS, authorization, business logic, production data, or deployment changes.
+- Local lint/build/browser E2E not run; exact latest PR Preview and Owner UAT remain pending. No merge or Production deployment.
