@@ -260,3 +260,24 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Refreshed `.ai/PROJECT_STATUS.md` with the current PR state and verification caveat. Updated the project handbook alongside the same PR.
 - No database/schema/migration/RLS, authorization, business-rule, production-data, or deployment changes.
 - PR #32 remains open/unmerged. Latest application Preview success known is for commit `830a0f60d16ae7ef45a6461d8685213aee4a184f`; later commits require Preview verification. Local lint/build, browser E2E, and Owner UAT remain pending.
+
+
+## 26 November 2026 — Rundown card action consistency
+
+- Rechecked PR #32: GitHub reports `merged: true`, merge commit `905677f977233e7b7784a20081ff50419e681423`; comparing that commit to `main` returned identical, confirming it is the current base.
+- Owner asked to apply the Panitia card action pattern to Rundown first: Edit beside Hapus, not a full-width Edit row below the record.
+- Created `fix/rundown-card-action-consistency` from current `main`.
+- Updated `ScheduleSection` so Edit and Hapus share a compact right-side action group. Edit retains the existing modal.
+- Preserved delete confirmation, Server Action, schedule form, CRUD, five-record pagination, dedicated all-rundown view, and validated return path.
+- Updated handbook, implementation status, AI project context/status, and this work log in the same branch.
+- No database/schema/migration/RLS, authorization, validation, business-rule, production-data, or deployment changes. Local lint/build/browser E2E remain unrun; latest-head Preview and Owner UAT are required.
+- Opened PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33, base `main`, branch `fix/rundown-card-action-consistency`. PR remains open/unmerged; no merge or Production deployment.
+
+## 26 November 2026 — Extend management card action consistency
+
+- Owner said to continue the Rundown action-row pattern across the remaining management pages in the same unmerged PR #33.
+- Updated detailed Task cards, Procurement cards, Finance budget-category cards, Finance manual-transaction cards, and Event Division manager cards: Edit is adjacent to Hapus in the card's top-right action group; removed separate full-width Edit rows.
+- Confirmed MemberList and Kanban task cards already use adjacent Edit/Delete; Panitia follows Edit/Keluarkan, so no redundant change was needed there.
+- Edit continues opening existing modals. Linked procurement-generated finance entries remain read-only/managed through Procurement.
+- Updated project AI and product documentation in this branch. No database/schema/migration/RLS, authorization, validation, business-rule, production-data, or deployment changes.
+- Local lint/build/browser E2E not run; exact-head Preview and Owner UAT pending. PR #33 remains open/unmerged; no merge or Production deployment.

@@ -1,6 +1,6 @@
 # Project Context — Mini Event Management System
 
-Last reviewed: 14 November 2026
+Last reviewed: 26 November 2026
 
 Repository: https://github.com/Abdul-Fikri/mini-event-management
 Production URL reported by owner: https://mini-event-management-gules.vercel.app
@@ -253,3 +253,22 @@ Keep dedicated standalone workflows (event form routes, group onboarding, group 
 
 
 Panitia card action layout: keep **Edit** beside **Keluarkan** in the card's top-right action row. Do not render a full-width edit control beneath the record content; that creates unnecessary card height and visual separation from the record.
+
+
+## Rundown record action consistency — 26 November 2026
+
+- Owner approved a consistent management-card action pattern, starting with Rundown: show **Edit** immediately beside **Hapus** in the card's action row; do not place a long/full-width Edit strip below the record.
+- `src/components/events/ScheduleSection.js` now follows the Panitia action layout. Edit continues to open the existing schedule-item modal.
+- Preserve `deleteScheduleItem`, delete confirmation, `ScheduleItemForm`, create/edit modal behavior, five-record pagination, `/rundown/all`, and the validated `return_to` value.
+- This is presentation-only. Do not change CRUD contracts, validation, authorization, group/event scope, data/schema, migration, RLS, or business logic.
+- PR #32 has been merged to main at `905677f977233e7b7784a20081ff50419e681423`. Continue this action-layout consistency work on a separate follow-up branch/PR; do not edit the already-merged PR #32 branch.
+- Local lint/build and browser E2E are not verified by this source change. Check Preview for the exact latest head and require Owner UAT before merge.
+- Follow-up PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33. It is open/unmerged; do not merge or deploy until Owner approval and verification.
+
+## Management card action consistency — 26 November 2026
+
+- Owner approved a single record action pattern: place **Edit** beside **Hapus** (or the corresponding remove action) in the card's top action row; avoid full-width edit strips beneath records.
+- Follow-up PR #33 extends the initial Rundown refinement to detailed Tasks, Procurement, Finance categories/manual transactions, and the dedicated Event Division manager. Panitia and Group Members already use adjacent Edit/Delete actions; Kanban task cards already have adjacent Edit/Delete controls.
+- Edit actions continue to open the existing modals. Keep linked procurement finance transactions managed from Procurement; do not expose manual Edit/Delete actions for those linked rows.
+- Preserve forms, Server Actions, confirmation, CRUD, validation, role/access boundaries, group/event scoping, pagination, and validated return destinations. Presentation-only; no schema, migration, RLS, production-data, or deployment changes.
+- PR #33 remains open/unmerged. Verify exact-head Preview, local lint/build, browser E2E, and Owner UAT before merge; Owner controls merge and Production deployment.

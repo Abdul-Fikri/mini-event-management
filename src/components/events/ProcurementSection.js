@@ -109,15 +109,21 @@ export default function ProcurementSection({ eventId, items, members, categories
                         </div>
                       ) : null}
                     </div>
-                    <form action={deleteProcurementItem}>
-                      <input type="hidden" name="event_id" value={eventId} />
-                      <input type="hidden" name="return_to" value={returnTo} />
-                      <input type="hidden" name="item_id" value={item.id} />
-                      <ConfirmDeleteButton message={`Hapus kebutuhan "${item.name}"? Jika sudah dibeli, transaksi pengeluarannya akan tetap tersimpan di Keuangan.`}>Hapus</ConfirmDeleteButton>
-                    </form>
-                  </div>
-                  <div className="mt-3 border-t border-[#EEF2F6] pt-3">
-                    <button type="button" onClick={() => setActiveItem({ mode: "edit", item })} className="text-sm font-semibold text-[#407BB0] hover:text-[#32628E]">Edit kebutuhan / perbarui status</button>
+                    <div className="flex shrink-0 items-center gap-2 sm:pl-3">
+                      <button
+                        type="button"
+                        onClick={() => setActiveItem({ mode: "edit", item })}
+                        className="inline-flex items-center justify-center rounded-xl border border-[#D7E6F5] bg-white px-3.5 py-2 text-sm font-semibold text-[#407BB0] transition-colors hover:bg-[#F0F5FA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#407BB0]"
+                      >
+                        Edit
+                      </button>
+                      <form action={deleteProcurementItem}>
+                        <input type="hidden" name="event_id" value={eventId} />
+                        <input type="hidden" name="return_to" value={returnTo} />
+                        <input type="hidden" name="item_id" value={item.id} />
+                        <ConfirmDeleteButton message={`Hapus kebutuhan "${item.name}"? Jika sudah dibeli, transaksi pengeluarannya akan tetap tersimpan di Keuangan.`}>Hapus</ConfirmDeleteButton>
+                      </form>
+                    </div>
                   </div>
                 </article>
               );
