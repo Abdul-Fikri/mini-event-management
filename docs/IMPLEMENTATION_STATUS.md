@@ -439,3 +439,18 @@ Latest PR head at documentation update: `ba45793345ca773a3de244b522042aa5048510e
 - [ ] Run local lint/build and browser E2E; verify Preview for the exact latest PR head and complete Owner UAT.
 
 PR #33 management action consistency is merged at 322ee62801a9114987b02e9fa13461efc853e518. This loading-feedback fix is a separate follow-up branch.
+
+## 26 November 2026 — Procurement types and loan-return tracking
+
+- [x] Procurement form now distinguishes Pembelian, Peminjaman, and Inventaris tersedia.
+- [x] Price, budget category, and purchase date inputs are shown only for purchases; non-purchase form submissions clear finance-only fields.
+- [x] Server validation rejects purchase-only statuses for borrowing/inventory and validates Owner/event/PIC/category boundaries as before.
+- [x] Added optional planned return date for borrowed items and Owner action to mark a borrowed item returned.
+- [x] Procurement cards show type and return status; finance totals/link action are limited to purchase items.
+- [x] Authored migration `20261126_procurement_types_and_loans.sql`; existing rows default to purchase. Finance trigger/upsert now explicitly skip and reject non-purchase items.
+- [x] Updated initial `supabase/schema.sql` to match the new fields and trigger guards.
+- [ ] Owner review and application of the migration to the intended Supabase environment.
+- [ ] Local lint/build, browser E2E for purchase/borrow/inventory, exact-head Preview, and Owner UAT.
+
+No production SQL or data was changed by this implementation. Migration is authored only; remote application is unconfirmed.
+
