@@ -187,3 +187,4 @@ Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest ve
 - Edit still opens the existing modal. Delete confirmation/action, forms, CRUD, pagination, all-rundown route, and return path remain unchanged.
 - Documentation updated on the same branch. No database/schema/migration/RLS, authorization, business logic, production data, or deployment changes.
 - Local lint/build/browser E2E not run; exact latest PR Preview and Owner UAT remain pending. No merge or Production deployment.
+- PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33, open/unmerged. Latest application/documentation commit requires Preview status recheck; local lint/build/browser E2E and Owner UAT pending.
