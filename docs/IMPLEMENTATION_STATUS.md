@@ -439,3 +439,31 @@ Latest PR head at documentation update: `ba45793345ca773a3de244b522042aa5048510e
 - [ ] Run local lint/build and browser E2E; verify Preview for the exact latest PR head and complete Owner UAT.
 
 PR #33 management action consistency is merged at 322ee62801a9114987b02e9fa13461efc853e518. This loading-feedback fix is a separate follow-up branch.
+
+## 26 November 2026 — Procurement types and loan-return tracking
+
+- [x] Procurement form now distinguishes Pembelian, Peminjaman, and Inventaris tersedia.
+- [x] Price, budget category, and purchase date inputs are shown only for purchases; non-purchase form submissions clear finance-only fields.
+- [x] Server validation rejects purchase-only statuses for borrowing/inventory and validates Owner/event/PIC/category boundaries as before.
+- [x] Added optional planned return date for borrowed items and Owner action to mark a borrowed item returned.
+- [x] Procurement cards show type and return status; finance totals/link action are limited to purchase items.
+- [x] Authored migration `20261126_procurement_types_and_loans.sql`; existing rows default to purchase. Finance trigger/upsert now explicitly skip and reject non-purchase items.
+- [x] Updated initial `supabase/schema.sql` to match the new fields and trigger guards.
+- [ ] Owner review and application of the migration to the intended Supabase environment.
+- [ ] Local lint/build, browser E2E for purchase/borrow/inventory, exact-head Preview, and Owner UAT.
+
+No production SQL or data was changed by this implementation. Migration is authored only; remote application is unconfirmed.
+
+### PR #35 — review and verification status
+
+PR #35: https://github.com/Abdul-Fikri/mini-event-management/pull/35 (open/unmerged, stacked on PR #34). Vercel Preview status was pending at initial PR head `cafef1ee68d01231bda91a33ad9d99ee98b69d54`. Local lint/build/browser E2E and migration/UAT are not yet verified. Merge PR #34 first, retarget #35 to main, then recheck the exact final Preview and run purchase/borrow/inventory/return scenarios.
+
+## Follow-up UX — procurement form draft preservation (26 November 2026)
+
+- Form Pengadaan mempertahankan nilai field Pembelian dan tanggal rencana pengembalian saat jenis berubah; field terkait disembunyikan tanpa di-unmount.
+- Ketika Server Action mengembalikan error, form dipulihkan dari submitted values, termasuk selector jenis/status dan input uncontrolled yang memakai defaultValue.
+- Aturan persistence tetap di Server Action: data harga/kategori/tanggal pembelian hanya untuk Pembelian; expected return date hanya untuk Peminjaman.
+- Implemented on branch `fix/procurement-form-preserve-draft` based on the merged PR #35 feature branch commit. No database/schema/migration/RLS changes.
+- Local lint/build/browser E2E and Owner UAT are not yet run.
+
+PR #36: https://github.com/Abdul-Fikri/mini-event-management/pull/36 — open/unmerged to `main`. It includes the Procurement types/loans dependency from PR #35 (which was merged into a non-main branch) and the form draft-preservation fix. GitHub reported the PR clean/mergeable at the checked head; local lint/build/browser E2E and Owner UAT remain pending.

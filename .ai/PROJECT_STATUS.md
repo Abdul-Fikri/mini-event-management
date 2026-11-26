@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 26 November 2026 — PR #32 merged; Rundown action consistency follow-up
+Last updated: 26 November 2026 — Procurement form draft-preservation follow-up
 
 ## Owner-reported verification
 
@@ -204,3 +204,28 @@ Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest ve
 - Existing Server Action and event/item/return hidden inputs are preserved. No finance business logic, schema, migration, RLS, authorization, or production data changes.
 - PR #33 action-row consistency was verified as merged (merge commit 322ee62801a9114987b02e9fa13461efc853e518). The loading feedback is on a separate follow-up branch/PR.
 - Local lint/build/browser E2E and exact-head Preview remain pending.
+
+## Procurement types and loan-return feature — 26 November 2026
+
+- Implemented in branch `feat/procurement-types-and-loans`: form and list support Pembelian, Peminjaman, and Inventaris tersedia.
+- Borrowing supports optional planned return date and a guarded Owner action to mark returned. Non-purchase items do not create Finance transactions or appear in purchase commitment/expense totals.
+- Existing records are preserved as purchase by migration default. SQL constraints and trigger guard prevent non-purchase finance data/statuses and conversion of linked purchases.
+- Migration `20261126_procurement_types_and_loans.sql` is authored only; Supabase application is not confirmed and no production SQL/data was changed.
+- PR #34 was checked open/unmerged at branch start; this is a stacked/dependent branch from its head to retain the pending Lottie feedback. Recheck PR #34 status and latest main before final merge.
+- Local lint/build/browser E2E, exact-head Preview, migration UAT, and Owner acceptance are pending.
+
+### PR #35 opened — Procurement types and loans
+
+- PR: https://github.com/Abdul-Fikri/mini-event-management/pull/35; open/unmerged, base PR #34 branch to keep the dependency diff clean.
+- Head at PR opening: `cafef1ee68d01231bda91a33ad9d99ee98b69d54`; Vercel Preview status pending. Recheck the final head after documentation updates.
+- Before merge: PR #34 must merge first; retarget #35 to main, refresh Preview, review/apply migration in the intended database, and run purchase/borrow/inventory plus return-flow UAT. No merge/deploy has occurred.
+
+## Procurement form draft-preservation follow-up — 26 November 2026
+
+- Live GitHub check: `main` HEAD is `f01a28f1e4791075c86701d64062e67e7e293d24` (PR #34 merge).
+- PR #35 is marked merged into `fix/procurement-finance-sync-loading` at `51ae2a30d5c611120e69323d6f55f780e5f1c91e`; it is not present in `main` HEAD. Its procurement-types feature is therefore included as the dependency base for this follow-up rather than assumed to be on main.
+- Created `fix/procurement-form-preserve-draft` from the PR #35 merge commit. The branch adds draft retention for hidden conditional fields and restores submitted values after Server Action errors.
+- Follow-up PR #36: https://github.com/Abdul-Fikri/mini-event-management/pull/36 — open, unmerged, base `main`, head `33725a3ab4abd8b33c3b4bfe54062e67e7e293d24`; it includes PR #35's procurement-types dependency plus draft-preservation fix. GitHub API reports mergeable/clean at this check. Recheck exact-head Preview and all checks after documentation updates.
+- No migration, schema, RLS, production data, or deployment changes in this UX fix. Migration `20261126_procurement_types_and_loans.sql` remains Owner-reviewed/applied status unconfirmed unless Owner reports otherwise.
+- Local lint/build/browser E2E and Owner UAT remain pending.
+- For checked head `33725a3ab4abd8b33c3b4bfe54062e67e7e293d24`, Vercel status is pending; Vercel Preview Comments completed successfully but is not a deployment-success signal. This status-document update advances the branch head, so recheck the exact new head before UAT.

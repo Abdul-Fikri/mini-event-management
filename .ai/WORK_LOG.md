@@ -289,3 +289,33 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Updated ProcurementSection to use the component while preserving syncProcurementItemToFinance, hidden event_id, item_id, return_to, warning copy, and existing server flow.
 - No database/schema/migration/RLS, authorization, finance logic, or production data changes.
 - PR #33 was verified merged at 322ee62801a9114987b02e9fa13461efc853e518; created separate branch fix/procurement-finance-sync-loading for this follow-up. Local lint/build/browser E2E and Preview verification remain pending.
+
+## 26 November 2026 — Procurement types and borrowing
+
+- Owner approved the proposed type distinction: Pembelian, Peminjaman, Inventaris tersedia; optional planned return date and mark-returned action for borrowing.
+- Created `feat/procurement-types-and-loans` from PR #34 head `f7065d38abea2ac71d152aa8b11dfa4ac48666f8` so the pending Lottie sync feedback is retained. PR #34 was open/unmerged when checked; this is a stacked branch.
+- Updated procurement validator, modal form, cards/totals, and Server Actions. Purchase-only fields/statuses are validated; non-purchase submissions clear price/category/purchase date. Added guarded return action with event/group scope.
+- Added migration `20261126_procurement_types_and_loans.sql`: type, planned return date, returned timestamp; defaults legacy rows to purchase; adds checks; updates finance trigger/upsert to exclude non-purchases and prevent linked purchase conversion.
+- Updated `supabase/schema.sql` for fresh database setup and product/database docs in this branch.
+- Migration is authored, not applied. No production SQL/data or deployment changes. Local lint/build/browser E2E and exact-head Preview remain unverified; Owner review/UAT required.
+
+### PR #35 opened — Procurement types and loan return
+
+- Opened https://github.com/Abdul-Fikri/mini-event-management/pull/35 from `feat/procurement-types-and-loans`, intentionally based on PR #34's branch so only this feature is shown as the stacked change.
+- PR opening head `cafef1ee68d01231bda91a33ad9d99ee98b69d54`; GitHub reports PR open/unmerged and mergeable; Vercel status pending.
+- Follow-up: verify latest head/checks after docs sync; wait for PR #34 merge, retarget #35 to main, review/apply migration to test environment, run local lint/build and Owner UAT. No merge or Production deployment.
+
+## 26 November 2026 — Preserve Procurement form draft across type changes
+
+- Owner reported that switching an existing Procurement item from Pembelian to Peminjaman and receiving a business-rule error caused the modal inputs to reset/lose their previous values.
+- Updated `ProcurementForm`: purchase-only controls and expected-return date remain mounted while conditionally hidden; submitted values returned by Server Action errors rehydrate uncontrolled fields, and type/status selectors synchronize to the returned draft.
+- This preserves values only in the unsaved form; Server Action remains responsible for clearing type-inapplicable fields from persisted payloads.
+- Branch: `fix/procurement-form-preserve-draft`, based on PR #35 merge commit `51ae2a30d5c611120e69323d6f55f780e5f1c91e`. PR #35 was merged into its non-main base branch; current `main` is `f01a28f1e4791075c86701d64062e67e7e293d24`, so the follow-up PR must include the feature dependency.
+- No database/schema/migration/RLS, authorization, finance logic, production data, or deployment changes. Local lint/build/browser E2E and Owner UAT not run.
+
+### PR #36 opened — Preserve Procurement form draft
+
+- PR: https://github.com/Abdul-Fikri/mini-event-management/pull/36, base `main`, branch `fix/procurement-form-preserve-draft`.
+- PR #35's type/loan feature had been merged into the PR #34 dependency branch rather than `main`; PR #36 therefore includes that dependency plus this draft-retention correction so the complete feature can reach `main`.
+- Exact head at opening: `fadb77f8eff6f4e835836a6a11f6d35738384d2a`. GitHub API reported `mergeable=true`, `mergeable_state=clean`; no merge or deployment performed.
+- Local lint/build/browser E2E, exact-head Preview, migration application, and Owner UAT remain pending.

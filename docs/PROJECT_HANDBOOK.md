@@ -440,3 +440,17 @@ Penyempurnaan kartu susunan panitia: aksi **Edit** ditempatkan sejajar dengan ak
 When an Owner submits **Catat ke Keuangan** for a purchased/ready procurement item that is not yet linked to a finance transaction, the button shows a small Lottie animation using the existing /animations/loading.json asset and the label **Mencatat ke Keuangan...** while the Server Action is pending. The button is disabled during submission.
 
 This feedback is scoped to the form via React useFormStatus. Keep the existing syncProcurementItemToFinance Server Action and hidden event/item/return fields intact. This does not alter transaction synchronization, duplicate safeguards, authorization, or data/schema/migration/RLS.
+
+## Procurement types: purchase, borrowing, and inventory
+
+When adding or editing a procurement need, choose one of three types:
+
+- **Pembelian** — supports estimated/actual unit prices, budget category, purchase date, budget commitment, and purchase-linked expense. Actual price greater than Rp0 is required when the item is marked purchased/ready.
+- **Peminjaman** — records an item borrowed from another person or organization. Price and budget category fields are not used, and no finance transaction is created. An optional planned return date can be recorded. When the item is in use, Owner can select **Tandai dikembalikan**; the card then shows **Sudah dikembalikan**.
+- **Inventaris tersedia** — records equipment already available to the group/event. No price or finance transaction is required.
+
+The source/owner field is interpreted as supplier for purchases, lender/owner for borrowing, and inventory source for existing stock. Finance totals and the Catat ke Keuangan action include only purchase-type items. Existing procurement rows default to Pembelian after the migration, preserving their existing finance linkage. An item already linked to a finance transaction cannot be changed to borrowing or inventory.
+
+## Pengadaan — mempertahankan draft saat jenis berubah
+
+Pada form tambah/edit Pengadaan, berpindah jenis Pembelian, Peminjaman, atau Inventaris tidak menghapus nilai yang sudah diketik. Field khusus Pembelian dan tanggal rencana pengembalian tetap dipertahankan di form saat disembunyikan, lalu ditampilkan kembali jika jenis dipilih lagi. Jika validasi atau aturan bisnis menolak penyimpanan, form memulihkan nilai yang disubmit agar Owner dapat memperbaiki pilihan tanpa mengisi ulang. Data yang disimpan tetap mengikuti aturan jenis pengadaan; field harga/keuangan hanya berlaku untuk Pembelian dan tanggal pengembalian hanya berlaku untuk Peminjaman.

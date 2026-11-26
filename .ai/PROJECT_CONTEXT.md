@@ -279,3 +279,22 @@ Panitia card action layout: keep **Edit** beside **Keluarkan** in the card's top
 - Implemented with src/components/events/ProcurementFinanceSyncButton.js, using React form status (useFormStatus) so pending state is scoped to that specific form. The button is disabled while pending to prevent duplicate submissions.
 - Existing syncProcurementItemToFinance Server Action, hidden event/item/return fields, warning text, duplicate-check behavior, and redirect/revalidation remain unchanged. This is feedback-only; no schema/migration/RLS/authorization or finance logic change.
 - PR #33 (management card action consistency) is merged; this small follow-up is on fix/procurement-finance-sync-loading and will be submitted separately for review. Local lint/build/browser E2E and Preview verification are pending.
+
+## Procurement types and borrowing (26 November 2026)
+
+- Owner approved extending Procurement to support no-cost borrowing and existing inventory, not just purchases.
+- `procurement_type` values: `purchase`, `borrow`, `inventory`. Existing database rows migrate with default `purchase` to preserve current purchase/finance behavior.
+- Purchase alone uses estimate/actual price, budget category, purchase date, ordered/purchased statuses, commitment totals, and linked finance expense. Borrow/inventory clear finance-only fields and never create ledger transactions.
+- Borrowing has optional `expected_return_date` and `returned_at`; Owner can mark an in-use loan returned. This records return state only, not a finance transaction.
+- A procurement item already linked to a finance transaction cannot be converted to borrow/inventory. Server Action and SQL trigger both enforce the boundary.
+- Migration: `20261126_procurement_types_and_loans.sql`; authored on `feat/procurement-types-and-loans`, not applied to Supabase. Review/apply and verify remote migration history before testing.
+- PR #34 (Lottie finance sync feedback) remains a dependency/base for this branch at the time of implementation; verify its merge status and resolve the stacked PR relationship before merging. No production changes, local lint/build, browser E2E, or Preview UAT have been completed by this implementation.
+
+### PR #35 tracking
+
+- PR #35: https://github.com/Abdul-Fikri/mini-event-management/pull/35; open, unmerged, base `fix/procurement-finance-sync-loading` (stacked on PR #34), head at PR creation `cafef1ee68d01231bda91a33ad9d99ee98b69d54`.
+- Vercel Preview was pending at that head. Local lint/build and browser E2E have not been run. Do not merge until PR #34 is merged, PR #35 is retargeted to `main`, the new migration is reviewed/applied to the intended test DB, and exact-head Preview/UAT are checked.
+
+## Procurement form UX — draft retention
+
+The Procurement create/edit modal must preserve draft values when the Owner switches among purchase, borrow, and inventory types. Keep conditional fields mounted and hide them visually rather than unmounting them; retain purchase-only values and expected-return date while switching. On Server Action validation/business-rule errors, restore submitted values and selected type/status so the modal does not reset. Persistence remains type-specific in the Server Action; this is UI state preservation, not a database change.

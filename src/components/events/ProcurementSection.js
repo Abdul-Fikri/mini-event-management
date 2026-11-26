@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { deleteProcurementItem, syncProcurementItemToFinance } from "@/actions/procurement";
+import { deleteProcurementItem, markProcurementReturned, syncProcurementItemToFinance } from "@/actions/procurement";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
 import ProcurementForm from "@/components/events/ProcurementForm";
 import { Alert } from "@/components/ui/Alert";
@@ -13,6 +13,7 @@ import ProcurementFinanceSyncButton from "@/components/events/ProcurementFinance
 const PAGE_SIZE = 5;
 const currency = (value) => value == null ? "—" : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
 const statusLabel = { not_started: "Belum dimulai", requested: "Diminta", ordered: "Dipesan", purchased: "Sudah dibeli", ready: "Siap digunakan", not_needed: "Tidak diperlukan" };
+const procurementTypeLabel = { purchase: "Pembelian", borrow: "Peminjaman", inventory: "Inventaris" };
 const dateFmt = (value) => value ? new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" }).format(new Date(value + "T00:00:00")) : "—";
 
 export default function ProcurementSection({ eventId, items, members, categories, linkedProcurementIds = [], procurementError = "", standalone = false }) {
@@ -21,7 +22,7 @@ export default function ProcurementSection({ eventId, items, members, categories
   const memberById = new Map(members.map((member) => [member.id, member]));
   const categoryById = new Map(categories.map((category) => [category.id, category]));
   const linkedIds = new Set(linkedProcurementIds);
-  const active = items.filter((item) => item.status !== "not_needed");
+  const active = items.filter((item) => item.status !== "not_needed" && (item.procurement_type ?? "purchase") === "purchase");
   const estimate = active.reduce((sum, item) => sum + (item.est_unit_price ?? 0) * Number(item.quantity), 0);
   const commitment = active.filter((item) => item.status === "ordered").reduce((sum, item) => sum + (item.est_unit_price ?? 0) * Number(item.quantity), 0);
   const actual = active.filter((item) => ["purchased", "ready"].includes(item.status)).reduce((sum, item) => sum + (item.actual_unit_price ?? 0) * Number(item.quantity), 0);
@@ -40,7 +41,7 @@ export default function ProcurementSection({ eventId, items, members, categories
         <div>
           {standalone ? <Link href={basePath} className="management-link text-sm hover:underline">← Kembali ke Pengadaan</Link> : null}
           <h2 className={standalone ? "mt-2 text-xl font-semibold" : "text-lg font-semibold"}>{standalone ? "Semua kebutuhan pengadaan" : "Manajemen perlengkapan"}</h2>
-          <p className="text-sm text-zinc-600">Kelola kebutuhan dan progres pembelian. Item berstatus Dipesan menjadi komitmen anggaran; item Sudah dibeli otomatis masuk ke pengeluaran Keuangan.</p>
+          <p className="text-sm text-zinc-600">Kelola pembelian, peminjaman, dan inventaris. Hanya jenis Pembelian yang membentuk komitmen atau transaksi Keuangan.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {!standalone ? <button type="button" onClick={() => setActiveItem({ mode: "add" })} className="rounded-xl bg-[#407BB0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#32628E]">+ Tambah kebutuhan</button> : null}
@@ -54,7 +55,10 @@ export default function ProcurementSection({ eventId, items, members, categories
       {procurementError === "missing_purchase_date" ? <Alert>Isi tanggal pembelian yang sebenarnya pada form Edit kebutuhan, lalu klik Catat ke Keuangan. Sistem tidak menebak tanggal untuk data pengadaan lama.</Alert> : null}
       {procurementError === "sync_failed" ? <Alert>Pengadaan belum berhasil disinkronkan. Pastikan migration integrasi Pengadaan–Keuangan sudah diterapkan, lalu coba lagi.</Alert> : null}
       {procurementError === "item_not_found" ? <Alert>Item pengadaan tidak ditemukan.</Alert> : null}
-      {procurementError === "not_purchased" ? <Alert>Hanya item berstatus Sudah dibeli atau Siap digunakan yang dapat dicatat sebagai pengeluaran.</Alert> : null}
+      {procurementError === "not_purchased" ? <Alert>Hanya item Pembelian berstatus Sudah dibeli atau Siap digunakan yang dapat dicatat sebagai pengeluaran.</Alert> : null}
+      {procurementError === "not_purchase" ? <Alert>Hanya jenis Pembelian yang dapat dicatat ke Keuangan.</Alert> : null}
+      {procurementError === "not_returnable" ? <Alert>Hanya barang Peminjaman yang sedang dipinjam yang dapat ditandai dikembalikan.</Alert> : null}
+      {procurementError === "return_failed" ? <Alert>Barang belum berhasil ditandai dikembalikan. Coba lagi.</Alert> : null}
 
       {!standalone ? (
         <>
@@ -74,7 +78,9 @@ export default function ProcurementSection({ eventId, items, members, categories
           <p className="text-xs text-zinc-500" aria-live="polite">Menampilkan {startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, items.length)} dari {items.length} kebutuhan.</p>
           <div className="space-y-3">
             {visibleItems.map((item) => {
-              const isPurchased = ["purchased", "ready"].includes(item.status);
+              const isPurchase = (item.procurement_type ?? "purchase") === "purchase";
+              const isBorrow = item.procurement_type === "borrow";
+              const isPurchased = isPurchase && ["purchased", "ready"].includes(item.status);
               const isLinked = linkedIds.has(item.id);
               return (
                 <article key={item.id} className="management-card p-4 sm:p-5">
@@ -82,22 +88,23 @@ export default function ProcurementSection({ eventId, items, members, categories
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className="font-semibold">{item.name}</h3>
-                        <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700">{statusLabel[item.status]}</span>
+                        <span className="rounded-full bg-[#EDF4FA] px-2 py-0.5 text-xs text-[#32628E]">{procurementTypeLabel[item.procurement_type ?? "purchase"]}</span>
+                        <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700">{isBorrow && item.returned_at ? "Sudah dikembalikan" : isBorrow && item.status === "ready" ? "Sedang dipinjam" : statusLabel[item.status]}</span>
                         {item.status === "ordered" ? <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs text-amber-800">Komitmen anggaran</span> : null}
                         {isPurchased ? <span className={`rounded-full px-2 py-0.5 text-xs ${isLinked ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-800"}`}>{isLinked ? "Tercatat di Keuangan" : "Belum terhubung ke Keuangan"}</span> : null}
                       </div>
-                      <p className="mt-1 text-sm text-zinc-600">{Number(item.quantity)} {item.unit ?? "unit"} · {categoryById.get(item.category_id)?.name ?? "Tanpa kategori"}</p>
+                      <p className="mt-1 text-sm text-zinc-600">{Number(item.quantity)} {item.unit ?? "unit"} · {isPurchase ? (categoryById.get(item.category_id)?.name ?? "Tanpa kategori") : isBorrow ? "Barang pinjaman" : "Barang inventaris"}</p>
                       {item.specification ? <p className="mt-1 text-sm text-zinc-600">{item.specification}</p> : null}
                       <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
-                        <div><dt className="text-zinc-500">Estimasi total</dt><dd className="font-medium">{currency(item.est_unit_price == null ? null : Number(item.est_unit_price) * Number(item.quantity))}</dd></div>
-                        <div><dt className="text-zinc-500">Aktual total</dt><dd className="font-medium">{currency(item.actual_unit_price == null ? null : Number(item.actual_unit_price) * Number(item.quantity))}</dd></div>
+                        {isPurchase ? <><div><dt className="text-zinc-500">Estimasi total</dt><dd className="font-medium">{currency(item.est_unit_price == null ? null : Number(item.est_unit_price) * Number(item.quantity))}</dd></div><div><dt className="text-zinc-500">Aktual total</dt><dd className="font-medium">{currency(item.actual_unit_price == null ? null : Number(item.actual_unit_price) * Number(item.quantity))}</dd></div></> : null}
                         <div><dt className="text-zinc-500">PIC</dt><dd>{memberById.get(item.pic_member_id)?.full_name ?? "Belum ditentukan"}</dd></div>
-                        <div><dt className="text-zinc-500">Supplier</dt><dd>{item.supplier ?? "—"}</dd></div>
-                        <div><dt className="text-zinc-500">Tanggal pembelian</dt><dd>{dateFmt(item.purchased_date)}</dd></div>
+                        <div><dt className="text-zinc-500">{isPurchase ? "Supplier / toko" : isBorrow ? "Pemilik / pemberi pinjaman" : "Sumber inventaris"}</dt><dd>{item.supplier ?? "—"}</dd></div>
+                        {isPurchase ? <div><dt className="text-zinc-500">Tanggal pembelian</dt><dd>{dateFmt(item.purchased_date)}</dd></div> : isBorrow ? <div><dt className="text-zinc-500">Rencana pengembalian</dt><dd>{dateFmt(item.expected_return_date)}</dd></div> : null}
                       </dl>
                       {item.notes ? <p className="mt-2 whitespace-pre-wrap text-xs text-zinc-500">Catatan: {item.notes}</p> : null}
                       {item.status === "ordered" ? <Link className="mt-2 inline-block text-xs font-semibold text-[#407BB0] hover:text-[#32628E] hover:underline" href={`/events/${eventId}/keuangan`}>Lihat komitmen di Keuangan →</Link> : null}
                       {isPurchased && isLinked ? <Link className="mt-2 inline-block text-xs font-semibold text-[#407BB0] hover:text-[#32628E] hover:underline" href={`/events/${eventId}/keuangan`}>Lihat transaksi di Keuangan →</Link> : null}
+                      {isBorrow && item.status === "ready" && !item.returned_at ? <form action={markProcurementReturned} className="mt-3"><input type="hidden" name="event_id" value={eventId}/><input type="hidden" name="item_id" value={item.id}/><input type="hidden" name="return_to" value={returnTo}/><button type="submit" className="rounded-xl border border-[#D7E6F5] bg-white px-3 py-2 text-sm font-semibold text-[#407BB0] hover:bg-[#F0F5FA]">Tandai dikembalikan</button></form> : null}
                       {isPurchased && !isLinked ? (
                         <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50/60 p-3">
                           <p className="text-sm text-amber-900">Item pembelian ini belum terhubung ke transaksi Keuangan. Jika ini data lama, pastikan pembeliannya belum pernah dicatat manual agar tidak terjadi pencatatan ganda.</p>
@@ -140,7 +147,7 @@ export default function ProcurementSection({ eventId, items, members, categories
         open={Boolean(activeItem)}
         onClose={() => setActiveItem(null)}
         title={activeItem?.mode === "edit" ? "Edit kebutuhan pengadaan" : "Tambah kebutuhan pengadaan"}
-        description={activeItem?.mode === "edit" ? "Perbarui kebutuhan, progres pembelian, dan detail pencatatannya." : "Catat kebutuhan perlengkapan event beserta estimasi dan penanggung jawabnya."}
+        description={activeItem?.mode === "edit" ? "Perbarui kebutuhan, jenis pengadaan, progres, dan detailnya." : "Catat kebutuhan event, jenis pengadaan, dan penanggung jawabnya."}
       >
         {activeItem ? <ProcurementForm key={activeItem.mode === "edit" ? activeItem.item.id : "new-procurement-item"} eventId={eventId} members={members} categories={categories} item={activeItem.item ?? null} returnTo={returnTo} /> : null}
       </Modal>
