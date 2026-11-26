@@ -289,3 +289,19 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Updated ProcurementSection to use the component while preserving syncProcurementItemToFinance, hidden event_id, item_id, return_to, warning copy, and existing server flow.
 - No database/schema/migration/RLS, authorization, finance logic, or production data changes.
 - PR #33 was verified merged at 322ee62801a9114987b02e9fa13461efc853e518; created separate branch fix/procurement-finance-sync-loading for this follow-up. Local lint/build/browser E2E and Preview verification remain pending.
+
+## 26 November 2026 — Procurement types and borrowing
+
+- Owner approved the proposed type distinction: Pembelian, Peminjaman, Inventaris tersedia; optional planned return date and mark-returned action for borrowing.
+- Created `feat/procurement-types-and-loans` from PR #34 head `f7065d38abea2ac71d152aa8b11dfa4ac48666f8` so the pending Lottie sync feedback is retained. PR #34 was open/unmerged when checked; this is a stacked branch.
+- Updated procurement validator, modal form, cards/totals, and Server Actions. Purchase-only fields/statuses are validated; non-purchase submissions clear price/category/purchase date. Added guarded return action with event/group scope.
+- Added migration `20261126_procurement_types_and_loans.sql`: type, planned return date, returned timestamp; defaults legacy rows to purchase; adds checks; updates finance trigger/upsert to exclude non-purchases and prevent linked purchase conversion.
+- Updated `supabase/schema.sql` for fresh database setup and product/database docs in this branch.
+- Migration is authored, not applied. No production SQL/data or deployment changes. Local lint/build/browser E2E and exact-head Preview remain unverified; Owner review/UAT required.
+
+### PR #35 opened — Procurement types and loan return
+
+- Opened https://github.com/Abdul-Fikri/mini-event-management/pull/35 from `feat/procurement-types-and-loans`, intentionally based on PR #34's branch so only this feature is shown as the stacked change.
+- PR opening head `cafef1ee68d01231bda91a33ad9d99ee98b69d54`; GitHub reports PR open/unmerged and mergeable; Vercel status pending.
+- Follow-up: verify latest head/checks after docs sync; wait for PR #34 merge, retarget #35 to main, review/apply migration to test environment, run local lint/build and Owner UAT. No merge or Production deployment.
+
