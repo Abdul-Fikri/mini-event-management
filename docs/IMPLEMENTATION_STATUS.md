@@ -454,3 +454,7 @@ PR #33 management action consistency is merged at 322ee62801a9114987b02e9fa13461
 
 No production SQL or data was changed by this implementation. Migration is authored only; remote application is unconfirmed.
 
+### PR #35 — review and verification status
+
+PR #35: https://github.com/Abdul-Fikri/mini-event-management/pull/35 (open/unmerged, stacked on PR #34). Vercel Preview status was pending at initial PR head `cafef1ee68d01231bda91a33ad9d99ee98b69d54`. Local lint/build/browser E2E and migration/UAT are not yet verified. Merge PR #34 first, retarget #35 to main, then recheck the exact final Preview and run purchase/borrow/inventory/return scenarios.
+
