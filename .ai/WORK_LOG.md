@@ -319,3 +319,12 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - PR #35's type/loan feature had been merged into the PR #34 dependency branch rather than `main`; PR #36 therefore includes that dependency plus this draft-retention correction so the complete feature can reach `main`.
 - Exact head at opening: `fadb77f8eff6f4e835836a6a11f6d35738384d2a`. GitHub API reported `mergeable=true`, `mergeable_state=clean`; no merge or deployment performed.
 - Local lint/build/browser E2E, exact-head Preview, migration application, and Owner UAT remain pending.
+
+
+## Finance manual transaction action placement — 26 November 2026
+
+- Live GitHub preflight confirmed PR #36 merged; current `main` is `ac8af6fc434cec4e2981f5a706213779f01db9e8`. PR #35 procurement types and PR #36 draft retention are now on main. Supabase migration application remains unconfirmed.
+- Created `ui/finance-manual-transaction-action-placement` from that exact main commit.
+- Moved **+ Tambah transaksi manual** from below the transaction list into the Riwayat transaksi header, before the records; it continues opening the existing modal.
+- Updated Handbook, Implementation Status, Project Context, Project Status, and Work Log in the same branch. No database/schema/migration/RLS, authorization, finance logic, production data, or deployment changes.
+- Local lint/build/browser E2E and Owner UAT have not been run. Exact-head Preview and Owner review remain pending.
