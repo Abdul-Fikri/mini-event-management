@@ -425,3 +425,4 @@ Penyempurnaan kartu susunan panitia: aksi **Edit** ditempatkan sejajar dengan ak
 - This is a presentation-only change. No data, Server Action, validation, authorization, schema, migration, RLS, or production behavior was intentionally changed.
 - PR #32 modal rollout was merged by Owner on 25 November 2026 at `905677f977233e7b7784a20081ff50419e681423`. This follow-up is on a new branch from that current `main`.
 - Local lint/build and browser E2E have not been run in this environment; verify the exact PR Preview and complete Owner UAT before merge.
+- Follow-up PR #33: https://github.com/Abdul-Fikri/mini-event-management/pull/33 (branch `fix/rundown-card-action-consistency`, open/unmerged). Owner review and exact-head Preview/UAT are pending.
