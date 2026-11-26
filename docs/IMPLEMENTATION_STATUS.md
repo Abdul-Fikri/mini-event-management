@@ -458,3 +458,10 @@ No production SQL or data was changed by this implementation. Migration is autho
 
 PR #35: https://github.com/Abdul-Fikri/mini-event-management/pull/35 (open/unmerged, stacked on PR #34). Vercel Preview status was pending at initial PR head `cafef1ee68d01231bda91a33ad9d99ee98b69d54`. Local lint/build/browser E2E and migration/UAT are not yet verified. Merge PR #34 first, retarget #35 to main, then recheck the exact final Preview and run purchase/borrow/inventory/return scenarios.
 
+## Follow-up UX — procurement form draft preservation (26 November 2026)
+
+- Form Pengadaan mempertahankan nilai field Pembelian dan tanggal rencana pengembalian saat jenis berubah; field terkait disembunyikan tanpa di-unmount.
+- Ketika Server Action mengembalikan error, form dipulihkan dari submitted values, termasuk selector jenis/status dan input uncontrolled yang memakai defaultValue.
+- Aturan persistence tetap di Server Action: data harga/kategori/tanggal pembelian hanya untuk Pembelian; expected return date hanya untuk Peminjaman.
+- Implemented on branch `fix/procurement-form-preserve-draft` based on the merged PR #35 feature branch commit. No database/schema/migration/RLS changes.
+- Local lint/build/browser E2E and Owner UAT are not yet run.
