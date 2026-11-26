@@ -299,3 +299,9 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Updated `supabase/schema.sql` for fresh database setup and product/database docs in this branch.
 - Migration is authored, not applied. No production SQL/data or deployment changes. Local lint/build/browser E2E and exact-head Preview remain unverified; Owner review/UAT required.
 
+### PR #35 opened — Procurement types and loan return
+
+- Opened https://github.com/Abdul-Fikri/mini-event-management/pull/35 from `feat/procurement-types-and-loans`, intentionally based on PR #34's branch so only this feature is shown as the stacked change.
+- PR opening head `cafef1ee68d01231bda91a33ad9d99ee98b69d54`; GitHub reports PR open/unmerged and mergeable; Vercel status pending.
+- Follow-up: verify latest head/checks after docs sync; wait for PR #34 merge, retarget #35 to main, review/apply migration to test environment, run local lint/build and Owner UAT. No merge or Production deployment.
+
