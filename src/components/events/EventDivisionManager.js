@@ -211,16 +211,16 @@ export default function EventDivisionManager({
                         <p className="mt-1 text-sm italic text-[#94A3B8]">Belum ada deskripsi.</p>
                       )}
                     </div>
-                    <DivisionDeleteForm eventId={eventId} division={division} returnTo={returnTo} />
-                  </div>
-                  <div className="mt-4 border-t border-[#EAF0F7] pt-3">
-                    <Button
-                      type="button"
-                      variant="iceSecondary"
-                      onClick={() => setActiveDivision({ mode: "edit", division })}
-                    >
-                      Edit divisi
-                    </Button>
+                    <div className="flex shrink-0 items-center gap-2 sm:pl-3">
+                      <Button
+                        type="button"
+                        variant="iceSecondary"
+                        onClick={() => setActiveDivision({ mode: "edit", division })}
+                      >
+                        Edit
+                      </Button>
+                      <DivisionDeleteForm eventId={eventId} division={division} returnTo={returnTo} />
+                    </div>
                   </div>
                 </article>
               ))}
