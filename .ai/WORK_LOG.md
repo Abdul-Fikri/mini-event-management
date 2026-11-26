@@ -327,4 +327,5 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Created `ui/finance-manual-transaction-action-placement` from that exact main commit.
 - Moved **+ Tambah transaksi manual** from below the transaction list into the Riwayat transaksi header, before the records; it continues opening the existing modal.
 - Updated Handbook, Implementation Status, Project Context, Project Status, and Work Log in the same branch. No database/schema/migration/RLS, authorization, finance logic, production data, or deployment changes.
-- Local lint/build/browser E2E and Owner UAT have not been run. Exact-head Preview and Owner review remain pending.
+- Opened PR #37: https://github.com/Abdul-Fikri/mini-event-management/pull/37, base `main`, branch `ui/finance-manual-transaction-action-placement`; PR remains open/unmerged.
+- Local lint/build/browser E2E and Owner UAT have not been run. Exact final-head Preview and Owner review remain pending.
