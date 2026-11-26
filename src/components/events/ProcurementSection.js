@@ -93,7 +93,7 @@ export default function ProcurementSection({ eventId, items, members, categories
                         {item.status === "ordered" ? <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs text-amber-800">Komitmen anggaran</span> : null}
                         {isPurchased ? <span className={`rounded-full px-2 py-0.5 text-xs ${isLinked ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-800"}`}>{isLinked ? "Tercatat di Keuangan" : "Belum terhubung ke Keuangan"}</span> : null}
                       </div>
-                      <p className="mt-1 text-sm text-zinc-600">{Number(item.quantity)} {item.unit ?? "unit"} · {categoryById.get(item.category_id)?.name ?? "Tanpa kategori"}</p>
+                      <p className="mt-1 text-sm text-zinc-600">{Number(item.quantity)} {item.unit ?? "unit"} · {isPurchase ? (categoryById.get(item.category_id)?.name ?? "Tanpa kategori") : isBorrow ? "Barang pinjaman" : "Barang inventaris"}</p>
                       {item.specification ? <p className="mt-1 text-sm text-zinc-600">{item.specification}</p> : null}
                       <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
                         {isPurchase ? <><div><dt className="text-zinc-500">Estimasi total</dt><dd className="font-medium">{currency(item.est_unit_price == null ? null : Number(item.est_unit_price) * Number(item.quantity))}</dd></div><div><dt className="text-zinc-500">Aktual total</dt><dd className="font-medium">{currency(item.actual_unit_price == null ? null : Number(item.actual_unit_price) * Number(item.quantity))}</dd></div></> : null}
@@ -147,7 +147,7 @@ export default function ProcurementSection({ eventId, items, members, categories
         open={Boolean(activeItem)}
         onClose={() => setActiveItem(null)}
         title={activeItem?.mode === "edit" ? "Edit kebutuhan pengadaan" : "Tambah kebutuhan pengadaan"}
-        description={activeItem?.mode === "edit" ? "Perbarui kebutuhan, progres pembelian, dan detail pencatatannya." : "Catat kebutuhan perlengkapan event beserta estimasi dan penanggung jawabnya."}
+        description={activeItem?.mode === "edit" ? "Perbarui kebutuhan, jenis pengadaan, progres, dan detailnya." : "Catat kebutuhan event, jenis pengadaan, dan penanggung jawabnya."}
       >
         {activeItem ? <ProcurementForm key={activeItem.mode === "edit" ? activeItem.item.id : "new-procurement-item"} eventId={eventId} members={members} categories={categories} item={activeItem.item ?? null} returnTo={returnTo} /> : null}
       </Modal>
