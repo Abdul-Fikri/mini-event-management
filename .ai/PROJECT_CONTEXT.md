@@ -290,3 +290,8 @@ Panitia card action layout: keep **Edit** beside **Keluarkan** in the card's top
 - Migration: `20261126_procurement_types_and_loans.sql`; authored on `feat/procurement-types-and-loans`, not applied to Supabase. Review/apply and verify remote migration history before testing.
 - PR #34 (Lottie finance sync feedback) remains a dependency/base for this branch at the time of implementation; verify its merge status and resolve the stacked PR relationship before merging. No production changes, local lint/build, browser E2E, or Preview UAT have been completed by this implementation.
 
+### PR #35 tracking
+
+- PR #35: https://github.com/Abdul-Fikri/mini-event-management/pull/35; open, unmerged, base `fix/procurement-finance-sync-loading` (stacked on PR #34), head at PR creation `cafef1ee68d01231bda91a33ad9d99ee98b69d54`.
+- Vercel Preview was pending at that head. Local lint/build and browser E2E have not been run. Do not merge until PR #34 is merged, PR #35 is retargeted to `main`, the new migration is reviewed/applied to the intended test DB, and exact-head Preview/UAT are checked.
+
