@@ -214,3 +214,9 @@ Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest ve
 - PR #34 was checked open/unmerged at branch start; this is a stacked/dependent branch from its head to retain the pending Lottie feedback. Recheck PR #34 status and latest main before final merge.
 - Local lint/build/browser E2E, exact-head Preview, migration UAT, and Owner acceptance are pending.
 
+### PR #35 opened — Procurement types and loans
+
+- PR: https://github.com/Abdul-Fikri/mini-event-management/pull/35; open/unmerged, base PR #34 branch to keep the dependency diff clean.
+- Head at PR opening: `cafef1ee68d01231bda91a33ad9d99ee98b69d54`; Vercel Preview status pending. Recheck the final head after documentation updates.
+- Before merge: PR #34 must merge first; retarget #35 to main, refresh Preview, review/apply migration in the intended database, and run purchase/borrow/inventory plus return-flow UAT. No merge/deploy has occurred.
+
