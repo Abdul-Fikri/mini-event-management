@@ -312,3 +312,10 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - This preserves values only in the unsaved form; Server Action remains responsible for clearing type-inapplicable fields from persisted payloads.
 - Branch: `fix/procurement-form-preserve-draft`, based on PR #35 merge commit `51ae2a30d5c611120e69323d6f55f780e5f1c91e`. PR #35 was merged into its non-main base branch; current `main` is `f01a28f1e4791075c86701d64062e67e7e293d24`, so the follow-up PR must include the feature dependency.
 - No database/schema/migration/RLS, authorization, finance logic, production data, or deployment changes. Local lint/build/browser E2E and Owner UAT not run.
+
+### PR #36 opened — Preserve Procurement form draft
+
+- PR: https://github.com/Abdul-Fikri/mini-event-management/pull/36, base `main`, branch `fix/procurement-form-preserve-draft`.
+- PR #35's type/loan feature had been merged into the PR #34 dependency branch rather than `main`; PR #36 therefore includes that dependency plus this draft-retention correction so the complete feature can reach `main`.
+- Exact head at opening: `fadb77f8eff6f4e835836a6a11f6d35738384d2a`. GitHub API reported `mergeable=true`, `mergeable_state=clean`; no merge or deployment performed.
+- Local lint/build/browser E2E, exact-head Preview, migration application, and Owner UAT remain pending.
