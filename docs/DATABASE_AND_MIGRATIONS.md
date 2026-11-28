@@ -240,3 +240,10 @@ Only `purchase` items may have estimate/actual prices, budget category, or purch
 
 The migration is authored in branch `feat/procurement-types-and-loans` and has not been applied to Supabase. Owner must review and apply it to the intended database before runtime UAT. File existence is not proof of remote application.
 
+
+
+## 2026-11-28 — Email akun Panitia
+
+Migration `20261128_member_account_management.sql` menambahkan kolom nullable `members.account_email`, melakukan backfill dari `auth.users.email` untuk akun Panitia yang sudah terhubung, dan menambahkan unique index case-insensitive pada email akun yang tidak null. Migration ini additive dan harus diterapkan di Supabase SQL Editor sebelum deploy versi pengelolaan akun Panitia. Tidak menjalankan ulang `schema.sql`.
+
+Akun dibuat/diperbarui melalui Supabase Admin Auth API di Server Action setelah Owner melewati `requireGroup()`. Operasi memerlukan `SUPABASE_SECRET_KEY` atau `SUPABASE_SERVICE_ROLE_KEY` server-only. Password awal hanya diteruskan ke Auth API dan tidak ditulis ke tabel.
