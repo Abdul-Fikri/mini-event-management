@@ -11,7 +11,7 @@ export function createAdminClient() {
 
   if (!url || !key) {
     throw new Error(
-      "Konfigurasi upload logo belum lengkap. Tambahkan SUPABASE_SECRET_KEY atau SUPABASE_SERVICE_ROLE_KEY pada environment server."
+      "Konfigurasi server privileged belum lengkap. Tambahkan SUPABASE_SECRET_KEY atau SUPABASE_SERVICE_ROLE_KEY pada environment server."
     );
   }
 

@@ -299,3 +299,8 @@ Panitia card action layout: keep **Edit** beside **Keluarkan** in the card's top
 ## Procurement form UX — draft retention
 
 The Procurement create/edit modal must preserve draft values when the Owner switches among purchase, borrow, and inventory types. Keep conditional fields mounted and hide them visually rather than unmounting them; retain purchase-only values and expected-return date while switching. On Server Action validation/business-rule errors, restore submitted values and selected type/status so the modal does not reset. Persistence remains type-specific in the Server Action; this is UI state preservation, not a database change.
+
+
+## Feature note — Panitia account management (2026-11-28)
+
+The Owner's Add/Edit Member modal manages both the member directory record and a linked Supabase Auth account. Add requires email + initial password (minimum 8 characters); edit requires account email and allows optional password reset. Existing unlinked members can be linked by editing and entering credentials. Account operations use `createAdminClient()` only in server actions after `requireGroup()`; require `SUPABASE_SECRET_KEY` or `SUPABASE_SERVICE_ROLE_KEY` server-side. Never expose privileged keys or persist plaintext passwords. Apply migration `20261128_member_account_management.sql` before deploying.

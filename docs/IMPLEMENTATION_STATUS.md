@@ -467,3 +467,10 @@ PR #35: https://github.com/Abdul-Fikri/mini-event-management/pull/35 (open/unmer
 - Local lint/build/browser E2E and Owner UAT are not yet run.
 
 PR #36: https://github.com/Abdul-Fikri/mini-event-management/pull/36 — open/unmerged to `main`. It includes the Procurement types/loans dependency from PR #35 (which was merged into a non-main branch) and the form draft-preservation fix. GitHub reported the PR clean/mergeable at the checked head; local lint/build/browser E2E and Owner UAT remain pending.
+
+
+## 2026-11-28 — Pengelolaan akun Panitia
+
+Source implementation ditambahkan pada branch `feat/member-account-management`: form anggota menggabungkan data Panitia dan kredensial akun, Server Action membuat/memperbarui akun Auth melalui Admin API, daftar anggota menampilkan status akun, dan email akun disimpan pada `members.account_email`.
+
+Migration baru: `supabase/migrations/20261128_member_account_management.sql`. Status deployment/verification belum terkonfirmasi. Migration harus diterapkan pada Supabase sebelum versi ini digunakan; lint/build, Preview, dan Owner/Panitia UAT perlu dilakukan sebelum merge/deploy.

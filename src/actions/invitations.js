@@ -1,7 +1,6 @@
 "use server";
 import { randomBytes, createHash } from "node:crypto";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { requireGroup } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,19 +27,29 @@ export async function createMemberInvitation(_prev, formData) {
     return { ok: false, message: "Undangan gagal dibuat. Pastikan migration undangan sudah diterapkan." };
   }
   revalidatePath("/members");
-  return { ok: true, message: "Undangan berhasil dibuat. Kirim tautan ini kepada anggota.", link: "/join?token=" + token };
+  return { ok: true, message: "Undangan berhasil dibuat. Salin dan kirim tautan ini kepada anggota; tautan berlaku 48 jam.", link: "/join?token=" + token };
 }
 
-export async function claimMemberInvitation(formData) {
+export async function claimMemberInvitation(_prev, formData) {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-  if (!data?.claims) redirect("/login");
+  const { data, error: sessionError } = await supabase.auth.getClaims();
+  if (sessionError || !data?.claims) {
+    return { ok: false, message: "Sesi login belum aktif. Masuk menggunakan email yang menerima undangan, lalu buka tautan undangan kembali." };
+  }
   const token = String(formData.get("token") || "");
-  if (!/^[a-f0-9]{64}$/i.test(token)) redirect("/join?error=invalid");
+  if (!/^[a-f0-9]{64}$/i.test(token)) {
+    return { ok: false, message: "Format tautan undangan tidak valid. Minta Owner mengirim tautan baru." };
+  }
   const { error } = await supabase.rpc("claim_member_invitation", { p_token: token });
   if (error) {
     console.error("[claimMemberInvitation]", error.code, error.message);
-    redirect("/join?error=claim");
+    const detail = String(error.message || "").toLowerCase();
+    if (detail.includes("sudah terhubung")) {
+      return { ok: false, message: "Data panitia ini sudah terhubung ke akun lain. Hubungi Owner untuk memeriksa akun." };
+    }
+    return { ok: false, message: "Undangan gagal diterima. Pastikan email akun sama dengan email undangan dan tautan belum kedaluwarsa atau digunakan." };
   }
-  redirect("/panitia");
+  revalidatePath("/panitia");
+  revalidatePath("/members");
+  return { ok: true, message: "Undangan berhasil diterima. Membuka halaman panitia…" };
 }
