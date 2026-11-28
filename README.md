@@ -32,7 +32,7 @@ SUPABASE_SECRET_KEY=
 # SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-Isi sendiri dari Supabase Dashboard. Variabel `SUPABASE_SECRET_KEY` atau `SUPABASE_SERVICE_ROLE_KEY` hanya diperlukan untuk operasi logo grup. Simpan key tersebut sebagai environment variable server-only di Vercel dan lokal; **jangan** memakai prefix `NEXT_PUBLIC_`, commit nilainya, atau membagikannya di chat. Jangan gunakan kedua key privileged di browser.
+Isi sendiri dari Supabase Dashboard. Variabel `SUPABASE_SECRET_KEY` atau `SUPABASE_SERVICE_ROLE_KEY` diperlukan untuk operasi privileged server seperti pengelolaan akun Panitia dan logo grup. Simpan key tersebut sebagai environment variable server-only di Vercel dan lokal; **jangan** memakai prefix `NEXT_PUBLIC_`, commit nilainya, atau membagikannya di chat. Jangan gunakan kedua key privileged di browser.
 
 ```bash
 npm run dev
