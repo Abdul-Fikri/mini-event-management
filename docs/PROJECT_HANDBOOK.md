@@ -455,3 +455,14 @@ The source/owner field is interpreted as supplier for purchases, lender/owner fo
 ## Pengadaan — mempertahankan draft saat jenis berubah
 
 Pada form tambah/edit Pengadaan, berpindah jenis Pembelian, Peminjaman, atau Inventaris tidak menghapus nilai yang sudah diketik. Field khusus Pembelian dan tanggal rencana pengembalian tetap dipertahankan di form saat disembunyikan, lalu ditampilkan kembali jika jenis dipilih lagi. Jika validasi atau aturan bisnis menolak penyimpanan, form memulihkan nilai yang disubmit agar Owner dapat memperbaiki pilihan tanpa mengisi ulang. Data yang disimpan tetap mengikuti aturan jenis pengadaan; field harga/keuangan hanya berlaku untuk Pembelian dan tanggal pengembalian hanya berlaku untuk Peminjaman.
+
+
+## Pengelolaan akun Panitia (fitur baru)
+
+- Form tambah anggota sekarang membuat data direktori Panitia dan akun Supabase Auth sekaligus menggunakan email dan password awal yang ditentukan Owner.
+- Edit anggota dapat mengubah email akun; password lama tidak pernah ditampilkan. Password baru bersifat opsional untuk akun yang sudah terhubung.
+- Anggota lama yang belum memiliki akun dapat membuka Edit, mengisi email dan password awal, lalu menyimpan untuk membuat akun.
+- Akun dibuat server-side melalui Supabase Admin API setelah Owner diverifikasi. Password tidak disimpan ke tabel aplikasi.
+- Perubahan database memerlukan migration `20261128_member_account_management.sql` yang menambahkan `members.account_email` dan backfill email akun yang sudah terhubung.
+- Environment server harus memiliki `SUPABASE_SECRET_KEY` atau `SUPABASE_SERVICE_ROLE_KEY`; jangan pernah memakai key privileged di browser atau commit ke repository.
+- Penghapusan anggota dan akun terkait harus diperlakukan sebagai operasi sensitif dan diverifikasi saat pengujian.
