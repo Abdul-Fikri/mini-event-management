@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState } from "react";
 import { saveMember } from "@/actions/members";
 import { Alert } from "@/components/ui/Alert";
@@ -29,11 +28,12 @@ export default function MemberForm({ member = null, returnTo = "/members" }) {
       <div className="space-y-4 border-t border-[#EEF2F6] pt-4">
         <h3 className="text-sm font-semibold text-slate-800">Akun login Panitia</h3>
         <TextField id="account_email" name="account_email" label="Email akun" type="email" required defaultValue={value("account_email")} error={state.errors?.account_email} hint="Email ini digunakan Panitia untuk login ke aplikasi." />
-        <TextField id="account_password" name="account_password" label={linked ? "Password baru (opsional)" : "Password awal"} type="password" required={!linked} defaultValue="" error={state.errors?.account_password} hint={linked ? "Kosongkan jika tidak ingin mengganti password. Password lama tidak dapat ditampilkan." : "Minimal 8 karakter. Berikan password awal ini kepada Panitia secara aman."} autoComplete={linked ? "new-password" : "new-password"} />
+        <TextField id="account_password" name="account_password" label={linked ? "Password baru (opsional)" : "Password awal"} type="password" required={!linked} defaultValue="" error={state.errors?.account_password} hint={linked ? "Kosongkan jika tidak ingin mengganti password. Password lama tidak dapat ditampilkan." : "Minimal 8 karakter. Berikan password awal ini kepada Panitia secara aman."} autoComplete="new-password" />
+        <TextField id="account_password_confirm" name="account_password_confirm" label={linked ? "Konfirmasi password baru" : "Konfirmasi password awal"} type="password" required={!linked} defaultValue="" error={state.errors?.account_password_confirm} hint={linked ? "Isi hanya jika kamu memasukkan password baru." : "Masukkan ulang password yang sama."} autoComplete="new-password" />
       </div>
-      <div className="flex gap-2">
+      <div>
         <Button type="submit" pending={pending} pendingText="Menyimpan…">{linked ? "Simpan perubahan" : "Simpan & buat akun"}</Button>
-        <Link href={returnTo} className="rounded-xl border border-[#D8E3ED] px-4 py-2.5 text-sm font-medium text-[#475569] transition-colors hover:bg-[#F8FAFC]">Batal</Link>
+        <p className="mt-2 text-xs text-slate-500">Untuk membatalkan, gunakan tombol × di pojok modal.</p>
       </div>
     </form>
   );
