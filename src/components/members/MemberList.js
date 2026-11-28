@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { deleteMember } from "@/actions/members";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
-import MemberInvitationForm from "@/components/members/MemberInvitationForm";
 import MemberForm from "@/components/members/MemberForm";
 import Modal from "@/components/ui/Modal";
 import ListPagination from "@/components/ui/ListPagination";
