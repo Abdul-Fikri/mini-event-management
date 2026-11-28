@@ -329,3 +329,7 @@ Owner asked to extend the Panitia modal interaction to other management pages wh
 - Updated Handbook, Implementation Status, Project Context, Project Status, and Work Log in the same branch. No database/schema/migration/RLS, authorization, finance logic, production data, or deployment changes.
 - Opened PR #37: https://github.com/Abdul-Fikri/mini-event-management/pull/37, base `main`, branch `ui/finance-manual-transaction-action-placement`; PR remains open/unmerged.
 - Local lint/build/browser E2E and Owner UAT have not been run. Exact final-head Preview and Owner review remain pending.
+
+## 2026-11-28 — Panitia account management
+
+Started branch `feat/member-account-management` from `main`. Updated member save action, member modal, member list, members page queries, and admin client error text. Added migration `20261128_member_account_management.sql` and documented server-only privileged key requirement. Remaining verification: inspect exact diff, run lint/build, apply migration in Supabase, test Owner create/edit/link and Panitia login, and verify account deletion behavior before merge.
