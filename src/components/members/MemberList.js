@@ -101,7 +101,7 @@ export default function MemberList({ members, standalone = false }) {
                   <form action={deleteMember}>
                     <input type="hidden" name="id" value={member.id} />
                     <input type="hidden" name="return_to" value={returnTo} />
-                    <ConfirmDeleteButton message={`Hapus anggota ${member.full_name}? Penugasan dan kepanitiaan terkait akan dilepas.`} />
+                    <ConfirmDeleteButton message={`Hapus anggota ${member.full_name}? Akun login terkait juga akan dihapus dan penugasan event akan dilepas.`} />
                   </form>
                 </div>
               </article>
