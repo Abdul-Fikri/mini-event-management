@@ -10,7 +10,7 @@ import { fieldErrors, readForm } from "@/lib/validators/helpers";
 import { getMemberReturnPath } from "@/lib/members-return-path";
 
 const emptyState = { ok: false, message: "", errors: {}, values: {} };
-const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function saveMember(id, _prev, formData) {
   const { group } = await requireGroup();
