@@ -84,12 +84,11 @@ export default function MemberList({ members, standalone = false }) {
                     <p className="mt-0.5 text-sm text-zinc-500">
                       {member.contact || "Kontak belum diisi"}
                     </p>
-                    <div className="mt-2">
-                      <MemberInvitationForm
-                        memberId={member.id}
-                        connected={Boolean(member.auth_user_id)}
-                      />
-                    </div>
+                    <p className={`mt-2 text-xs font-medium ${member.auth_user_id ? "text-emerald-700" : "text-amber-700"}`}>
+                      {member.auth_user_id
+                        ? `Akun terhubung · ${member.account_email || "email belum tercatat"}`
+                        : "Akun belum dibuat · Edit untuk membuat akun"}
+                    </p>
                   </div>
                 </div>
                 <div className="flex shrink-0 items-center gap-2 pl-[52px] sm:pl-0">
