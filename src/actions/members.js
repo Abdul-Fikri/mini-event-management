@@ -10,7 +10,7 @@ import { fieldErrors, readForm } from "@/lib/validators/helpers";
 import { getMemberReturnPath } from "@/lib/members-return-path";
 
 const emptyState = { ok: false, message: "", errors: {}, values: {} };
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
 
 export async function saveMember(id, _prev, formData) {
   const { group } = await requireGroup();
@@ -19,6 +19,7 @@ export async function saveMember(id, _prev, formData) {
   const parsed = memberSchema.safeParse(values);
   const accountEmail = String(formData.get("account_email") || "").trim().toLowerCase();
   const accountPassword = String(formData.get("account_password") || "");
+  const accountPasswordConfirm = String(formData.get("account_password_confirm") || "");
 
   if (!parsed.success) {
     return { ...emptyState, message: "Periksa kembali isian Anda.", errors: fieldErrors(parsed.error), values };
@@ -51,10 +52,19 @@ export async function saveMember(id, _prev, formData) {
     };
   }
 
+  if ((needsAccount || accountPassword) && accountPassword !== accountPasswordConfirm) {
+    return {
+      ...emptyState,
+      message: "Password dan konfirmasi password belum sama.",
+      errors: { account_password_confirm: "Konfirmasi harus sama dengan password." },
+      values,
+    };
+  }
+
   let admin;
   try {
     admin = createAdminClient();
-  } catch (error) {
+  } catch {
     console.error("[saveMember] Admin client configuration is missing.");
     return { ...emptyState, message: "Pengaturan server untuk membuat akun belum lengkap. Tambahkan SUPABASE_SECRET_KEY atau SUPABASE_SERVICE_ROLE_KEY di environment server.", values };
   }
@@ -106,7 +116,6 @@ export async function saveMember(id, _prev, formData) {
     const { error } = await admin.auth.admin.updateUserById(authUserId, authPayload);
     if (error) {
       console.error("[saveMember] auth update:", error.code, error.message);
-      // Keep member data and email in sync with the account if Supabase rejects the auth update.
       await supabase.from("members").update({ account_email: existing.account_email }).eq("id", id).eq("group_id", group.id);
       return { ...emptyState, message: "Data panitia tersimpan, tetapi perubahan akun gagal. Periksa email atau password lalu coba lagi.", values };
     }
