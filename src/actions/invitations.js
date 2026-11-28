@@ -3,7 +3,7 @@ import { randomBytes, createHash } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { requireGroup } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function createMemberInvitation(_prev, formData) {
   const { group } = await requireGroup();
