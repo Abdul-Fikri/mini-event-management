@@ -15,7 +15,7 @@ const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
 export async function saveMember(id, _prev, formData) {
   const { group } = await requireGroup();
   const returnTo = getMemberReturnPath(formData.get("return_to"));
-  const values = readForm(formData, memberFields);
+  const values = { ...readForm(formData, memberFields), account_email: String(formData.get("account_email") || "").trim().toLowerCase() };
   const parsed = memberSchema.safeParse(values);
   const accountEmail = String(formData.get("account_email") || "").trim().toLowerCase();
   const accountPassword = String(formData.get("account_password") || "");
