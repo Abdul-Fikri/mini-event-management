@@ -126,8 +126,31 @@ export async function deleteMember(formData) {
   if (!id) return;
 
   const supabase = await createClient();
+  const { data: member, error: lookupError } = await supabase
+    .from("members")
+    .select("id,auth_user_id")
+    .eq("id", id)
+    .eq("group_id", group.id)
+    .maybeSingle();
+
+  if (lookupError || !member) throw new Error("Anggota tidak ditemukan pada grup ini.");
+
+  if (member.auth_user_id) {
+    let admin;
+    try {
+      admin = createAdminClient();
+    } catch {
+      throw new Error("Konfigurasi server akun belum lengkap; anggota dan akun tidak dihapus.");
+    }
+    const { error: authError } = await admin.auth.admin.deleteUser(member.auth_user_id);
+    if (authError) {
+      console.error("[deleteMember] auth delete:", authError.code, authError.message);
+      throw new Error("Akun Panitia gagal dihapus; data anggota tetap dipertahankan.");
+    }
+  }
+
   const { error } = await supabase.from("members").delete().eq("id", id).eq("group_id", group.id);
-  if (error) throw new Error("Anggota gagal dihapus.");
+  if (error) throw new Error("Akun telah diproses, tetapi data anggota gagal dihapus.");
 
   revalidatePath("/dashboard");
   revalidatePath("/members");
