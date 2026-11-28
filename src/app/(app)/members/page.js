@@ -9,7 +9,7 @@ export default async function MembersPage() {
   const supabase = await createClient();
   const { data: members, error } = await supabase
     .from("members")
-    .select("id,full_name,contact,created_at,auth_user_id")
+    .select("id,full_name,contact,created_at,auth_user_id,account_email")
     .eq("group_id", group.id)
     .order("full_name");
 
