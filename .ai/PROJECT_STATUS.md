@@ -229,3 +229,13 @@ Status refresh — 19 November 2026: PR #32 remains open and unmerged. Latest ve
 - Scope: move **+ Tambah transaksi manual** to the Riwayat transaksi header, before transaction records. Existing modal and Finance/Procurement behavior remain unchanged.
 - No database/schema/migration/RLS, authorization, production-data, or deployment changes in this UI follow-up.
 - Local lint/build/browser E2E and Owner UAT have not been run in this environment. Recheck exact-head Preview and UAT after the PR is opened.
+
+
+## 2026-11-28 — Panitia account management (branch: feat/member-account-management)
+
+- Added account email/password inputs to member add/edit modal.
+- Server Action creates linked Auth account on new member save and can link legacy members without accounts.
+- Existing linked account supports email update and optional password reset; old password is never shown.
+- Member list displays linked account email/status instead of invitation CTA.
+- Added migration `20261128_member_account_management.sql` for `members.account_email` and backfill.
+- Not yet verified locally or in Vercel Preview; Supabase migration is required before testing/deployment.
